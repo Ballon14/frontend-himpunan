@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { FiInstagram, FiMail, FiMapPin } from 'react-icons/fi';
+import { Instagram, Mail, MapPin } from 'lucide-react';
 
 export default function Footer() {
     const year = new Date().getFullYear();
@@ -34,15 +34,15 @@ export default function Footer() {
                     <div className="footer-col">
                         <h4>Kontak</h4>
                         <a href="mailto:himpunan@pup.ac.id">
-                            <FiMail style={{ marginRight: 6, verticalAlign: 'middle' }} />
+                            <Mail size={18} style={{ marginRight: 6, verticalAlign: 'middle' }} />
                             himpunan@pup.ac.id
                         </a>
                         <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">
-                            <FiInstagram style={{ marginRight: 6, verticalAlign: 'middle' }} />
+                            <Instagram size={18} style={{ marginRight: 6, verticalAlign: 'middle' }} />
                             @himapup
                         </a>
                         <a href="#">
-                            <FiMapPin style={{ marginRight: 6, verticalAlign: 'middle' }} />
+                            <MapPin size={18} style={{ marginRight: 6, verticalAlign: 'middle' }} />
                             Semarang, Jawa Tengah
                         </a>
                     </div>
@@ -52,10 +52,10 @@ export default function Footer() {
                     <p>&copy; {year} HIMAPUP. All rights reserved.</p>
                     <div className="footer-socials">
                         <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
-                            <FiInstagram />
+                            <Instagram size={20} />
                         </a>
                         <a href="mailto:himpunan@pup.ac.id" aria-label="Email">
-                            <FiMail />
+                            <Mail size={20} />
                         </a>
                     </div>
                 </div>

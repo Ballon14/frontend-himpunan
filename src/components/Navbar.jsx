@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, NavLink } from 'react-router-dom';
-import { HiOutlineMenuAlt3, HiX } from 'react-icons/hi';
 import { useTheme } from '../context/ThemeContext';
-import { FiSun, FiMoon } from 'react-icons/fi';
+import { Sun, Moon, Menu, X } from 'lucide-react';
 
 const links = [
     { to: '/', label: 'Beranda' },
@@ -53,14 +52,14 @@ export default function Navbar() {
 
                     <div className="nav-actions">
                         <button className="theme-toggle" onClick={toggleTheme} aria-label="Toggle theme">
-                            {theme === 'dark' ? <FiSun /> : <FiMoon />}
+                            {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
                         </button>
                         <button
                             className="mobile-toggle"
                             onClick={() => setMobileOpen(!mobileOpen)}
                             aria-label="Toggle menu"
                         >
-                            {mobileOpen ? <HiX /> : <HiOutlineMenuAlt3 />}
+                            {mobileOpen ? <X size={24} /> : <Menu size={24} />}
                         </button>
                     </div>
                 </div>
