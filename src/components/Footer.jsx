@@ -9,9 +9,9 @@ export default function Footer() {
             <div className="container">
                 <div className="footer-grid">
                     <div className="footer-brand">
-                        <h3>HIMA<span>PUP</span></h3>
+                        <h3>HM<span>TKBG</span></h3>
                         <p>
-                            Himpunan Mahasiswa Politeknik Pembangunan Umum Semarang.
+                            Himpunan Mahasiswa Teknologi Konstruksi Bangunan Gedung Semarang.
                             Membangun generasi unggul, berprestasi, dan berkarakter.
                         </p>
                     </div>
@@ -39,7 +39,7 @@ export default function Footer() {
                         </a>
                         <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">
                             <Instagram size={18} style={{ marginRight: 6, verticalAlign: 'middle' }} />
-                            @himapup
+                            @hmtkbg
                         </a>
                         <a href="#">
                             <MapPin size={18} style={{ marginRight: 6, verticalAlign: 'middle' }} />
@@ -49,7 +49,7 @@ export default function Footer() {
                 </div>
 
                 <div className="footer-bottom">
-                    <p>&copy; {year} HIMAPUP. All rights reserved.</p>
+                    <p>&copy; {year} HMTKBG. All rights reserved.</p>
                     <div className="footer-socials">
                         <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
                             <Instagram size={20} />

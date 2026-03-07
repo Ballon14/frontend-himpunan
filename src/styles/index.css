@@ -414,8 +414,9 @@ textarea {
 }
 
 .mobile-nav .nav-link {
-  font-size: var(--font-size-lg);
-  padding: var(--spacing-md);
+  font-size: var(--font-size-base);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-md);
 }
 
 /* ─── Hero Section ───────────────────────────────────────── */
@@ -580,6 +581,26 @@ textarea {
 .section-title p {
   color: var(--color-text-secondary);
   font-size: var(--font-size-base);
+}
+
+/* ─── Responsive CTA ─────────────────────────────────────── */
+@media (max-width: 768px) {
+  .cta-box {
+    padding: var(--spacing-2xl) var(--spacing-lg);
+    /* Reduce horizontal padding */
+  }
+
+  /* Target paragraph and button via specific classes to override inline styles easily */
+  .cta-desc-text {
+    font-size: var(--font-size-base) !important;
+    margin-bottom: var(--spacing-xl) !important;
+  }
+
+  .cta-btn {
+    padding: 0.8rem 1.5rem !important;
+    /* Smaller button pad on mobile */
+    font-size: var(--font-size-sm) !important;
+  }
 }
 
 /* ─── Stats Grid ─────────────────────────────────────────── */

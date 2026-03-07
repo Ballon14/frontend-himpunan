@@ -153,12 +153,12 @@ export default function HomePage() {
                     <div className="grid-pattern" />
                     <div className="hero-content">
                         <div ref={heroBadgeRef} className="hero-badge" style={{ opacity: 0 }}>
-                            🏛️ Politeknik Pembangunan Umum Semarang
+                            🏛️ Teknologi Konstruksi Bangunan Gedung Semarang
                         </div>
 
                         <h1 ref={heroTitleRef} style={{ opacity: 0 }}>
                             Himpunan Mahasiswa{' '}
-                            <span className="text-gradient">PUP Semarang</span>
+                            <span className="text-gradient">TKBG Semarang</span>
                         </h1>
 
                         <p ref={heroDescRef} style={{ opacity: 0 }}>
@@ -362,11 +362,11 @@ export default function HomePage() {
                                 <h2 style={{ fontSize: 'clamp(1.75rem, 4vw, 2.75rem)', fontWeight: 900, marginBottom: '1rem', letterSpacing: '-0.03em' }}>
                                     Mari Berkembang <span className="text-gradient">Bersama Kami!</span>
                                 </h2>
-                                <p style={{ color: 'var(--color-text-secondary)', marginBottom: '2.5rem', fontSize: 'var(--font-size-lg)', maxWidth: 600, margin: '0 auto 2.5rem', lineHeight: 1.8 }}>
+                                <p className="cta-desc-text" style={{ color: 'var(--color-text-secondary)', marginBottom: '2.5rem', fontSize: 'var(--font-size-lg)', maxWidth: 600, margin: '0 auto 2.5rem', lineHeight: 1.8 }}>
                                     Himpunan Mahasiswa memberikan wadah bagi kamu untuk melatih kepemimpinan, mengasah keterampilan, dan membangun relasi di ranah akademik maupun profesional.
                                 </p>
-                                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} style={{ display: 'inline-block' }}>
-                                    <Link to="/kontak" className="btn btn-primary" style={{ padding: '1rem 2.5rem', fontSize: 'var(--font-size-md)', borderRadius: 'var(--radius-full)' }}>
+                                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} style={{ display: 'inline-block', width: '100%', maxWidth: '300px' }}>
+                                    <Link to="/kontak" className="btn btn-primary cta-btn" style={{ padding: '1rem 2.5rem', fontSize: 'var(--font-size-md)', borderRadius: 'var(--radius-full)', display: 'inline-flex', width: '100%', justifyContent: 'center' }}>
                                         Hubungi Kami Sekarang <ArrowRight size={20} style={{ marginLeft: '0.75rem' }} />
                                     </Link>
                                 </motion.div>

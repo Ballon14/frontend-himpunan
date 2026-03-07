@@ -2,8 +2,8 @@ import { Helmet } from 'react-helmet-async';
 
 export default function SEO({
     title,
-    description = "Situs resmi Himpunan Mahasiswa Politeknik Pembangunan Umum Semarang. Menjadi wadah aspirasi dan pengembangan diri mahasiswa.",
-    name = "HIMAPUP",
+    description = "Situs resmi Himpunan Mahasiswa Teknologi Konstruksi Bangunan Gedung Semarang. Menjadi wadah aspirasi dan pengembangan diri mahasiswa.",
+    name = "HMTKBG",
     type = "website",
     image = "https://example.com/default-og-image.jpg"
 }) {

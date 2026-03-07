@@ -48,7 +48,7 @@ export default function ContactPage() {
                             <div>
                                 <h3 style={{ fontSize: 'var(--font-size-xl)', marginBottom: '0.5rem' }}>Informasi Kontak</h3>
                                 <p style={{ color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', lineHeight: 1.6 }}>
-                                    Layanan ini dikelola penuh oleh anggota HIMAPUP. Waktu operasional layanan adalah hari kerja pukul 08:00 WIB hingga 16:00 WIB.
+                                    Layanan ini dikelola penuh oleh anggota HMTKBG. Waktu operasional layanan adalah hari kerja pukul 08:00 WIB hingga 16:00 WIB.
                                 </p>
                             </div>
 
@@ -68,10 +68,10 @@ export default function ContactPage() {
                                         <MapPin size={28} />
                                     </div>
                                     <div>
-                                        <h4 style={{ fontSize: 'var(--font-size-md)', marginBottom: '0.25rem', fontWeight: 600 }}>Sekretariat HIMAPUP</h4>
+                                        <h4 style={{ fontSize: 'var(--font-size-md)', marginBottom: '0.25rem', fontWeight: 600 }}>Sekretariat HMTKBG</h4>
                                         <p style={{ color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', lineHeight: 1.6 }}>
                                             Gedung Pusat Kegiatan Mahasiswa Lt. 2<br />
-                                            Politeknik Pembangunan Umum<br />
+                                            Teknologi Konstruksi Bangunan Gedung<br />
                                             Semarang, Jawa Tengah
                                         </p>
                                     </div>
@@ -119,7 +119,7 @@ export default function ContactPage() {
                                         <h4 style={{ fontSize: 'var(--font-size-md)', marginBottom: '0.25rem', fontWeight: 600 }}>Instagram</h4>
                                         <p style={{ fontSize: 'var(--font-size-sm)' }}>
                                             <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-text-primary)', textDecoration: 'none', transition: 'color 0.2s' }} onMouseOver={e => e.target.style.color = 'var(--color-primary)'} onMouseOut={e => e.target.style.color = 'var(--color-text-primary)'}>
-                                                @himapup
+                                                @hmtkbg
                                             </a>
                                         </p>
                                     </div>
@@ -220,7 +220,7 @@ export default function ContactPage() {
                             allowFullScreen
                             loading="lazy"
                             referrerPolicy="no-referrer-when-downgrade"
-                            title="Lokasi HIMAPUP"
+                            title="Lokasi HMTKBG"
                         ></iframe>
                     </div>
                 </div>

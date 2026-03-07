@@ -39,7 +39,7 @@ export default function AboutPage() {
                 <div className="container">
                     <SectionTitle
                         label="Tentang Kami"
-                        title="Himpunan Mahasiswa PUP Semarang"
+                        title="Himpunan Mahasiswa TKBG Semarang"
                         description="Organisasi kemahasiswaan yang berkomitmen membangun generasi unggul."
                     />
 
@@ -48,13 +48,13 @@ export default function AboutPage() {
                         className="about-content"
                     >
                         <p>
-                            Himpunan Mahasiswa Politeknik Pembangunan Umum (HIMAPUP) Semarang merupakan
+                            Himpunan Mahasiswa Teknologi Konstruksi Bangunan Gedung (HMTKBG) Semarang merupakan
                             organisasi kemahasiswaan yang menjadi wadah bagi seluruh mahasiswa untuk
                             mengembangkan potensi, kreativitas, dan jiwa kepemimpinan.
                         </p>
 
                         <p>
-                            Didirikan dengan semangat untuk memajukan kehidupan kampus, HIMAPUP aktif
+                            Didirikan dengan semangat untuk memajukan kehidupan kampus, HMTKBG aktif
                             menyelenggarakan berbagai kegiatan yang bermanfaat mulai dari seminar,
                             workshop, bakti sosial, hingga kompetisi yang dapat meningkatkan soft skill
                             maupun hard skill mahasiswa.
