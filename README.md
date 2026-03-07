@@ -1,16 +1,70 @@
-# React + Vite
+# Himpunan Mahasiswa TKBG (Teknologi Konstruksi Bangunan Gedung) Semarang - Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is the official frontend repository for the Himpunan Mahasiswa TKBG Semarang website. Built with React and Vite, the platform provides information about the organization, its members, news (berita), work programs (program kerja), gallery, and a functional contact form.
 
-Currently, two official plugins are available:
+## Table of Contents
+- [Tech Stack](#tech-stack)
+- [Features](#features)
+- [Prerequisites](#prerequisites)
+- [Installation setup](#installation-setup)
+- [Environment Variables](#environment-variables)
+- [Development Workflow](#development-workflow)
+- [Building for Production](#building-for-production)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Tech Stack
+- **Framework:** React 18
+- **Build Tool:** Vite
+- **Routing:** React Router DOM v6
+- **Styling:** Custom CSS with modern design system
+- **HTTP Client:** Axios
+- **Icons:** Lucide React
+- **Animations:** GSAP & ScrollTrigger
 
-## React Compiler
+## Features
+- **Responsive Design:** Fully optimized for desktop, tablet, and mobile viewing.
+- **Dynamic Content:** Fetches real-time data from the backend API for Members, News, Gallery, and Programs.
+- **Dark/Light Mode:** Integrated theme toggling functionality.
+- **Smooth Animations:** Premium scrolling and micro-animations via GSAP.
+- **Contact System:** Integrated connection to backend to store incoming messages.
+- **CMS Integration:** Fully compatible with the Express/Filament Backend API.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Prerequisites
+Before you begin, ensure you have the following installed on your machine:
+- Node.js (v18 or higher recommended)
+- npm or yarn
 
-## Expanding the ESLint configuration
+## Installation setup
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/Ballon14/frontend-himpunan.git
+   cd frontend-himpunan
+   ```
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Environment Variables
+Create a `.env` file in the root of your project based on the `.env.example` file (if available) or create a new one:
+
+```env
+# URL for your backend API
+VITE_API_URL=https://api.iqbaldev.site/api
+```
+*(For local development with the backend running locally, use `http://localhost:8000/api`)*
+
+## Development Workflow
+To start the development server with Hot Module Replacement (HMR):
+```bash
+npm run dev
+```
+The application will be available at `http://localhost:5173`.
+
+## Building for Production
+To build the application for production deployment:
+1. Ensure your `.env` contains the production API URL.
+2. Run the build command:
+   ```bash
+   npm run build
+   ```
+3. The compiled assets will be available in the `dist/` directory. Deploy the contents of this folder to your web server (Nginx, Apache, or platforms like Vercel/Netlify).
