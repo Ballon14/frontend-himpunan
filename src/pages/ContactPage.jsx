@@ -94,8 +94,8 @@ export default function ContactPage() {
                                     <div>
                                         <h4 style={{ fontSize: 'var(--font-size-md)', marginBottom: '0.25rem', fontWeight: 600 }}>Email</h4>
                                         <p style={{ fontSize: 'var(--font-size-sm)' }}>
-                                            <a href="mailto:himpunan@pup.ac.id" style={{ color: 'var(--color-text-primary)', textDecoration: 'none', transition: 'color 0.2s' }} onMouseOver={e => e.target.style.color = 'var(--color-primary)'} onMouseOut={e => e.target.style.color = 'var(--color-text-primary)'}>
-                                                himpunan@pup.ac.id
+                                            <a href="mailto:hima.kbg@gmail.com" style={{ color: 'var(--color-text-primary)', textDecoration: 'none', transition: 'color 0.2s' }} onMouseOver={e => e.target.style.color = 'var(--color-primary)'} onMouseOut={e => e.target.style.color = 'var(--color-text-primary)'}>
+                                                hima.kbg@gmail.com
                                             </a>
                                         </p>
                                     </div>
@@ -118,7 +118,7 @@ export default function ContactPage() {
                                     <div>
                                         <h4 style={{ fontSize: 'var(--font-size-md)', marginBottom: '0.25rem', fontWeight: 600 }}>Instagram</h4>
                                         <p style={{ fontSize: 'var(--font-size-sm)' }}>
-                                            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-text-primary)', textDecoration: 'none', transition: 'color 0.2s' }} onMouseOver={e => e.target.style.color = 'var(--color-primary)'} onMouseOut={e => e.target.style.color = 'var(--color-text-primary)'}>
+                                            <a href="https://www.instagram.com/hmtkbg?igsh=M2owdXpkMXprcjA4" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-text-primary)', textDecoration: 'none', transition: 'color 0.2s' }} onMouseOver={e => e.target.style.color = 'var(--color-primary)'} onMouseOut={e => e.target.style.color = 'var(--color-text-primary)'}>
                                                 @hmtkbg
                                             </a>
                                         </p>

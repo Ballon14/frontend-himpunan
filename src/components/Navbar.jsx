@@ -34,6 +34,7 @@ export default function Navbar() {
             <nav className={`navbar ${scrolled ? 'scrolled' : ''}`}>
                 <div className="container">
                     <Link to="/" className="navbar-brand">
+                        <img src="/logo.jpg" alt="Logo HMTKBG" style={{ height: '40px', width: 'auto', borderRadius: '50%' }} />
                         HM<span>TKBG</span>
                     </Link>
 

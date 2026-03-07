@@ -9,7 +9,10 @@ export default function Footer() {
             <div className="container">
                 <div className="footer-grid">
                     <div className="footer-brand">
-                        <h3>HM<span>TKBG</span></h3>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '1rem' }}>
+                            <img src="/logo.jpg" alt="Logo HMTKBG" style={{ height: '50px', width: 'auto', borderRadius: '50%' }} />
+                            <h3 style={{ margin: 0 }}>HM<span>TKBG</span></h3>
+                        </div>
                         <p>
                             Himpunan Mahasiswa Teknologi Konstruksi Bangunan Gedung Semarang.
                             Membangun generasi unggul, berprestasi, dan berkarakter.
@@ -33,11 +36,11 @@ export default function Footer() {
 
                     <div className="footer-col">
                         <h4>Kontak</h4>
-                        <a href="mailto:himpunan@pup.ac.id">
+                        <a href="mailto:hima.kbg@gmail.com">
                             <Mail size={18} style={{ marginRight: 6, verticalAlign: 'middle' }} />
-                            himpunan@pup.ac.id
+                            hima.kbg@gmail.com
                         </a>
-                        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">
+                        <a href="https://www.instagram.com/hmtkbg?igsh=M2owdXpkMXprcjA4" target="_blank" rel="noopener noreferrer">
                             <Instagram size={18} style={{ marginRight: 6, verticalAlign: 'middle' }} />
                             @hmtkbg
                         </a>
@@ -51,12 +54,15 @@ export default function Footer() {
                 <div className="footer-bottom">
                     <p>&copy; {year} HMTKBG. All rights reserved.</p>
                     <div className="footer-socials">
-                        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                        <a href="https://www.instagram.com/hmtkbg?igsh=M2owdXpkMXprcjA4" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
                             <Instagram size={20} />
                         </a>
-                        <a href="mailto:himpunan@pup.ac.id" aria-label="Email">
+                        <a href="mailto:hima.kbg@gmail.com" aria-label="Email">
                             <Mail size={20} />
                         </a>
+                        {/* <a href="http://www.youtube.com/@hmtkbgpoliteknikpu6903" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+                            <Youtube size={20} />
+                        </a> */}
                     </div>
                 </div>
             </div>
