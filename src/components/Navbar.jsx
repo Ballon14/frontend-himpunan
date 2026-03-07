@@ -51,7 +51,7 @@ export default function Navbar() {
                         ))}
                     </div>
 
-                    <div className="nav-actions">
+                    {/* <div className="nav-actions">
                         <button className="theme-toggle" onClick={toggleTheme} aria-label="Toggle theme">
                             {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
                         </button>
@@ -62,7 +62,7 @@ export default function Navbar() {
                         >
                             {mobileOpen ? <X size={24} /> : <Menu size={24} />}
                         </button>
-                    </div>
+                    </div> */}
                 </div>
             </nav>
 

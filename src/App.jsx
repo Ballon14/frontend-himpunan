@@ -1,9 +1,12 @@
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, Suspense, lazy } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import ReactGA from 'react-ga4';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './context/AuthContext';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+const queryClient = new QueryClient();
 
 // Public components
 import Navbar from './components/Navbar';
@@ -22,18 +25,18 @@ import GaleriPage from './pages/GaleriPage';
 import ContactPage from './pages/ContactPage';
 import NotFoundPage from './pages/NotFoundPage';
 
-// Admin components
-import AdminLayout from './components/admin/AdminLayout';
-import ProtectedRoute from './components/admin/ProtectedRoute';
+// Admin components (Lazy Loaded)
+const AdminLayout = lazy(() => import('./components/admin/AdminLayout'));
+const ProtectedRoute = lazy(() => import('./components/admin/ProtectedRoute'));
 
-// Admin pages
-import AdminLoginPage from './pages/admin/LoginPage';
-import AdminDashboardPage from './pages/admin/DashboardPage';
-import AdminAnggotaPage from './pages/admin/AnggotaManagePage';
-import AdminBeritaPage from './pages/admin/BeritaManagePage';
-import AdminProgramKerjaPage from './pages/admin/ProgramKerjaManagePage';
-import AdminGaleriPage from './pages/admin/GaleriManagePage';
-import AdminPesanPage from './pages/admin/PesanManagePage';
+// Admin pages (Lazy Loaded)
+const AdminLoginPage = lazy(() => import('./pages/admin/LoginPage'));
+const AdminDashboardPage = lazy(() => import('./pages/admin/DashboardPage'));
+const AdminAnggotaPage = lazy(() => import('./pages/admin/AnggotaManagePage'));
+const AdminBeritaPage = lazy(() => import('./pages/admin/BeritaManagePage'));
+const AdminProgramKerjaPage = lazy(() => import('./pages/admin/ProgramKerjaManagePage'));
+const AdminGaleriPage = lazy(() => import('./pages/admin/GaleriManagePage'));
+const AdminPesanPage = lazy(() => import('./pages/admin/PesanManagePage'));
 
 // Styles
 import './styles/admin.css';
@@ -90,27 +93,29 @@ function PublicLayout() {
 
 function AdminRoutes() {
   return (
-    <Routes>
-      <Route path="login" element={<AdminLoginPage />} />
-      <Route
-        path="*"
-        element={
-          <ProtectedRoute>
-            <AdminLayout>
-              <Routes>
-                <Route path="dashboard" element={<AdminDashboardPage />} />
-                <Route path="anggota" element={<AdminAnggotaPage />} />
-                <Route path="berita" element={<AdminBeritaPage />} />
-                <Route path="program-kerja" element={<AdminProgramKerjaPage />} />
-                <Route path="galeri" element={<AdminGaleriPage />} />
-                <Route path="pesan" element={<AdminPesanPage />} />
-                <Route path="" element={<AdminDashboardPage />} />
-              </Routes>
-            </AdminLayout>
-          </ProtectedRoute>
-        }
-      />
-    </Routes>
+    <Suspense fallback={<LoadingSpinner />}>
+      <Routes>
+        <Route path="login" element={<AdminLoginPage />} />
+        <Route
+          path="*"
+          element={
+            <ProtectedRoute>
+              <AdminLayout>
+                <Routes>
+                  <Route path="dashboard" element={<AdminDashboardPage />} />
+                  <Route path="anggota" element={<AdminAnggotaPage />} />
+                  <Route path="berita" element={<AdminBeritaPage />} />
+                  <Route path="program-kerja" element={<AdminProgramKerjaPage />} />
+                  <Route path="galeri" element={<AdminGaleriPage />} />
+                  <Route path="pesan" element={<AdminPesanPage />} />
+                  <Route path="" element={<AdminDashboardPage />} />
+                </Routes>
+              </AdminLayout>
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </Suspense>
   );
 }
 
@@ -121,24 +126,26 @@ export default function App() {
   }, []);
 
   return (
-    <AuthProvider>
-      <BrowserRouter>
-        <ScrollToTopAndTrack />
-        <Toaster
-          position="top-right"
-          toastOptions={{
-            style: {
-              background: '#1a1d27',
-              color: '#e4e6ed',
-              border: '1px solid #2a2e3a',
-            },
-          }}
-        />
-        <Routes>
-          <Route path="/admin/*" element={<AdminRoutes />} />
-          <Route path="*" element={<PublicLayout />} />
-        </Routes>
-      </BrowserRouter>
-    </AuthProvider>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <BrowserRouter>
+          <ScrollToTopAndTrack />
+          <Toaster
+            position="top-right"
+            toastOptions={{
+              style: {
+                background: '#1a1d27',
+                color: '#e4e6ed',
+                border: '1px solid #2a2e3a',
+              },
+            }}
+          />
+          <Routes>
+            <Route path="/admin/*" element={<AdminRoutes />} />
+            <Route path="*" element={<PublicLayout />} />
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
+    </QueryClientProvider>
   );
 }

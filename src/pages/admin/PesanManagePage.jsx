@@ -1,53 +1,51 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState } from 'react';
 import { getPesanAdmin, markPesanRead, deletePesan } from '../../api/admin';
 import toast from 'react-hot-toast';
 import { FiSearch, FiChevronLeft, FiChevronRight, FiTrash2, FiCheck, FiMail, FiEye } from 'react-icons/fi';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 export default function PesanManagePage() {
-    const [data, setData] = useState([]);
-    const [meta, setMeta] = useState({});
-    const [unreadCount, setUnreadCount] = useState(0);
     const [search, setSearch] = useState('');
     const [page, setPage] = useState(1);
-    const [loading, setLoading] = useState(true);
     const [selectedPesan, setSelectedPesan] = useState(null);
 
-    const fetchData = useCallback(async () => {
-        setLoading(true);
-        try {
-            const res = await getPesanAdmin({ search, page, per_page: 10 });
-            setData(res.data.data.data || []);
-            setMeta(res.data.data.meta || {});
-            setUnreadCount(res.data.data.unread_count || 0);
-        } catch (err) {
-            toast.error('Gagal memuat data pesan.');
-        } finally {
-            setLoading(false);
-        }
-    }, [search, page]);
+    const queryClient = useQueryClient();
 
-    useEffect(() => { fetchData(); }, [fetchData]);
+    const { data: queryData, isLoading: loading } = useQuery({
+        queryKey: ['pesan', search, page],
+        queryFn: () => getPesanAdmin({ search, page, per_page: 10 }),
+    });
+
+    const data = queryData?.data?.data?.data || [];
+    const meta = queryData?.data?.data?.meta || {};
+    const unreadCount = queryData?.data?.data?.unread_count || 0;
+
+    const markReadMutation = useMutation({
+        mutationFn: markPesanRead,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['pesan'] });
+            toast.success('Pesan ditandai sudah dibaca.');
+        },
+        onError: () => toast.error('Gagal menandai pesan.')
+    });
+
+    const deleteMutation = useMutation({
+        mutationFn: deletePesan,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['pesan'] });
+            toast.success('Pesan berhasil dihapus.');
+            setSelectedPesan(null);
+        },
+        onError: () => toast.error('Gagal menghapus pesan.')
+    });
 
     const handleMarkRead = async (id) => {
-        try {
-            await markPesanRead(id);
-            toast.success('Pesan ditandai sudah dibaca.');
-            fetchData();
-        } catch (err) {
-            toast.error('Gagal menandai pesan.');
-        }
+        markReadMutation.mutate(id);
     };
 
     const handleDelete = async (id) => {
         if (!confirm('Yakin ingin menghapus pesan ini?')) return;
-        try {
-            await deletePesan(id);
-            toast.success('Pesan berhasil dihapus.');
-            setSelectedPesan(null);
-            fetchData();
-        } catch (err) {
-            toast.error('Gagal menghapus pesan.');
-        }
+        deleteMutation.mutate(id);
     };
 
     const handleSelect = async (pesan) => {

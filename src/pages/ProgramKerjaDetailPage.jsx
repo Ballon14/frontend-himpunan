@@ -101,7 +101,7 @@ export default function ProgramKerjaDetailPage() {
                         style={{ padding: 'var(--spacing-2xl)', lineHeight: 1.8, fontSize: 'var(--font-size-md)' }}
                     >
                         <h3 style={{ marginBottom: 'var(--spacing-md)' }}>Deskripsi Program</h3>
-                        <p style={{ whiteSpace: 'pre-wrap' }}>{proker.deskripsi}</p>
+                        <div className="prose" dangerouslySetInnerHTML={{ __html: proker.deskripsi }} />
                     </div>
                 </div>
             </div>

@@ -1,8 +1,11 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState } from 'react';
 import { getProgramKerjaAdmin, createProgramKerja, updateProgramKerja, deleteProgramKerja } from '../../api/admin';
 import Modal from '../../components/admin/Modal';
 import toast from 'react-hot-toast';
 import { FiPlus, FiEdit2, FiTrash2, FiSearch, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 const statusOptions = [
     { value: 'perencanaan', label: 'Perencanaan', color: 'badge-info' },
@@ -14,30 +17,21 @@ const statusOptions = [
 const emptyForm = { nama_program: '', deskripsi: '', tanggal_mulai: '', tanggal_selesai: '', status: 'perencanaan', foto: null };
 
 export default function ProgramKerjaManagePage() {
-    const [data, setData] = useState([]);
-    const [meta, setMeta] = useState({});
     const [search, setSearch] = useState('');
     const [page, setPage] = useState(1);
-    const [loading, setLoading] = useState(true);
     const [modalOpen, setModalOpen] = useState(false);
     const [editing, setEditing] = useState(null);
     const [form, setForm] = useState(emptyForm);
-    const [submitting, setSubmitting] = useState(false);
 
-    const fetchData = useCallback(async () => {
-        setLoading(true);
-        try {
-            const res = await getProgramKerjaAdmin({ search, page, per_page: 10 });
-            setData(res.data.data.data || []);
-            setMeta(res.data.data.meta || {});
-        } catch (err) {
-            toast.error('Gagal memuat data program kerja.');
-        } finally {
-            setLoading(false);
-        }
-    }, [search, page]);
+    const queryClient = useQueryClient();
 
-    useEffect(() => { fetchData(); }, [fetchData]);
+    const { data: queryData, isLoading: loading } = useQuery({
+        queryKey: ['proker', search, page],
+        queryFn: () => getProgramKerjaAdmin({ search, page, per_page: 10 }),
+    });
+
+    const data = queryData?.data?.data?.data || [];
+    const meta = queryData?.data?.data?.meta || {};
 
     const openCreate = () => {
         setEditing(null);
@@ -58,38 +52,52 @@ export default function ProgramKerjaManagePage() {
         setModalOpen(true);
     };
 
+    const createMutation = useMutation({
+        mutationFn: createProgramKerja,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['proker'] });
+            toast.success('Program kerja berhasil ditambahkan.');
+            setModalOpen(false);
+        },
+        onError: (err) => toast.error(err.response?.data?.message || 'Gagal menyimpan data.')
+    });
+
+    const updateMutation = useMutation({
+        mutationFn: ({ id, payload }) => updateProgramKerja(id, payload),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['proker'] });
+            toast.success('Program kerja berhasil diperbarui.');
+            setModalOpen(false);
+        },
+        onError: (err) => toast.error(err.response?.data?.message || 'Gagal menyimpan data.')
+    });
+
+    const deleteMutation = useMutation({
+        mutationFn: deleteProgramKerja,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['proker'] });
+            toast.success('Program kerja berhasil dihapus.');
+        },
+        onError: () => toast.error('Gagal menghapus program kerja.')
+    });
+
+    const submitting = createMutation.isPending || updateMutation.isPending;
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setSubmitting(true);
-        try {
-            const payload = { ...form };
-            if (!payload.foto) delete payload.foto;
+        const payload = { ...form };
+        if (!payload.foto) delete payload.foto;
 
-            if (editing) {
-                await updateProgramKerja(editing.id, payload);
-                toast.success('Program kerja berhasil diperbarui.');
-            } else {
-                await createProgramKerja(payload);
-                toast.success('Program kerja berhasil ditambahkan.');
-            }
-            setModalOpen(false);
-            fetchData();
-        } catch (err) {
-            toast.error(err.response?.data?.message || 'Gagal menyimpan data.');
-        } finally {
-            setSubmitting(false);
+        if (editing) {
+            updateMutation.mutate({ id: editing.id, payload });
+        } else {
+            createMutation.mutate(payload);
         }
     };
 
     const handleDelete = async (id) => {
         if (!confirm('Yakin ingin menghapus program kerja ini?')) return;
-        try {
-            await deleteProgramKerja(id);
-            toast.success('Program kerja berhasil dihapus.');
-            fetchData();
-        } catch (err) {
-            toast.error('Gagal menghapus program kerja.');
-        }
+        deleteMutation.mutate(id);
     };
 
     const getStatusBadge = (status) => {
@@ -177,7 +185,7 @@ export default function ProgramKerjaManagePage() {
                     </div>
                     <div className="admin-form-group">
                         <label>Deskripsi *</label>
-                        <textarea rows="5" value={form.deskripsi} onChange={(e) => setForm({ ...form, deskripsi: e.target.value })} required />
+                        <ReactQuill theme="snow" value={form.deskripsi} onChange={(content) => setForm({ ...form, deskripsi: content })} style={{ height: '200px', marginBottom: '40px' }} />
                     </div>
                     <div className="admin-form-grid">
                         <div className="admin-form-group">

@@ -1,36 +1,28 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState } from 'react';
 import { getAnggotaAdmin, createAnggota, updateAnggota, deleteAnggota } from '../../api/admin';
 import Modal from '../../components/admin/Modal';
 import toast from 'react-hot-toast';
 import { FiPlus, FiEdit2, FiTrash2, FiSearch, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 const emptyForm = { nama: '', nim: '', jurusan: '', angkatan: '', jabatan: '', status_aktif: true, foto: null };
 
 export default function AnggotaManagePage() {
-    const [data, setData] = useState([]);
-    const [meta, setMeta] = useState({});
     const [search, setSearch] = useState('');
     const [page, setPage] = useState(1);
-    const [loading, setLoading] = useState(true);
     const [modalOpen, setModalOpen] = useState(false);
     const [editing, setEditing] = useState(null);
     const [form, setForm] = useState(emptyForm);
-    const [submitting, setSubmitting] = useState(false);
 
-    const fetchData = useCallback(async () => {
-        setLoading(true);
-        try {
-            const res = await getAnggotaAdmin({ search, page, per_page: 10 });
-            setData(res.data.data.data || []);
-            setMeta(res.data.data.meta || {});
-        } catch (err) {
-            toast.error('Gagal memuat data anggota.');
-        } finally {
-            setLoading(false);
-        }
-    }, [search, page]);
+    const queryClient = useQueryClient();
 
-    useEffect(() => { fetchData(); }, [fetchData]);
+    const { data: queryData, isLoading: loading } = useQuery({
+        queryKey: ['anggota', search, page],
+        queryFn: () => getAnggotaAdmin({ search, page, per_page: 10 }),
+    });
+
+    const data = queryData?.data?.data?.data || [];
+    const meta = queryData?.data?.data?.meta || {};
 
     const openCreate = () => {
         setEditing(null);
@@ -52,38 +44,52 @@ export default function AnggotaManagePage() {
         setModalOpen(true);
     };
 
+    const createMutation = useMutation({
+        mutationFn: createAnggota,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['anggota'] });
+            toast.success('Anggota berhasil ditambahkan.');
+            setModalOpen(false);
+        },
+        onError: (err) => toast.error(err.response?.data?.message || 'Gagal menyimpan data.')
+    });
+
+    const updateMutation = useMutation({
+        mutationFn: ({ id, payload }) => updateAnggota(id, payload),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['anggota'] });
+            toast.success('Anggota berhasil diperbarui.');
+            setModalOpen(false);
+        },
+        onError: (err) => toast.error(err.response?.data?.message || 'Gagal menyimpan data.')
+    });
+
+    const deleteMutation = useMutation({
+        mutationFn: deleteAnggota,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['anggota'] });
+            toast.success('Anggota berhasil dihapus.');
+        },
+        onError: () => toast.error('Gagal menghapus anggota.')
+    });
+
+    const submitting = createMutation.isPending || updateMutation.isPending;
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setSubmitting(true);
-        try {
-            const payload = { ...form };
-            if (!payload.foto) delete payload.foto;
+        const payload = { ...form };
+        if (!payload.foto) delete payload.foto;
 
-            if (editing) {
-                await updateAnggota(editing.id, payload);
-                toast.success('Anggota berhasil diperbarui.');
-            } else {
-                await createAnggota(payload);
-                toast.success('Anggota berhasil ditambahkan.');
-            }
-            setModalOpen(false);
-            fetchData();
-        } catch (err) {
-            toast.error(err.response?.data?.message || 'Gagal menyimpan data.');
-        } finally {
-            setSubmitting(false);
+        if (editing) {
+            updateMutation.mutate({ id: editing.id, payload });
+        } else {
+            createMutation.mutate(payload);
         }
     };
 
     const handleDelete = async (id) => {
         if (!confirm('Yakin ingin menghapus anggota ini?')) return;
-        try {
-            await deleteAnggota(id);
-            toast.success('Anggota berhasil dihapus.');
-            fetchData();
-        } catch (err) {
-            toast.error('Gagal menghapus anggota.');
-        }
+        deleteMutation.mutate(id);
     };
 
     return (

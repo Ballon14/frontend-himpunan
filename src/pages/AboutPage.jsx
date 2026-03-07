@@ -1,51 +1,42 @@
-import { useEffect, useRef, useLayoutEffect } from 'react';
+import { useEffect } from 'react';
 import { motion } from 'framer-motion';
-import gsap from 'gsap';
+
 import SectionTitle from '../components/SectionTitle';
 import PageTransition from '../components/PageTransition';
 import SEO from '../components/SEO';
 import { Target, Award, Heart, Star } from 'lucide-react';
 
 export default function AboutPage() {
-    const heroRef = useRef(null);
-    const contentRef = useRef(null);
+    const fadeInUp = {
+        hidden: { opacity: 0, y: 30 },
+        visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: 'easeOut' } }
+    };
 
-    useEffect(() => {
-        // Keep empty for consistency or load specific data
-    }, []);
-
-    useLayoutEffect(() => {
-        const ctx = gsap.context(() => {
-            const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
-
-            tl.fromTo('.section-title',
-                { opacity: 0, y: 30 },
-                { opacity: 1, y: 0, duration: 0.8 }
-            )
-                .fromTo(contentRef.current,
-                    { opacity: 0, y: 20 },
-                    { opacity: 1, y: 0, duration: 0.6 },
-                    '-=0.4'
-                );
-        }, heroRef);
-
-        return () => ctx.revert();
-    }, []);
+    const staggerContainer = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: { staggerChildren: 0.2 }
+        }
+    };
 
     return (
         <PageTransition>
             <SEO title="Tentang Kami" />
-            <div className="page" ref={heroRef}>
+            <motion.div className="page" initial="hidden" animate="visible" variants={staggerContainer}>
                 <div className="container">
+                    <motion.div variants={fadeInUp}>
                     <SectionTitle
                         label="Tentang Kami"
                         title="Himpunan Mahasiswa TKBG Semarang"
                         description="Organisasi kemahasiswaan yang berkomitmen membangun generasi unggul."
                     />
 
-                    <div
-                        ref={contentRef}
+                    </motion.div>
+
+                    <motion.div
                         className="about-content"
+                        variants={fadeInUp}
                     >
                         <p>
                             Himpunan Mahasiswa Teknologi Konstruksi Bangunan Gedung (HMTKBG) Semarang merupakan
@@ -59,12 +50,15 @@ export default function AboutPage() {
                             workshop, bakti sosial, hingga kompetisi yang dapat meningkatkan soft skill
                             maupun hard skill mahasiswa.
                         </p>
-                    </div>
+                    </motion.div>
 
-                    <div className="vision-mission-grid">
+                    <motion.div className="vision-mission-grid" variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-100px' }}>
                         <motion.div
                             className="vm-card glass-card"
-                            data-aos="fade-right"
+                            variants={{
+                                hidden: { opacity: 0, x: -30 },
+                                visible: { opacity: 1, x: 0, transition: { duration: 0.6 } }
+                            }}
                             whileHover={{ y: -5, boxShadow: '0 10px 30px rgba(0,0,0,0.1)' }}
                         >
                             <h3>
@@ -78,7 +72,10 @@ export default function AboutPage() {
 
                         <motion.div
                             className="vm-card glass-card"
-                            data-aos="fade-left"
+                            variants={{
+                                hidden: { opacity: 0, x: 30 },
+                                visible: { opacity: 1, x: 0, transition: { duration: 0.6 } }
+                            }}
                             whileHover={{ y: -5, boxShadow: '0 10px 30px rgba(0,0,0,0.1)' }}
                         >
                             <h3>
@@ -92,18 +89,18 @@ export default function AboutPage() {
                                 <li>Mengembangkan potensi kepemimpinan mahasiswa</li>
                             </ul>
                         </motion.div>
-                    </div>
+                    </motion.div>
 
                     {/* Values */}
                     <div style={{ marginTop: 'var(--spacing-4xl)' }}>
-                        <div data-aos="fade-up">
+                        <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-50px' }} variants={fadeInUp}>
                             <SectionTitle
                                 label="Nilai-Nilai"
                                 title="Yang Kami Junjung"
                             />
-                        </div>
+                        </motion.div>
 
-                        <div className="stats-grid">
+                        <motion.div className="stats-grid" initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-50px' }} variants={staggerContainer}>
                             {[
                                 { icon: <Heart size={32} />, title: 'Solidaritas', desc: 'Membangun kebersamaan dan rasa kekeluargaan' },
                                 { icon: <Award size={32} />, title: 'Integritas', desc: 'Menjunjung tinggi kejujuran dan tanggung jawab' },
@@ -113,8 +110,10 @@ export default function AboutPage() {
                                 <motion.div
                                     key={value.title}
                                     className="stat-card glass-card"
-                                    data-aos="zoom-in-up"
-                                    data-aos-delay={i * 100}
+                                    variants={{
+                                        hidden: { opacity: 0, scale: 0.8 },
+                                        visible: { opacity: 1, scale: 1, transition: { type: 'spring', stiffness: 100 } }
+                                    }}
                                     whileHover={{ scale: 1.05, y: -5 }}
                                     transition={{ type: 'spring', stiffness: 300, damping: 20 }}
                                 >
@@ -125,10 +124,10 @@ export default function AboutPage() {
                                     <div className="stat-label">{value.desc}</div>
                                 </motion.div>
                             ))}
-                        </div>
+                        </motion.div>
                     </div>
                 </div>
-            </div>
+            </motion.div>
         </PageTransition>
     );
 }

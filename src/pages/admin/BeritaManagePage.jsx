@@ -1,36 +1,30 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState } from 'react';
 import { getBeritaAdmin, createBerita, updateBerita, deleteBerita } from '../../api/admin';
 import Modal from '../../components/admin/Modal';
 import toast from 'react-hot-toast';
 import { FiPlus, FiEdit2, FiTrash2, FiSearch, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 const emptyForm = { judul: '', isi: '', status: 'draft', published_at: '', thumbnail: null };
 
 export default function BeritaManagePage() {
-    const [data, setData] = useState([]);
-    const [meta, setMeta] = useState({});
     const [search, setSearch] = useState('');
     const [page, setPage] = useState(1);
-    const [loading, setLoading] = useState(true);
     const [modalOpen, setModalOpen] = useState(false);
     const [editing, setEditing] = useState(null);
     const [form, setForm] = useState(emptyForm);
-    const [submitting, setSubmitting] = useState(false);
 
-    const fetchData = useCallback(async () => {
-        setLoading(true);
-        try {
-            const res = await getBeritaAdmin({ search, page, per_page: 10 });
-            setData(res.data.data.data || []);
-            setMeta(res.data.data.meta || {});
-        } catch (err) {
-            toast.error('Gagal memuat data berita.');
-        } finally {
-            setLoading(false);
-        }
-    }, [search, page]);
+    const queryClient = useQueryClient();
 
-    useEffect(() => { fetchData(); }, [fetchData]);
+    const { data: queryData, isLoading: loading } = useQuery({
+        queryKey: ['berita', search, page],
+        queryFn: () => getBeritaAdmin({ search, page, per_page: 10 }),
+    });
+
+    const data = queryData?.data?.data?.data || [];
+    const meta = queryData?.data?.data?.meta || {};
 
     const openCreate = () => {
         setEditing(null);
@@ -50,39 +44,53 @@ export default function BeritaManagePage() {
         setModalOpen(true);
     };
 
+    const createMutation = useMutation({
+        mutationFn: createBerita,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['berita'] });
+            toast.success('Berita berhasil ditambahkan.');
+            setModalOpen(false);
+        },
+        onError: (err) => toast.error(err.response?.data?.message || 'Gagal menyimpan data.')
+    });
+
+    const updateMutation = useMutation({
+        mutationFn: ({ id, payload }) => updateBerita(id, payload),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['berita'] });
+            toast.success('Berita berhasil diperbarui.');
+            setModalOpen(false);
+        },
+        onError: (err) => toast.error(err.response?.data?.message || 'Gagal menyimpan data.')
+    });
+
+    const deleteMutation = useMutation({
+        mutationFn: deleteBerita,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['berita'] });
+            toast.success('Berita berhasil dihapus.');
+        },
+        onError: () => toast.error('Gagal menghapus berita.')
+    });
+
+    const submitting = createMutation.isPending || updateMutation.isPending;
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setSubmitting(true);
-        try {
-            const payload = { ...form };
-            if (!payload.thumbnail) delete payload.thumbnail;
-            if (!payload.published_at) delete payload.published_at;
+        const payload = { ...form };
+        if (!payload.thumbnail) delete payload.thumbnail;
+        if (!payload.published_at) delete payload.published_at;
 
-            if (editing) {
-                await updateBerita(editing.id, payload);
-                toast.success('Berita berhasil diperbarui.');
-            } else {
-                await createBerita(payload);
-                toast.success('Berita berhasil ditambahkan.');
-            }
-            setModalOpen(false);
-            fetchData();
-        } catch (err) {
-            toast.error(err.response?.data?.message || 'Gagal menyimpan data.');
-        } finally {
-            setSubmitting(false);
+        if (editing) {
+            updateMutation.mutate({ id: editing.id, payload });
+        } else {
+            createMutation.mutate(payload);
         }
     };
 
     const handleDelete = async (id) => {
         if (!confirm('Yakin ingin menghapus berita ini?')) return;
-        try {
-            await deleteBerita(id);
-            toast.success('Berita berhasil dihapus.');
-            fetchData();
-        } catch (err) {
-            toast.error('Gagal menghapus berita.');
-        }
+        deleteMutation.mutate(id);
     };
 
     return (
@@ -164,7 +172,7 @@ export default function BeritaManagePage() {
                     </div>
                     <div className="admin-form-group">
                         <label>Isi *</label>
-                        <textarea rows="8" value={form.isi} onChange={(e) => setForm({ ...form, isi: e.target.value })} required />
+                        <ReactQuill theme="snow" value={form.isi} onChange={(content) => setForm({ ...form, isi: content })} style={{ height: '200px', marginBottom: '40px' }} />
                     </div>
                     <div className="admin-form-grid">
                         <div className="admin-form-group">

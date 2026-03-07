@@ -24,6 +24,14 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
     (response) => response,
     (error) => {
+        // Auto-logout on 401 Unauthorized
+        if (error.response?.status === 401 || error.response?.status === 403) {
+            localStorage.removeItem('admin_token');
+            if (window.location.pathname.startsWith('/admin') && window.location.pathname !== '/admin/login') {
+                window.location.href = '/admin/login';
+            }
+        }
+        
         const message = error.response?.data?.message || 'Terjadi kesalahan. Silakan coba lagi.';
         console.error('[API Error]', message);
         return Promise.reject(error);

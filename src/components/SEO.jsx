@@ -5,7 +5,7 @@ export default function SEO({
     description = "Situs resmi Himpunan Mahasiswa Teknologi Konstruksi Bangunan Gedung Semarang. Menjadi wadah aspirasi dan pengembangan diri mahasiswa.",
     name = "HMTKBG",
     type = "website",
-    image = "https://example.com/default-og-image.jpg"
+    image = "https://himpunan.site/logo.jpg"
 }) {
     const fullTitle = title ? `${title} — ${name}` : name;
 

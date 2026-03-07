@@ -1,36 +1,28 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState } from 'react';
 import { getGaleriAdmin, createGaleri, updateGaleri, deleteGaleri } from '../../api/admin';
 import Modal from '../../components/admin/Modal';
 import toast from 'react-hot-toast';
 import { FiPlus, FiEdit2, FiTrash2, FiSearch, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 const emptyForm = { judul: '', kategori: '', tanggal: '', foto: null };
 
 export default function GaleriManagePage() {
-    const [data, setData] = useState([]);
-    const [meta, setMeta] = useState({});
     const [search, setSearch] = useState('');
     const [page, setPage] = useState(1);
-    const [loading, setLoading] = useState(true);
     const [modalOpen, setModalOpen] = useState(false);
     const [editing, setEditing] = useState(null);
     const [form, setForm] = useState(emptyForm);
-    const [submitting, setSubmitting] = useState(false);
 
-    const fetchData = useCallback(async () => {
-        setLoading(true);
-        try {
-            const res = await getGaleriAdmin({ search, page, per_page: 12 });
-            setData(res.data.data.data || []);
-            setMeta(res.data.data.meta || {});
-        } catch (err) {
-            toast.error('Gagal memuat data galeri.');
-        } finally {
-            setLoading(false);
-        }
-    }, [search, page]);
+    const queryClient = useQueryClient();
 
-    useEffect(() => { fetchData(); }, [fetchData]);
+    const { data: queryData, isLoading: loading } = useQuery({
+        queryKey: ['galeri', search, page],
+        queryFn: () => getGaleriAdmin({ search, page, per_page: 12 }),
+    });
+
+    const data = queryData?.data?.data?.data || [];
+    const meta = queryData?.data?.data?.meta || {};
 
     const openCreate = () => {
         setEditing(null);
@@ -49,43 +41,56 @@ export default function GaleriManagePage() {
         setModalOpen(true);
     };
 
+    const createMutation = useMutation({
+        mutationFn: createGaleri,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['galeri'] });
+            toast.success('Galeri berhasil ditambahkan.');
+            setModalOpen(false);
+        },
+        onError: (err) => toast.error(err.response?.data?.message || 'Gagal menyimpan data.')
+    });
+
+    const updateMutation = useMutation({
+        mutationFn: ({ id, payload }) => updateGaleri(id, payload),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['galeri'] });
+            toast.success('Galeri berhasil diperbarui.');
+            setModalOpen(false);
+        },
+        onError: (err) => toast.error(err.response?.data?.message || 'Gagal menyimpan data.')
+    });
+
+    const deleteMutation = useMutation({
+        mutationFn: deleteGaleri,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['galeri'] });
+            toast.success('Galeri berhasil dihapus.');
+        },
+        onError: () => toast.error('Gagal menghapus galeri.')
+    });
+
+    const submitting = createMutation.isPending || updateMutation.isPending;
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setSubmitting(true);
-        try {
-            const payload = { ...form };
-            if (!payload.foto) delete payload.foto;
+        const payload = { ...form };
+        if (!payload.foto) delete payload.foto;
 
-            if (editing) {
-                await updateGaleri(editing.id, payload);
-                toast.success('Galeri berhasil diperbarui.');
-            } else {
-                if (!payload.foto && !form.foto) {
-                    toast.error('Foto wajib diupload.');
-                    setSubmitting(false);
-                    return;
-                }
-                await createGaleri(payload);
-                toast.success('Galeri berhasil ditambahkan.');
+        if (editing) {
+            updateMutation.mutate({ id: editing.id, payload });
+        } else {
+            if (!payload.foto && !form.foto) {
+                toast.error('Foto wajib diupload.');
+                return;
             }
-            setModalOpen(false);
-            fetchData();
-        } catch (err) {
-            toast.error(err.response?.data?.message || 'Gagal menyimpan data.');
-        } finally {
-            setSubmitting(false);
+            createMutation.mutate(payload);
         }
     };
 
     const handleDelete = async (id) => {
         if (!confirm('Yakin ingin menghapus galeri ini?')) return;
-        try {
-            await deleteGaleri(id);
-            toast.success('Galeri berhasil dihapus.');
-            fetchData();
-        } catch (err) {
-            toast.error('Gagal menghapus galeri.');
-        }
+        deleteMutation.mutate(id);
     };
 
     return (

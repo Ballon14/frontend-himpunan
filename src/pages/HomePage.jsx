@@ -1,11 +1,13 @@
-import { useEffect, useState, useRef, useLayoutEffect } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+
 import { Users, FileText, Clipboard, Image as ImageIcon, ArrowRight } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
 import SectionTitle from '../components/SectionTitle';
 import LoadingSpinner from '../components/LoadingSpinner';
+import Skeleton, { SkeletonCard } from '../components/Skeleton';
 import PageTransition from '../components/PageTransition';
 import SEO from '../components/SEO';
 import { getBerita } from '../api/berita';
@@ -15,122 +17,56 @@ import { getGaleri } from '../api/galeri';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import 'react-lazy-load-image-component/src/effects/blur.css';
 
-gsap.registerPlugin(ScrollTrigger);
+
 
 export default function HomePage() {
-    const [stats, setStats] = useState({ anggota: 0, berita: 0, proker: 0, galeri: 0 });
-    const [berita, setBerita] = useState([]);
-    const [proker, setProker] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const fadeInUp = {
+        hidden: { opacity: 0, y: 30 },
+        visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: 'easeOut' } }
+    };
 
-    // GSAP refs
-    const heroRef = useRef(null);
-    const heroTitleRef = useRef(null);
-    const heroBadgeRef = useRef(null);
-    const heroDescRef = useRef(null);
-    const heroButtonsRef = useRef(null);
-    const statsRef = useRef(null);
-    const ctaRef = useRef(null);
-
-    useEffect(() => {
-        loadData();
-    }, []);
-
-    // GSAP Hero Timeline Animation
-    useLayoutEffect(() => {
-        const ctx = gsap.context(() => {
-            const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
-
-            tl.fromTo(heroBadgeRef.current,
-                { opacity: 0, scale: 0.5, y: -20 },
-                { opacity: 1, scale: 1, y: 0, duration: 0.6 }
-            )
-                .fromTo(heroTitleRef.current,
-                    { opacity: 0, y: 60, clipPath: 'inset(100% 0% 0% 0%)' },
-                    { opacity: 1, y: 0, clipPath: 'inset(0% 0% 0% 0%)', duration: 0.8 },
-                    '-=0.3'
-                )
-                .fromTo(heroDescRef.current,
-                    { opacity: 0, y: 30 },
-                    { opacity: 1, y: 0, duration: 0.6 },
-                    '-=0.4'
-                )
-                .fromTo(heroButtonsRef.current?.children || [],
-                    { opacity: 0, y: 20, scale: 0.9 },
-                    { opacity: 1, y: 0, scale: 1, duration: 0.5, stagger: 0.15 },
-                    '-=0.3'
-                );
-
-            // Stats counter animation with ScrollTrigger
-            if (statsRef.current) {
-                gsap.fromTo(
-                    statsRef.current.querySelectorAll('.stat-card'),
-                    { opacity: 0, y: 50, scale: 0.95 },
-                    {
-                        opacity: 1, y: 0, scale: 1,
-                        duration: 0.7,
-                        stagger: 0.12,
-                        ease: 'back.out(1.7)',
-                        scrollTrigger: {
-                            trigger: statsRef.current,
-                            start: 'top 80%',
-                            toggleActions: 'play none none none',
-                        },
-                    }
-                );
-            }
-
-            // CTA section parallax-like animation
-            if (ctaRef.current) {
-                gsap.fromTo(
-                    ctaRef.current,
-                    { opacity: 0, scale: 0.9 },
-                    {
-                        opacity: 1, scale: 1,
-                        duration: 0.8,
-                        ease: 'power2.out',
-                        scrollTrigger: {
-                            trigger: ctaRef.current,
-                            start: 'top 85%',
-                            toggleActions: 'play none none none',
-                        },
-                    }
-                );
-            }
-        }, heroRef);
-
-        return () => ctx.revert();
-    }, []);
-
-    const loadData = async () => {
-        try {
-            const [anggotaRes, beritaRes, prokerRes, galeriRes] = await Promise.allSettled([
-                getAnggota({ per_page: 1 }),
-                getBerita({ per_page: 3 }),
-                getProgramKerja({ per_page: 3 }),
-                getGaleri({ per_page: 1 }),
-            ]);
-
-            if (anggotaRes.status === 'fulfilled') {
-                setStats(prev => ({ ...prev, anggota: anggotaRes.value.data?.data?.meta?.total || 0 }));
-            }
-            if (beritaRes.status === 'fulfilled') {
-                setBerita(beritaRes.value.data?.data?.data || []);
-                setStats(prev => ({ ...prev, berita: beritaRes.value.data?.data?.meta?.total || 0 }));
-            }
-            if (prokerRes.status === 'fulfilled') {
-                setProker(prokerRes.value.data?.data?.data || []);
-                setStats(prev => ({ ...prev, proker: prokerRes.value.data?.data?.meta?.total || 0 }));
-            }
-            if (galeriRes.status === 'fulfilled') {
-                setStats(prev => ({ ...prev, galeri: galeriRes.value.data?.data?.meta?.total || 0 }));
-            }
-        } catch {
-            // Silently handle — homepage should degrade gracefully
-        } finally {
-            setLoading(false);
+    const staggerContainer = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: { staggerChildren: 0.15, delayChildren: 0.1 }
         }
     };
+
+    const { data: anggotaData, isLoading: loadingAnggota } = useQuery({
+        queryKey: ['anggota', 'homepage'],
+        queryFn: () => getAnggota({ per_page: 1 }),
+        staleTime: 60000,
+    });
+
+    const { data: beritaData, isLoading: loadingBerita } = useQuery({
+        queryKey: ['berita', 'homepage'],
+        queryFn: () => getBerita({ per_page: 3 }),
+        staleTime: 60000,
+    });
+
+    const { data: prokerData, isLoading: loadingProker } = useQuery({
+        queryKey: ['proker', 'homepage'],
+        queryFn: () => getProgramKerja({ per_page: 3 }),
+        staleTime: 60000,
+    });
+
+    const { data: galeriData, isLoading: loadingGaleri } = useQuery({
+        queryKey: ['galeri', 'homepage'],
+        queryFn: () => getGaleri({ per_page: 1 }),
+        staleTime: 60000,
+    });
+
+    const stats = {
+        anggota: anggotaData?.data?.data?.meta?.total || 0,
+        berita: beritaData?.data?.data?.meta?.total || 0,
+        proker: prokerData?.data?.data?.meta?.total || 0,
+        galeri: galeriData?.data?.data?.meta?.total || 0,
+    };
+
+    const berita = beritaData?.data?.data?.data || [];
+    const proker = prokerData?.data?.data?.data || [];
+    const loadingStats = loadingAnggota || loadingBerita || loadingProker || loadingGaleri;
 
     const formatDate = (dateStr) => {
         if (!dateStr) return '-';
@@ -147,75 +83,90 @@ export default function HomePage() {
     return (
         <PageTransition>
             <SEO />
-            <div ref={heroRef}>
-                {/* Hero Section — GSAP Timeline */}
+            <div>
+                {/* Hero Section — Framer Motion */}
                 <section className="hero">
                     <div className="grid-pattern" />
-                    <div className="hero-content">
-                        <div ref={heroBadgeRef} className="hero-badge" style={{ opacity: 0 }}>
+                    <motion.div className="hero-content" initial="hidden" animate="visible" variants={staggerContainer}>
+                        <motion.div className="hero-badge" variants={{
+                            hidden: { opacity: 0, scale: 0.5, y: -20 },
+                            visible: { opacity: 1, scale: 1, y: 0, transition: { duration: 0.6 } }
+                        }}>
                             🏛️ Teknologi Konstruksi Bangunan Gedung Semarang
-                        </div>
+                        </motion.div>
 
-                        <h1 ref={heroTitleRef} style={{ opacity: 0 }}>
+                        <motion.h1 variants={{
+                            hidden: { opacity: 0, y: 60, clipPath: 'inset(100% 0% 0% 0%)' },
+                            visible: { opacity: 1, y: 0, clipPath: 'inset(0% 0% 0% 0%)', transition: { duration: 0.8 } }
+                        }}>
                             Himpunan Mahasiswa{' '}
                             <span className="text-gradient">TKBG Semarang</span>
-                        </h1>
+                        </motion.h1>
 
-                        <p ref={heroDescRef} style={{ opacity: 0 }}>
+                        <motion.p variants={fadeInUp}>
                             Membangun generasi unggul, berprestasi, dan berkarakter melalui
                             wadah organisasi kemahasiswaan yang inovatif dan inspiratif.
-                        </p>
+                        </motion.p>
 
-                        <div ref={heroButtonsRef} className="hero-buttons">
+                        <motion.div className="hero-buttons" variants={fadeInUp}>
                             <Link to="/tentang" className="btn btn-primary">
                                 Tentang Kami <ArrowRight size={18} style={{ marginLeft: '0.5rem' }} />
                             </Link>
                             <Link to="/berita" className="btn btn-outline">
                                 Berita Terbaru
                             </Link>
-                        </div>
-                    </div>
+                        </motion.div>
+                    </motion.div>
                 </section>
 
-                {/* Stats Section — GSAP ScrollTrigger */}
+                {/* Stats Section — Framer Motion */}
                 <section className="section section-alt">
                     <div className="container">
-                        <div className="stats-grid" ref={statsRef}>
+                        <motion.div className="stats-grid" initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-50px' }} variants={staggerContainer}>
                             {[
                                 { icon: <Users />, number: stats.anggota, label: 'Anggota Aktif' },
                                 { icon: <FileText />, number: stats.berita, label: 'Berita Dipublikasi' },
                                 { icon: <Clipboard />, number: stats.proker, label: 'Program Kerja' },
                                 { icon: <ImageIcon />, number: stats.galeri, label: 'Foto Galeri' },
                             ].map((stat) => (
-                                <div key={stat.label} className="stat-card glass-card" style={{ opacity: 0 }}>
+                                <motion.div key={stat.label} className="stat-card glass-card" variants={{
+                                    hidden: { opacity: 0, y: 50, scale: 0.95 },
+                                    visible: { opacity: 1, y: 0, scale: 1, transition: { type: 'spring', stiffness: 100 } }
+                                }}>
                                     <div className="stat-icon">{stat.icon}</div>
-                                    <div className="stat-number">{loading ? '—' : stat.number}</div>
+                                    <div className="stat-number">{loadingStats ? <Skeleton width="40px" height="36px" style={{ margin: '0 auto' }} /> : stat.number}</div>
                                     <div className="stat-label">{stat.label}</div>
-                                </div>
+                                </motion.div>
                             ))}
-                        </div>
+                        </motion.div>
                     </div>
                 </section>
 
-                {/* Latest Berita — AOS */}
+                {/* Latest Berita */}
                 <section className="section">
                     <div className="container">
-                        <SectionTitle
-                            label="Berita"
-                            title="Berita Terbaru"
-                            description="Informasi dan kabar terkini seputar kegiatan himpunan."
-                        />
+                        <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-50px' }} variants={fadeInUp}>
+                            <SectionTitle
+                                label="Berita"
+                                title="Berita Terbaru"
+                                description="Informasi dan kabar terkini seputar kegiatan himpunan."
+                            />
+                        </motion.div>
 
-                        {loading ? (
-                            <LoadingSpinner />
-                        ) : berita.length > 0 ? (
+                        {loadingBerita ? (
                             <div className="cards-grid">
+                                {[1, 2, 3].map(i => <SkeletonCard key={i} />)}
+                            </div>
+                        ) : berita.length > 0 ? (
+                            <motion.div className="cards-grid" initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-50px' }} variants={staggerContainer}>
                                 {berita.map((item, i) => (
                                     <motion.div
                                         key={item.id}
                                         className="content-card glass-card"
-                                        data-aos="fade-up"
-                                        data-aos-delay={i * 100}
+                                        variants={{
+                                            hidden: { opacity: 0, y: 50 },
+                                            visible: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 100 } }
+                                        }}
                                         whileHover={{ y: -8, boxShadow: '0 20px 40px rgba(0,0,0,0.15)' }}
                                         transition={{ type: 'spring', stiffness: 300, damping: 20 }}
                                     >
@@ -252,7 +203,7 @@ export default function HomePage() {
                                         </div>
                                     </motion.div>
                                 ))}
-                            </div>
+                            </motion.div>
                         ) : (
                             <div className="empty-state">
                                 <div className="empty-icon"><FileText size={48} /></div>
@@ -261,28 +212,32 @@ export default function HomePage() {
                         )}
 
                         {berita.length > 0 && (
-                            <div style={{ textAlign: 'center', marginTop: '2rem' }} data-aos="fade-up" data-aos-delay="300">
+                            <motion.div style={{ textAlign: 'center', marginTop: '2rem' }} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeInUp}>
                                 <Link to="/berita" className="btn btn-outline">
                                     Lihat Semua Berita <ArrowRight size={18} style={{ marginLeft: '0.5rem' }} />
                                 </Link>
-                            </div>
+                            </motion.div>
                         )}
                     </div>
                 </section>
 
-                {/* Program Kerja — AOS */}
+                {/* Program Kerja */}
                 <section className="section section-alt">
                     <div className="container">
-                        <SectionTitle
-                            label="Program Kerja"
-                            title="Kegiatan & Program"
-                            description="Program kerja yang sedang dan akan dilaksanakan."
-                        />
+                        <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-50px' }} variants={fadeInUp}>
+                            <SectionTitle
+                                label="Program Kerja"
+                                title="Kegiatan & Program"
+                                description="Program kerja yang sedang dan akan dilaksanakan."
+                            />
+                        </motion.div>
 
-                        {loading ? (
-                            <LoadingSpinner />
-                        ) : proker.length > 0 ? (
+                        {loadingProker ? (
                             <div className="cards-grid">
+                                {[1, 2, 3].map(i => <SkeletonCard key={i} />)}
+                            </div>
+                        ) : proker.length > 0 ? (
+                            <motion.div className="cards-grid" initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-50px' }} variants={staggerContainer}>
                                 {proker.map((item, i) => {
                                     const statusMap = {
                                         perencanaan: { class: 'badge-gray', label: 'Perencanaan' },
@@ -291,19 +246,18 @@ export default function HomePage() {
                                         dibatalkan: { class: 'badge-danger', label: 'Dibatalkan' },
                                     };
                                     const s = statusMap[item.status] || { class: 'badge-gray', label: item.status };
-                                    const MotionLink = motion(Link);
-
                                     return (
-                                        <MotionLink
-                                            to={`/program-kerja/${item.id}`}
+                                        <motion.div
                                             key={item.id}
                                             className="content-card glass-card"
-                                            style={{ textDecoration: 'none', color: 'inherit', display: 'flex', flexDirection: 'column' }}
-                                            data-aos="fade-up"
-                                            data-aos-delay={i * 100}
+                                            variants={{
+                                                hidden: { opacity: 0, y: 50 },
+                                                visible: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 100 } }
+                                            }}
                                             whileHover={{ y: -8, boxShadow: '0 20px 40px rgba(0,0,0,0.15)' }}
                                             transition={{ type: 'spring', stiffness: 300, damping: 20 }}
                                         >
+                                            <Link to={`/program-kerja/${item.id}`} style={{ textDecoration: 'none', color: 'inherit', display: 'flex', flexDirection: 'column', height: '100%' }}>
                                             {item.foto ? (
                                                 <div style={{ overflow: 'hidden', height: 220, borderRadius: 'var(--radius-lg) var(--radius-lg) 0 0' }}>
                                                     <LazyLoadImage
@@ -328,10 +282,11 @@ export default function HomePage() {
                                                 <h3 className="card-title" style={{ transition: 'color 0.2s' }} onMouseOver={(e) => e.target.style.color = 'var(--color-primary)'} onMouseOut={(e) => e.target.style.color = 'var(--color-text)'}>{item.nama_program}</h3>
                                                 <p className="card-description">{item.deskripsi}</p>
                                             </div>
-                                        </MotionLink>
+                                            </Link>
+                                        </motion.div>
                                     );
                                 })}
-                            </div>
+                            </motion.div>
                         ) : (
                             <div className="empty-state">
                                 <div className="empty-icon"><Clipboard size={48} /></div>
@@ -340,22 +295,24 @@ export default function HomePage() {
                         )}
 
                         {proker.length > 0 && (
-                            <div style={{ textAlign: 'center', marginTop: '2rem' }} data-aos="fade-up" data-aos-delay="300">
+                            <motion.div style={{ textAlign: 'center', marginTop: '2rem' }} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeInUp}>
                                 <Link to="/program-kerja" className="btn btn-outline">
                                     Lihat Semua Program <ArrowRight size={18} style={{ marginLeft: '0.5rem' }} />
                                 </Link>
-                            </div>
+                            </motion.div>
                         )}
                     </div>
                 </section>
 
-                {/* CTA — GSAP ScrollTrigger */}
+                {/* CTA */}
                 <section className="section">
                     <div className="container" style={{ position: 'relative' }}>
-                        <div
-                            ref={ctaRef}
+                        <motion.div
                             className="cta-box"
-                            style={{ textAlign: 'center', maxWidth: 800, margin: '0 auto', opacity: 0 }}
+                            style={{ textAlign: 'center', maxWidth: 800, margin: '0 auto' }}
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            whileInView={{ opacity: 1, scale: 1, transition: { duration: 0.8, ease: 'easeOut' } }}
+                            viewport={{ once: true, margin: '-50px' }}
                         >
                             <div className="cta-box-bg" />
                             <div style={{ position: 'relative', zIndex: 1 }}>
@@ -371,7 +328,7 @@ export default function HomePage() {
                                     </Link>
                                 </motion.div>
                             </div>
-                        </div>
+                        </motion.div>
                     </div>
                 </section>
             </div>
