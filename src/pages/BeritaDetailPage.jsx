@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Calendar, Clock } from 'lucide-react';
+import { ArrowLeft, Calendar, Clock, Share2 } from 'lucide-react';
+import toast from 'react-hot-toast';
 import LoadingSpinner from '../components/LoadingSpinner';
 import PageTransition from '../components/PageTransition';
 import SEO from '../components/SEO';
@@ -45,6 +46,21 @@ export default function BeritaDetailPage() {
         });
     };
 
+    const handleShare = async () => {
+        const url = window.location.href;
+        const title = berita?.judul || 'Berita Himpunan';
+        if (navigator.share) {
+            try {
+                await navigator.share({ title, url });
+            } catch (error) {
+                console.error('Share error:', error);
+            }
+        } else {
+            await navigator.clipboard.writeText(url);
+            toast.success('Link berita disalin ke clipboard!');
+        }
+    };
+
     if (loading) return (
         <div className="page"><div className="container"><LoadingSpinner /></div></div>
     );
@@ -66,9 +82,14 @@ export default function BeritaDetailPage() {
             <div className="detail-page">
                 <div className="container">
                     <div className="detail-header" data-aos="fade-down">
-                        <Link to="/berita" className="back-link">
-                            <ArrowLeft size={18} style={{ marginRight: '0.5rem' }} /> Kembali ke Berita
-                        </Link>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                            <Link to="/berita" className="back-link" style={{ marginBottom: 0 }}>
+                                <ArrowLeft size={18} style={{ marginRight: '0.5rem' }} /> Kembali ke Berita
+                            </Link>
+                            <button className="btn btn-outline" onClick={handleShare} style={{ display: 'inline-flex', padding: '0.5rem 1rem', fontSize: 'var(--font-size-sm)', gap: '0.5rem', alignItems: 'center' }}>
+                                <Share2 size={16} /> Bagikan
+                            </button>
+                        </div>
                         <h1>{berita.judul}</h1>
                         <div className="detail-meta">
                             <span className="meta-item">

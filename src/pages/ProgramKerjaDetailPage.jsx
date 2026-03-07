@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Calendar, Clipboard } from 'lucide-react';
+import { ArrowLeft, Calendar, Clipboard, Share2 } from 'lucide-react';
+import toast from 'react-hot-toast';
 import LoadingSpinner from '../components/LoadingSpinner';
 import PageTransition from '../components/PageTransition';
 import SEO from '../components/SEO';
@@ -45,6 +46,21 @@ export default function ProgramKerjaDetailPage() {
         });
     };
 
+    const handleShare = async () => {
+        const url = window.location.href;
+        const title = proker?.nama_program || 'Program Kerja Himpunan';
+        if (navigator.share) {
+            try {
+                await navigator.share({ title, url });
+            } catch (error) {
+                console.error('Share error:', error);
+            }
+        } else {
+            await navigator.clipboard.writeText(url);
+            toast.success('Link program kerja disalin ke clipboard!');
+        }
+    };
+
     if (loading) return (
         <div className="page"><div className="container"><LoadingSpinner /></div></div>
     );
@@ -68,10 +84,13 @@ export default function ProgramKerjaDetailPage() {
             <div className="detail-page">
                 <div className="container" style={{ maxWidth: 800 }}>
                     <div className="detail-header" data-aos="fade-down" style={{ textAlign: 'center', marginBottom: 'var(--spacing-3xl)' }}>
-                        <div style={{ display: 'flex', justifyContent: 'flex-start', marginBottom: 'var(--spacing-lg)' }}>
-                            <Link to="/program-kerja" className="back-link btn-outline" style={{ display: 'inline-flex', padding: '0.5rem 1rem', fontSize: 'var(--font-size-sm)', gap: '0.5rem', alignItems: 'center', textDecoration: 'none' }}>
-                                <ArrowLeft size={18} /> Kembali ke Daftar Program
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 'var(--spacing-lg)', alignItems: 'center' }}>
+                            <Link to="/program-kerja" className="back-link btn-outline" style={{ display: 'inline-flex', padding: '0.5rem 1rem', fontSize: 'var(--font-size-sm)', gap: '0.5rem', alignItems: 'center', textDecoration: 'none', marginBottom: 0 }}>
+                                <ArrowLeft size={18} /> Kembali
                             </Link>
+                            <button className="btn btn-outline" onClick={handleShare} style={{ display: 'inline-flex', padding: '0.5rem 1rem', fontSize: 'var(--font-size-sm)', gap: '0.5rem', alignItems: 'center' }}>
+                                <Share2 size={16} /> Bagikan
+                            </button>
                         </div>
 
                         <span className={`badge ${s.class}`} style={{ display: 'inline-block', marginBottom: 'var(--spacing-md)' }}>{s.label}</span>

@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Image as ImageIcon, X as XIcon } from 'lucide-react';
+import { Search, Image as ImageIcon, X as XIcon, Share2 } from 'lucide-react';
+import toast from 'react-hot-toast';
 import SectionTitle from '../components/SectionTitle';
 import LoadingSpinner from '../components/LoadingSpinner';
 import PageTransition from '../components/PageTransition';
@@ -45,6 +46,21 @@ export default function GaleriPage() {
         return new Date(dateStr).toLocaleDateString('id-ID', {
             day: 'numeric', month: 'long', year: 'numeric',
         });
+    };
+
+    const handleShare = async (item) => {
+        const url = item.foto;
+        const title = item.judul || 'Galeri Himpunan';
+        if (navigator.share) {
+            try {
+                await navigator.share({ title, url });
+            } catch (error) {
+                console.error('Share error:', error);
+            }
+        } else {
+            await navigator.clipboard.writeText(url);
+            toast.success('Link foto disalin ke clipboard!');
+        }
     };
 
     // Lightbox Navigation Logic
@@ -203,9 +219,14 @@ export default function GaleriPage() {
                                 onClick={(e) => e.stopPropagation()}
                                 style={{ position: 'relative', margin: '0 5rem' }}
                             >
-                                <button className="lightbox-close" onClick={closeLightbox}>
-                                    <XIcon size={24} />
-                                </button>
+                                <div style={{ position: 'absolute', top: '-3rem', right: 0, display: 'flex', gap: '0.5rem' }}>
+                                    <button onClick={() => handleShare(galeri[lightboxIndex])} style={{ background: 'rgba(0,0,0,0.5)', borderRadius: '50%', color: 'white', border: 'none', cursor: 'pointer', padding: '0.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                        <Share2 size={24} />
+                                    </button>
+                                    <button onClick={closeLightbox} style={{ background: 'rgba(0,0,0,0.5)', borderRadius: '50%', color: 'white', border: 'none', cursor: 'pointer', padding: '0.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                        <XIcon size={24} />
+                                    </button>
+                                </div>
 
                                 {galeri[lightboxIndex].foto && (
                                     <img
