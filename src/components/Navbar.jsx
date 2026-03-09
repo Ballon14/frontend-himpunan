@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, NavLink } from 'react-router-dom';
-import { useTheme } from '../context/ThemeContext';
-import { Sun, Moon, Menu, X } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 
 const links = [
     { to: '/', label: 'Beranda' },
@@ -16,7 +15,6 @@ const links = [
 export default function Navbar() {
     const [scrolled, setScrolled] = useState(false);
     const [mobileOpen, setMobileOpen] = useState(false);
-    const { theme, toggleTheme } = useTheme();
 
     useEffect(() => {
         const onScroll = () => setScrolled(window.scrollY > 20);
@@ -51,10 +49,7 @@ export default function Navbar() {
                         ))}
                     </div>
 
-                    {/* <div className="nav-actions">
-                        <button className="theme-toggle" onClick={toggleTheme} aria-label="Toggle theme">
-                            {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
-                        </button>
+                    <div className="nav-actions">
                         <button
                             className="mobile-toggle"
                             onClick={() => setMobileOpen(!mobileOpen)}
@@ -62,7 +57,7 @@ export default function Navbar() {
                         >
                             {mobileOpen ? <X size={24} /> : <Menu size={24} />}
                         </button>
-                    </div> */}
+                    </div>
                 </div>
             </nav>
 
