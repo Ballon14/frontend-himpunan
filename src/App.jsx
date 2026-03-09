@@ -12,6 +12,7 @@ const queryClient = new QueryClient();
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import ScrollProgress from './components/ScrollProgress';
+import LoadingSpinner from './components/LoadingSpinner';
 
 // Public pages
 import HomePage from './pages/HomePage';
