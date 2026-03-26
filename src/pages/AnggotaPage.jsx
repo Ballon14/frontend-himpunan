@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
-import { motion } from 'framer-motion';
-import { Search, User } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Search, User, Instagram, Linkedin, Mail, X } from 'lucide-react';
 import SectionTitle from '../components/SectionTitle';
 import LoadingSpinner from '../components/LoadingSpinner';
 import PageTransition from '../components/PageTransition';
@@ -14,10 +14,7 @@ export default function AnggotaPage() {
     const [angkatan, setAngkatan] = useState('');
     const [page, setPage] = useState(1);
     const [meta, setMeta] = useState(null);
-
-    useEffect(() => {
-        // Init logic if any
-    }, []);
+    const [selectedMember, setSelectedMember] = useState(null);
 
     const fetchData = useCallback(async () => {
         setLoading(true);
@@ -98,6 +95,7 @@ export default function AnggotaPage() {
                                     data-aos-delay={(i % 12) * 50}
                                     whileHover={{ y: -8, boxShadow: '0 15px 30px rgba(0,0,0,0.1)' }}
                                     transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                                    onClick={() => setSelectedMember(item)}
                                 >
                                     <motion.div whileHover={{ scale: 1.05 }} transition={{ duration: 0.3 }}>
                                         {item.foto ? (
@@ -113,6 +111,11 @@ export default function AnggotaPage() {
                                     <p className="member-info">
                                         {item.nim} • {item.jurusan} • Angkatan {item.angkatan}
                                     </p>
+                                    <div className="member-social-preview">
+                                        {item.instagram && <span><Instagram size={16} /></span>}
+                                        {item.linkedin && <span><Linkedin size={16} /></span>}
+                                        {item.email && <span><Mail size={16} /></span>}
+                                    </div>
                                 </motion.div>
                             ))}
                         </div>
@@ -168,6 +171,93 @@ export default function AnggotaPage() {
                     )}
                 </div>
             </div>
+
+            {/* Member Detail Modal */}
+            <AnimatePresence>
+                {selectedMember && (
+                    <motion.div
+                        className="member-modal-overlay"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        onClick={() => setSelectedMember(null)}
+                    >
+                        <motion.div
+                            className="member-modal-content"
+                            initial={{ y: 50, opacity: 0, scale: 0.95 }}
+                            animate={{ y: 0, opacity: 1, scale: 1 }}
+                            exit={{ y: 20, opacity: 0, scale: 0.95 }}
+                            transition={{ type: "spring", damping: 25, stiffness: 300 }}
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <button className="member-modal-close" onClick={() => setSelectedMember(null)}>
+                                <X size={20} />
+                            </button>
+
+                            <div className="member-modal-header">
+                                {selectedMember.foto ? (
+                                    <img src={selectedMember.foto} alt={selectedMember.nama} className="member-avatar" />
+                                ) : (
+                                    <div className="member-avatar-placeholder">
+                                        {selectedMember.nama?.charAt(0)?.toUpperCase() || <User size={40} />}
+                                    </div>
+                                )}
+                                <h3>{selectedMember.nama}</h3>
+                                {selectedMember.jabatan && <span className="role">{selectedMember.jabatan}</span>}
+                            </div>
+
+                            <div className="member-modal-body">
+                                {selectedMember.motto && (
+                                    <div className="member-modal-motto">
+                                        "{selectedMember.motto}"
+                                    </div>
+                                )}
+
+                                <div className="member-modal-info">
+                                    <div className="member-modal-info-item">
+                                        <span className="label">NIM</span>
+                                        <span className="val">{selectedMember.nim}</span>
+                                    </div>
+                                    <div className="member-modal-info-item">
+                                        <span className="label">Jurusan / Prodi</span>
+                                        <span className="val">{selectedMember.jurusan}</span>
+                                    </div>
+                                    <div className="member-modal-info-item">
+                                        <span className="label">Angkatan</span>
+                                        <span className="val">{selectedMember.angkatan}</span>
+                                    </div>
+                                    <div className="member-modal-info-item">
+                                        <span className="label">Status</span>
+                                        <span className="val" style={{ color: selectedMember.status_aktif ? 'var(--color-success)' : 'var(--color-danger)' }}>
+                                            {selectedMember.status_aktif ? 'Aktif' : 'Nonaktif'}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                {(selectedMember.instagram || selectedMember.linkedin || selectedMember.email) && (
+                                    <div className="member-modal-socials">
+                                        {selectedMember.instagram && (
+                                            <a href={`https://instagram.com/${selectedMember.instagram.replace('@', '')}`} target="_blank" rel="noopener noreferrer" className="member-modal-social-link" title="Instagram">
+                                                <Instagram size={20} />
+                                            </a>
+                                        )}
+                                        {selectedMember.linkedin && (
+                                            <a href={selectedMember.linkedin.startsWith('http') ? selectedMember.linkedin : `https://${selectedMember.linkedin}`} target="_blank" rel="noopener noreferrer" className="member-modal-social-link" title="LinkedIn">
+                                                <Linkedin size={20} />
+                                            </a>
+                                        )}
+                                        {selectedMember.email && (
+                                            <a href={`mailto:${selectedMember.email}`} className="member-modal-social-link" title="Email">
+                                                <Mail size={20} />
+                                            </a>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </PageTransition>
     );
 }

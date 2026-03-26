@@ -24,6 +24,8 @@ import ProgramKerjaPage from './pages/ProgramKerjaPage';
 import ProgramKerjaDetailPage from './pages/ProgramKerjaDetailPage';
 import GaleriPage from './pages/GaleriPage';
 import ContactPage from './pages/ContactPage';
+import KomunitasPage from './pages/KomunitasPage';
+import MerchandiseDetailPage from './pages/MerchandiseDetailPage';
 import NotFoundPage from './pages/NotFoundPage';
 
 // Admin components (Lazy Loaded)
@@ -38,6 +40,9 @@ const AdminBeritaPage = lazy(() => import('./pages/admin/BeritaManagePage'));
 const AdminProgramKerjaPage = lazy(() => import('./pages/admin/ProgramKerjaManagePage'));
 const AdminGaleriPage = lazy(() => import('./pages/admin/GaleriManagePage'));
 const AdminPesanPage = lazy(() => import('./pages/admin/PesanManagePage'));
+const AdminExportPage = lazy(() => import('./pages/admin/ExportDataPage'));
+const AdminKegiatanPage = lazy(() => import('./pages/admin/KegiatanManagePage'));
+const AdminMerchandisePage = lazy(() => import('./pages/admin/MerchandiseManagePage'));
 
 // Styles
 import './styles/admin.css';
@@ -73,6 +78,8 @@ function AnimatedRoutes() {
         <Route path="/program-kerja/:id" element={<ProgramKerjaDetailPage />} />
         <Route path="/galeri" element={<GaleriPage />} />
         <Route path="/kontak" element={<ContactPage />} />
+        <Route path="/komunitas" element={<KomunitasPage />} />
+        <Route path="/komunitas/merchandise/:id" element={<MerchandiseDetailPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </AnimatePresence>
@@ -109,6 +116,9 @@ function AdminRoutes() {
                   <Route path="program-kerja" element={<AdminProgramKerjaPage />} />
                   <Route path="galeri" element={<AdminGaleriPage />} />
                   <Route path="pesan" element={<AdminPesanPage />} />
+                  <Route path="export" element={<AdminExportPage />} />
+                  <Route path="kegiatan" element={<AdminKegiatanPage />} />
+                  <Route path="merchandise" element={<AdminMerchandisePage />} />
                   <Route path="" element={<AdminDashboardPage />} />
                 </Routes>
               </AdminLayout>

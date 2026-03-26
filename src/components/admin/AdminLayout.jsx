@@ -3,7 +3,8 @@ import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import {
     FiGrid, FiUsers, FiFileText, FiBriefcase,
-    FiImage, FiMail, FiLogOut, FiMenu, FiX, FiChevronLeft
+    FiImage, FiMail, FiDownload, FiLogOut, FiMenu, FiX, FiChevronLeft,
+    FiCalendar, FiShoppingBag
 } from 'react-icons/fi';
 
 const navItems = [
@@ -12,7 +13,10 @@ const navItems = [
     { to: '/admin/berita', icon: FiFileText, label: 'Berita' },
     { to: '/admin/program-kerja', icon: FiBriefcase, label: 'Program Kerja' },
     { to: '/admin/galeri', icon: FiImage, label: 'Galeri' },
+    { to: '/admin/kegiatan', icon: FiCalendar, label: 'Kegiatan' },
+    { to: '/admin/merchandise', icon: FiShoppingBag, label: 'Merchandise' },
     { to: '/admin/pesan', icon: FiMail, label: 'Pesan' },
+    { to: '/admin/export', icon: FiDownload, label: 'Export Data' },
 ];
 
 export default function AdminLayout({ children }) {

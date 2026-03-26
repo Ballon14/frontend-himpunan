@@ -5,7 +5,7 @@ import toast from 'react-hot-toast';
 import { FiPlus, FiEdit2, FiTrash2, FiSearch, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
-const emptyForm = { nama: '', nim: '', jurusan: '', angkatan: '', jabatan: '', status_aktif: true, foto: null };
+const emptyForm = { nama: '', nim: '', jurusan: '', angkatan: '', jabatan: '', email: '', instagram: '', linkedin: '', motto: '', status_aktif: true, foto: null };
 
 export default function AnggotaManagePage() {
     const [search, setSearch] = useState('');
@@ -38,6 +38,10 @@ export default function AnggotaManagePage() {
             jurusan: item.jurusan,
             angkatan: item.angkatan,
             jabatan: item.jabatan || '',
+            email: item.email || '',
+            instagram: item.instagram || '',
+            linkedin: item.linkedin || '',
+            motto: item.motto || '',
             status_aktif: item.status_aktif,
             foto: null,
         });
@@ -202,6 +206,22 @@ export default function AnggotaManagePage() {
                                 <option value="true">Aktif</option>
                                 <option value="false">Nonaktif</option>
                             </select>
+                        </div>
+                        <div className="admin-form-group">
+                            <label>Email</label>
+                            <input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} placeholder="contoh@gmail.com" />
+                        </div>
+                        <div className="admin-form-group">
+                            <label>Instagram</label>
+                            <input type="text" value={form.instagram} onChange={(e) => setForm({ ...form, instagram: e.target.value })} placeholder="username (tanpa @)" />
+                        </div>
+                        <div className="admin-form-group">
+                            <label>LinkedIn</label>
+                            <input type="text" value={form.linkedin} onChange={(e) => setForm({ ...form, linkedin: e.target.value })} placeholder="URL lengkap" />
+                        </div>
+                        <div className="admin-form-group" style={{ gridColumn: '1 / -1' }}>
+                            <label>Motto</label>
+                            <textarea value={form.motto} onChange={(e) => setForm({ ...form, motto: e.target.value })} rows="3" placeholder="Motto hidup..." />
                         </div>
                     </div>
                     <div className="admin-form-group">

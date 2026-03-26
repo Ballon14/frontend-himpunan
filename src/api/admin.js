@@ -72,3 +72,9 @@ export const deleteGaleri = (id) => api.delete(`/galeri/${id}`);
 export const getPesanAdmin = (params = {}) => api.get('/pesan', { params });
 export const markPesanRead = (id) => api.patch(`/pesan/${id}/read`);
 export const deletePesan = (id) => api.delete(`/pesan/${id}`);
+
+// ─── Export Data ─────────────────────────────────────────────────────────
+export const exportTable = (table, format = 'xlsx') =>
+    api.get(`/export/${table}`, { params: { format }, responseType: 'blob' });
+export const exportAll = (format = 'xlsx') =>
+    api.get('/export', { params: { format }, responseType: 'blob' });

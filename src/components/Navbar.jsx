@@ -9,6 +9,7 @@ const links = [
     { to: '/berita', label: 'Berita' },
     { to: '/program-kerja', label: 'Program Kerja' },
     { to: '/galeri', label: 'Galeri' },
+    { to: '/komunitas', label: 'Komunitas' },
     { to: '/kontak', label: 'Kontak' },
 ];
 
@@ -33,7 +34,7 @@ export default function Navbar() {
                 <div className="container">
                     <Link to="/" className="navbar-brand">
                         <img src="/logo.jpg" alt="Logo HMTKBG" style={{ height: '40px', width: 'auto', borderRadius: '50%' }} />
-                        HM<span>TKBG</span>
+                        HMTKBG
                     </Link>
 
                     <div className="nav-links">
