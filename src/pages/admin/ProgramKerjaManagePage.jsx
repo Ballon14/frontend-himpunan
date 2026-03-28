@@ -206,6 +206,7 @@ export default function ProgramKerjaManagePage() {
                     <div className="admin-form-group">
                         <label>Foto</label>
                         <input type="file" accept="image/*" onChange={(e) => setForm({ ...form, foto: e.target.files[0] })} />
+                        {editing?.foto && <img src={editing.foto} alt="Current" className="admin-preview-img" />}
                     </div>
                     <div className="admin-form-actions">
                         <button type="button" className="admin-btn admin-btn-secondary" onClick={() => setModalOpen(false)}>Batal</button>

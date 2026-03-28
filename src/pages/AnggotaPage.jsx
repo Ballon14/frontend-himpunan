@@ -65,7 +65,7 @@ export default function AnggotaPage() {
                             <input
                                 type="text"
                                 className="search-input"
-                                placeholder="Cari nama, NIM, atau jurusan..."
+                                placeholder="Cari nama atau NIM..."
                                 value={search}
                                 onChange={handleSearch}
                                 style={{ paddingLeft: 40 }}
@@ -109,7 +109,7 @@ export default function AnggotaPage() {
                                     <h3 className="member-name">{item.nama}</h3>
                                     {item.jabatan && <p className="member-role">{item.jabatan}</p>}
                                     <p className="member-info">
-                                        {item.nim} • {item.jurusan} • Angkatan {item.angkatan}
+                                        {item.nim} • Angkatan {item.angkatan}
                                     </p>
                                     <div className="member-social-preview">
                                         {item.instagram && <span><Instagram size={16} /></span>}
@@ -217,10 +217,6 @@ export default function AnggotaPage() {
                                     <div className="member-modal-info-item">
                                         <span className="label">NIM</span>
                                         <span className="val">{selectedMember.nim}</span>
-                                    </div>
-                                    <div className="member-modal-info-item">
-                                        <span className="label">Jurusan / Prodi</span>
-                                        <span className="val">{selectedMember.jurusan}</span>
                                     </div>
                                     <div className="member-modal-info-item">
                                         <span className="label">Angkatan</span>

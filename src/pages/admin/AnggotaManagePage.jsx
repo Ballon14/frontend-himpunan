@@ -5,7 +5,7 @@ import toast from 'react-hot-toast';
 import { FiPlus, FiEdit2, FiTrash2, FiSearch, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
-const emptyForm = { nama: '', nim: '', jurusan: '', angkatan: '', jabatan: '', email: '', instagram: '', linkedin: '', motto: '', status_aktif: true, foto: null };
+const emptyForm = { nama: '', nim: '', angkatan: '', jabatan: '', email: '', instagram: '', linkedin: '', motto: '', status_aktif: true, foto: null };
 
 export default function AnggotaManagePage() {
     const [search, setSearch] = useState('');
@@ -35,7 +35,6 @@ export default function AnggotaManagePage() {
         setForm({
             nama: item.nama,
             nim: item.nim,
-            jurusan: item.jurusan,
             angkatan: item.angkatan,
             jabatan: item.jabatan || '',
             email: item.email || '',
@@ -123,7 +122,6 @@ export default function AnggotaManagePage() {
                                 <th>Foto</th>
                                 <th>Nama</th>
                                 <th>NIM</th>
-                                <th>Jurusan</th>
                                 <th>Angkatan</th>
                                 <th>Jabatan</th>
                                 <th>Status</th>
@@ -144,7 +142,6 @@ export default function AnggotaManagePage() {
                                     </td>
                                     <td data-label="Nama" className="admin-td-primary">{item.nama}</td>
                                     <td data-label="NIM">{item.nim}</td>
-                                    <td data-label="Jurusan">{item.jurusan}</td>
                                     <td data-label="Angkatan">{item.angkatan}</td>
                                     <td data-label="Jabatan">{item.jabatan || '-'}</td>
                                     <td data-label="Status">
@@ -189,10 +186,6 @@ export default function AnggotaManagePage() {
                             <input type="text" value={form.nim} onChange={(e) => setForm({ ...form, nim: e.target.value })} required />
                         </div>
                         <div className="admin-form-group">
-                            <label>Jurusan *</label>
-                            <input type="text" value={form.jurusan} onChange={(e) => setForm({ ...form, jurusan: e.target.value })} required />
-                        </div>
-                        <div className="admin-form-group">
                             <label>Angkatan *</label>
                             <input type="text" value={form.angkatan} onChange={(e) => setForm({ ...form, angkatan: e.target.value })} required />
                         </div>
@@ -227,6 +220,7 @@ export default function AnggotaManagePage() {
                     <div className="admin-form-group">
                         <label>Foto</label>
                         <input type="file" accept="image/*" onChange={(e) => setForm({ ...form, foto: e.target.files[0] })} />
+                        {editing?.foto && <img src={editing.foto} alt="Current" className="admin-preview-img" />}
                     </div>
                     <div className="admin-form-actions">
                         <button type="button" className="admin-btn admin-btn-secondary" onClick={() => setModalOpen(false)}>Batal</button>

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, ShoppingBag, Tag, CheckCircle, XCircle, Share2 } from 'lucide-react';
+import { ArrowLeft, ShoppingBag, Tag, CheckCircle, XCircle, Share2, MessageCircle, Phone } from 'lucide-react';
 import toast from 'react-hot-toast';
 import LoadingSpinner from '../components/LoadingSpinner';
 import PageTransition from '../components/PageTransition';
@@ -156,10 +156,20 @@ export default function MerchandiseDetailPage() {
                             </div>
 
                             <div className="merch-detail-cta">
-                                <p>Tertarik dengan produk ini? Hubungi admin kami untuk informasi pemesanan lebih lanjut.</p>
-                                <Link to="/kontak" className="btn btn-primary merch-contact-btn">
-                                    Hubungi Kami
-                                </Link>
+                                <div className="merch-wa-cta-icon">
+                                    <MessageCircle size={28} />
+                                </div>
+                                <h3>Pesan via WhatsApp</h3>
+                                <p>Tertarik dengan <strong>{item.nama}</strong>? Hubungi kami langsung via WhatsApp untuk pemesanan dan informasi lebih lanjut.</p>
+                                <a
+                                    href={`https://wa.me/6281515630448?text=${encodeURIComponent(`Halo Admin HMTKBG, saya tertarik dengan merchandise "${item.nama}" (${formatRupiah(item.harga)}). Apakah masih tersedia?`)}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="btn btn-primary merch-contact-btn merch-wa-detail-btn"
+                                >
+                                    <Phone size={18} />
+                                    Hubungi via WhatsApp
+                                </a>
                             </div>
                         </div>
                     </div>

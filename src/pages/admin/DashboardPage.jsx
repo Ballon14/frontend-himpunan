@@ -45,7 +45,7 @@ export default function DashboardPage() {
     }
 
     const hasProkerData = charts?.proker_status?.length > 0;
-    const hasAnggotaData = charts?.anggota_jurusan?.length > 0;
+    const hasAnggotaData = charts?.anggota_angkatan?.length > 0;
 
     return (
         <div className="admin-dashboard">
@@ -131,18 +131,18 @@ export default function DashboardPage() {
             <div className="admin-charts-row">
                 <div className="admin-chart-card admin-chart-wide">
                     <div className="admin-chart-header">
-                        <h3>Distribusi Anggota per Jurusan</h3>
+                        <h3>Distribusi Anggota per Angkatan</h3>
                     </div>
                     <div className="admin-chart-body">
                         {hasAnggotaData ? (
                             <ResponsiveContainer width="100%" height={280}>
-                                <BarChart data={charts.anggota_jurusan} barSize={36}>
+                                <BarChart data={charts.anggota_angkatan} barSize={36}>
                                     <CartesianGrid strokeDasharray="3 3" stroke="#2a2e3a" />
-                                    <XAxis dataKey="jurusan" stroke="#8b8fa3" fontSize={11} angle={-15} textAnchor="end" height={50} />
+                                    <XAxis dataKey="angkatan" stroke="#8b8fa3" fontSize={11} height={30} />
                                     <YAxis stroke="#8b8fa3" fontSize={12} allowDecimals={false} />
                                     <Tooltip content={<CustomTooltip />} />
                                     <Bar dataKey="jumlah" name="Jumlah" radius={[6, 6, 0, 0]} animationDuration={800}>
-                                        {(charts.anggota_jurusan || []).map((entry, i) => (
+                                        {(charts.anggota_angkatan || []).map((entry, i) => (
                                             <Cell key={i} fill={entry.color || CHART_COLORS[i % CHART_COLORS.length]} />
                                         ))}
                                     </Bar>

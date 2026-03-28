@@ -152,7 +152,7 @@ export default function ContactPage() {
 
                             <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
                                 <div>
-                                    <label style={{ display: 'block', marginBottom: 'var(--spacing-xs)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-secondary)' }}>Nama (Opsional)</label>
+                                    <label style={{ display: 'block', marginBottom: 'var(--spacing-xs)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-secondary)' }}>Nama <span style={{ color: 'var(--color-danger)' }}>*</span></label>
                                     <input
                                         type="text"
                                         className="form-input search-input"
@@ -160,6 +160,7 @@ export default function ContactPage() {
                                         value={formData.nama}
                                         onChange={e => setFormData({ ...formData, nama: e.target.value })}
                                         placeholder="Masukkan nama Anda"
+                                        required
                                     />
                                 </div>
 

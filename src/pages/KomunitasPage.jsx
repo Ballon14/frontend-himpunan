@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Calendar, ChevronLeft, ChevronRight, MapPin, Clock, Tag, ShoppingBag, X } from 'lucide-react';
+import { Calendar, ChevronLeft, ChevronRight, MapPin, Clock, Tag, ShoppingBag, X, MessageCircle, Phone } from 'lucide-react';
 import SectionTitle from '../components/SectionTitle';
 import LoadingSpinner from '../components/LoadingSpinner';
 import PageTransition from '../components/PageTransition';
@@ -134,86 +134,97 @@ export default function KomunitasPage() {
                     </div>
 
                     <div className="komunitas-calendar-wrapper" data-aos="fade-up">
-                        <div className="kcal-header">
-                            <button className="kcal-nav" onClick={prevMonth}><ChevronLeft size={20} /></button>
-                            <h3 className="kcal-title">{BULAN[currentMonth]} {currentYear}</h3>
-                            <button className="kcal-nav" onClick={nextMonth}><ChevronRight size={20} /></button>
-                        </div>
+                        <div className="kcal-split">
+                            {/* LEFT — Calendar */}
+                            <div className="kcal-left">
+                                <div className="kcal-header">
+                                    <button className="kcal-nav" onClick={prevMonth}><ChevronLeft size={20} /></button>
+                                    <h3 className="kcal-title">{BULAN[currentMonth]} {currentYear}</h3>
+                                    <button className="kcal-nav" onClick={nextMonth}><ChevronRight size={20} /></button>
+                                </div>
 
-                        <div className="kcal-grid">
-                            {HARI.map(h => <div key={h} className="kcal-day-label">{h}</div>)}
+                                <div className="kcal-grid">
+                                    {HARI.map(h => <div key={h} className="kcal-day-label">{h}</div>)}
 
-                            {calendarDays.map((cell, i) => {
-                                const hasEvents = cell.inMonth && eventsByDate[cell.day];
-                                const isSel = cell.inMonth && selectedDate === cell.day;
-                                return (
-                                    <motion.div
-                                        key={i}
-                                        className={`kcal-cell ${!cell.inMonth ? 'kcal-cell-outside' : ''} ${isToday(cell.day) && cell.inMonth ? 'kcal-cell-today' : ''} ${isSel ? 'kcal-cell-selected' : ''} ${hasEvents ? 'kcal-cell-has-event' : ''}`}
-                                        onClick={() => cell.inMonth && setSelectedDate(cell.day === selectedDate ? null : cell.day)}
-                                        whileHover={cell.inMonth ? { scale: 1.1 } : {}}
-                                        whileTap={cell.inMonth ? { scale: 0.95 } : {}}
-                                    >
-                                        <span>{cell.day}</span>
-                                        {hasEvents && (
-                                            <div className="kcal-dots">
-                                                {eventsByDate[cell.day].slice(0, 3).map((ev, j) => (
-                                                    <span key={j} className="kcal-dot" style={{ background: KATEGORI_COLORS[ev.kategori] || '#6366f1' }} />
-                                                ))}
-                                            </div>
-                                        )}
-                                    </motion.div>
-                                );
-                            })}
-                        </div>
+                                    {calendarDays.map((cell, i) => {
+                                        const hasEvents = cell.inMonth && eventsByDate[cell.day];
+                                        const isSel = cell.inMonth && selectedDate === cell.day;
+                                        return (
+                                            <motion.div
+                                                key={i}
+                                                className={`kcal-cell ${!cell.inMonth ? 'kcal-cell-outside' : ''} ${isToday(cell.day) && cell.inMonth ? 'kcal-cell-today' : ''} ${isSel ? 'kcal-cell-selected' : ''} ${hasEvents ? 'kcal-cell-has-event' : ''}`}
+                                                onClick={() => cell.inMonth && setSelectedDate(cell.day === selectedDate ? null : cell.day)}
+                                                whileHover={cell.inMonth ? { scale: 1.1 } : {}}
+                                                whileTap={cell.inMonth ? { scale: 0.95 } : {}}
+                                            >
+                                                <span>{cell.day}</span>
+                                                {hasEvents && (
+                                                    <div className="kcal-dots">
+                                                        {eventsByDate[cell.day].slice(0, 3).map((ev, j) => (
+                                                            <span key={j} className="kcal-dot" style={{ background: KATEGORI_COLORS[ev.kategori] || '#6366f1' }} />
+                                                        ))}
+                                                    </div>
+                                                )}
+                                            </motion.div>
+                                        );
+                                    })}
+                                </div>
 
-                        {/* Kategori Legend */}
-                        <div className="kcal-legend">
-                            {Object.entries(KATEGORI_COLORS).map(([k, c]) => (
-                                <span key={k} className="kcal-legend-item">
-                                    <span className="kcal-dot" style={{ background: c }} /> {k.charAt(0).toUpperCase() + k.slice(1)}
-                                </span>
-                            ))}
-                        </div>
+                                {/* Kategori Legend */}
+                                <div className="kcal-legend">
+                                    {Object.entries(KATEGORI_COLORS).map(([k, c]) => (
+                                        <span key={k} className="kcal-legend-item">
+                                            <span className="kcal-dot" style={{ background: c }} /> {k.charAt(0).toUpperCase() + k.slice(1)}
+                                        </span>
+                                    ))}
+                                </div>
+                            </div>
 
-                        {/* Events for selected date */}
-                        <AnimatePresence>
-                            {selectedDate && (
-                                <motion.div
-                                    className="kcal-events"
-                                    initial={{ height: 0, opacity: 0 }}
-                                    animate={{ height: 'auto', opacity: 1 }}
-                                    exit={{ height: 0, opacity: 0 }}
-                                    transition={{ duration: 0.3 }}
-                                >
-                                    <h4 className="kcal-events-title">
-                                        <Calendar size={16} /> Kegiatan {selectedDate} {BULAN[currentMonth]}
-                                    </h4>
-                                    {selectedEvents.length === 0 ? (
-                                        <p className="kcal-events-empty">Tidak ada kegiatan pada tanggal ini.</p>
+                            {/* RIGHT — Event Details */}
+                            <div className="kcal-right">
+                                <div className="kcal-right-header">
+                                    <Calendar size={18} />
+                                    <h4>{selectedDate ? `Kegiatan ${selectedDate} ${BULAN[currentMonth]}` : 'Detail Kegiatan'}</h4>
+                                </div>
+
+                                <div className="kcal-right-body">
+                                    {!selectedDate ? (
+                                        <div className="kcal-events-hint">
+                                            <Calendar size={40} strokeWidth={1} />
+                                            <p>Pilih tanggal pada kalender untuk melihat detail kegiatan.</p>
+                                        </div>
+                                    ) : selectedEvents.length === 0 ? (
+                                        <div className="kcal-events-hint">
+                                            <p>Tidak ada kegiatan pada tanggal ini.</p>
+                                        </div>
                                     ) : (
                                         <div className="kcal-events-list">
-                                            {selectedEvents.map(ev => (
-                                                <motion.div
-                                                    key={ev.id}
-                                                    className="kcal-event-card"
-                                                    style={{ borderLeft: `4px solid ${KATEGORI_COLORS[ev.kategori] || '#6366f1'}` }}
-                                                    whileHover={{ x: 4 }}
-                                                    onClick={() => setSelectedEvent(ev)}
-                                                >
-                                                    <h5>{ev.judul}</h5>
-                                                    <div className="kcal-event-meta">
-                                                        <span><Clock size={12} /> {new Date(ev.tanggal_mulai).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}</span>
-                                                        {ev.lokasi && <span><MapPin size={12} /> {ev.lokasi}</span>}
-                                                        <span><Tag size={12} /> {ev.kategori}</span>
-                                                    </div>
-                                                </motion.div>
-                                            ))}
+                                            <AnimatePresence mode="popLayout">
+                                                {selectedEvents.map(ev => (
+                                                    <motion.div
+                                                        key={ev.id}
+                                                        className="kcal-event-card"
+                                                        style={{ borderLeft: `4px solid ${KATEGORI_COLORS[ev.kategori] || '#6366f1'}` }}
+                                                        initial={{ opacity: 0, y: 10 }}
+                                                        animate={{ opacity: 1, y: 0 }}
+                                                        exit={{ opacity: 0, y: -10 }}
+                                                        whileHover={{ x: 4 }}
+                                                        onClick={() => setSelectedEvent(ev)}
+                                                    >
+                                                        <h5>{ev.judul}</h5>
+                                                        <div className="kcal-event-meta">
+                                                            <span><Clock size={12} /> {new Date(ev.tanggal_mulai).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}</span>
+                                                            {ev.lokasi && <span><MapPin size={12} /> {ev.lokasi}</span>}
+                                                            <span><Tag size={12} /> {ev.kategori}</span>
+                                                        </div>
+                                                    </motion.div>
+                                                ))}
+                                            </AnimatePresence>
                                         </div>
                                     )}
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     {/* ─── Section 2: Merchandise Showcase ──────────── */}
@@ -221,7 +232,7 @@ export default function KomunitasPage() {
                         <SectionTitle
                             label="Merchandise"
                             title="Showcase Merchandise"
-                            description="Koleksi merchandise resmi himpunan kami. Hubungi admin untuk pemesanan."
+                            description="Koleksi merchandise resmi himpunan kami. Pesan langsung via WhatsApp!"
                         />
                     </div>
 
@@ -274,6 +285,28 @@ export default function KomunitasPage() {
                             <p>Belum ada merchandise tersedia.</p>
                         </div>
                     )}
+
+                    {/* WhatsApp CTA Banner */}
+                    <div className="merch-wa-banner" data-aos="fade-up">
+                        <div className="merch-wa-banner-content">
+                            <div className="merch-wa-icon">
+                                <MessageCircle size={32} />
+                            </div>
+                            <div className="merch-wa-text">
+                                <h4>Tertarik dengan merchandise kami?</h4>
+                                <p>Hubungi kami langsung via WhatsApp untuk pemesanan dan informasi lebih lanjut.</p>
+                            </div>
+                            <a
+                                href="https://wa.me/6281515630448?text=Halo%20Admin%20HMTKBG%2C%20saya%20tertarik%20dengan%20merchandise%20himpunan."
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="merch-wa-btn"
+                            >
+                                <Phone size={18} />
+                                Pesan via WhatsApp
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
 

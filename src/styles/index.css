@@ -956,11 +956,91 @@ textarea {
 
 /* ─── Komunitas: Calendar ───────────────────────────────── */
 .komunitas-calendar-wrapper {
-  background: var(--color-bg-card);
-  border: 1px solid var(--color-border);
+  background: linear-gradient(145deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255,255,255,0.08);
   border-radius: var(--radius-xl);
-  padding: var(--spacing-xl);
-  margin-bottom: var(--spacing-2xl);
+  padding: var(--spacing-lg);
+  margin-bottom: var(--spacing-xl);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.06);
+  position: relative;
+  overflow: hidden;
+}
+
+.komunitas-calendar-wrapper::before {
+  content: '';
+  position: absolute;
+  top: -80px;
+  right: -80px;
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, rgba(var(--color-primary-rgb), 0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* Split layout: calendar left, events right */
+.kcal-split {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: var(--spacing-lg);
+  min-height: 420px;
+}
+
+.kcal-left {
+  display: flex;
+  flex-direction: column;
+}
+
+.kcal-right {
+  display: flex;
+  flex-direction: column;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.kcal-right-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: var(--spacing-md) var(--spacing-lg);
+  background: rgba(var(--color-primary-rgb), 0.08);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  color: var(--color-primary);
+}
+
+.kcal-right-header h4 {
+  font-size: var(--font-size-md);
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.kcal-right-body {
+  flex: 1;
+  padding: var(--spacing-md);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.kcal-events-hint {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-md);
+  color: var(--color-text-muted);
+  text-align: center;
+  padding: var(--spacing-xl) var(--spacing-md);
+}
+
+.kcal-events-hint p {
+  font-size: var(--font-size-sm);
+  line-height: 1.6;
+  max-width: 200px;
 }
 
 .kcal-header {
@@ -968,101 +1048,135 @@ textarea {
   align-items: center;
   justify-content: space-between;
   margin-bottom: var(--spacing-lg);
+  padding-bottom: var(--spacing-md);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
 }
 
 .kcal-title {
   font-size: var(--font-size-xl);
   font-weight: 800;
   letter-spacing: -0.02em;
+  background: linear-gradient(135deg, var(--color-text) 0%, var(--color-text-secondary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .kcal-nav {
-  background: var(--color-bg-secondary);
-  border: 1px solid var(--color-border);
-  color: var(--color-text);
-  width: 36px;
-  height: 36px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: var(--color-text-secondary);
+  width: 38px;
+  height: 38px;
   border-radius: var(--radius-full);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: all 0.25s ease;
 }
 
 .kcal-nav:hover {
   background: var(--color-primary);
   color: #fff;
   border-color: var(--color-primary);
+  box-shadow: 0 4px 16px rgba(var(--color-primary-rgb), 0.35);
+  transform: scale(1.05);
 }
 
 .kcal-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 4px;
+  gap: 3px;
 }
 
 .kcal-day-label {
   text-align: center;
-  font-size: var(--font-size-xs);
+  font-size: 11px;
   font-weight: 700;
-  color: var(--color-text-muted);
+  color: var(--color-primary);
   text-transform: uppercase;
-  padding: 8px 0;
+  letter-spacing: 0.08em;
+  padding: 10px 0 8px;
+  opacity: 0.8;
 }
 
 .kcal-cell {
-  aspect-ratio: 1;
+  aspect-ratio: 1.3;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border-radius: var(--radius-md);
+  border-radius: 10px;
   cursor: pointer;
   position: relative;
   font-size: var(--font-size-sm);
   font-weight: 500;
-  transition: all var(--transition-fast);
-  gap: 2px;
+  transition: all 0.2s ease;
+  gap: 3px;
+  color: var(--color-text-secondary);
 }
 
 .kcal-cell:hover {
-  background: var(--color-bg-secondary);
+  background: rgba(255,255,255,0.06);
+  color: var(--color-text);
+  transform: scale(1.05);
 }
 
 .kcal-cell-outside {
-  opacity: 0.3;
+  opacity: 0.2;
   cursor: default;
 }
 
+.kcal-cell-outside:hover {
+  transform: none;
+  background: transparent;
+}
+
 .kcal-cell-today {
-  background: rgba(var(--color-primary-rgb), 0.15);
+  background: linear-gradient(135deg, rgba(var(--color-primary-rgb), 0.2), rgba(var(--color-primary-rgb), 0.08));
   color: var(--color-primary);
   font-weight: 800;
+  box-shadow: 0 0 0 1px rgba(var(--color-primary-rgb), 0.3);
+}
+
+.kcal-cell-today::after {
+  content: '';
+  position: absolute;
+  bottom: 6px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  opacity: 0;
 }
 
 .kcal-cell-selected {
-  background: var(--color-primary) !important;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary)) !important;
   color: #fff !important;
   font-weight: 800;
+  box-shadow: 0 4px 20px rgba(var(--color-primary-rgb), 0.4);
+  transform: scale(1.08);
 }
 
 .kcal-cell-has-event {
   font-weight: 700;
+  color: var(--color-text);
 }
 
 .kcal-dots {
   display: flex;
   gap: 3px;
   position: absolute;
-  bottom: 4px;
+  bottom: 5px;
 }
 
 .kcal-dot {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
   border-radius: 50%;
   display: inline-block;
+  box-shadow: 0 0 6px currentColor;
 }
 
 .kcal-legend {
@@ -1071,38 +1185,28 @@ textarea {
   justify-content: center;
   margin-top: var(--spacing-md);
   padding-top: var(--spacing-md);
-  border-top: 1px solid var(--color-border);
+  border-top: 1px solid rgba(255,255,255,0.06);
   flex-wrap: wrap;
 }
 
 .kcal-legend-item {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   font-size: var(--font-size-xs);
   color: var(--color-text-muted);
+  font-weight: 500;
 }
 
-.kcal-events {
-  margin-top: var(--spacing-lg);
-  overflow: hidden;
-}
-
-.kcal-events-title {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: var(--font-size-md);
-  font-weight: 700;
-  margin-bottom: var(--spacing-md);
-  color: var(--color-primary);
-}
 
 .kcal-events-empty {
   color: var(--color-text-muted);
   font-size: var(--font-size-sm);
   text-align: center;
-  padding: var(--spacing-md);
+  padding: var(--spacing-lg) var(--spacing-md);
+  background: rgba(255,255,255,0.02);
+  border-radius: var(--radius-md);
+  border: 1px dashed rgba(255,255,255,0.08);
 }
 
 .kcal-events-list {
@@ -1112,20 +1216,26 @@ textarea {
 }
 
 .kcal-event-card {
-  background: var(--color-bg-secondary);
-  border-radius: var(--radius-md);
-  padding: var(--spacing-md);
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-md) var(--spacing-lg);
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: all 0.25s ease;
 }
 
 .kcal-event-card:hover {
   background: rgba(var(--color-primary-rgb), 0.08);
+  border-color: rgba(var(--color-primary-rgb), 0.2);
+  transform: translateX(4px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
 .kcal-event-card h5 {
   font-weight: 700;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
+  font-size: var(--font-size-md);
+  color: var(--color-text);
 }
 
 .kcal-event-meta {
@@ -1137,46 +1247,54 @@ textarea {
 }
 
 .kcal-event-meta span {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 5px;
+  padding: 2px 10px;
+  background: rgba(255,255,255,0.04);
+  border-radius: var(--radius-full);
+  font-weight: 500;
 }
 
 /* ─── Komunitas: Merchandise ────────────────────────────── */
 .merch-filter {
   display: flex;
-  gap: var(--spacing-sm);
+  gap: 10px;
   flex-wrap: wrap;
   justify-content: center;
   margin-bottom: var(--spacing-xl);
 }
 
 .merch-filter-btn {
-  padding: 8px 20px;
+  padding: 10px 24px;
   border-radius: var(--radius-full);
-  border: 1px solid var(--color-border);
-  background: transparent;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.03);
   color: var(--color-text-secondary);
   font-size: var(--font-size-sm);
   font-weight: 500;
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: all 0.25s ease;
+  backdrop-filter: blur(8px);
 }
 
 .merch-filter-btn:hover {
   border-color: var(--color-primary);
   color: var(--color-primary);
+  background: rgba(var(--color-primary-rgb), 0.08);
 }
 
 .merch-filter-btn.active {
-  background: var(--color-primary);
-  border-color: var(--color-primary);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  border-color: transparent;
   color: #fff;
+  font-weight: 600;
+  box-shadow: 0 4px 16px rgba(var(--color-primary-rgb), 0.35);
 }
 
 .merch-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: var(--spacing-lg);
   margin-bottom: var(--spacing-2xl);
 }
@@ -1186,6 +1304,16 @@ textarea {
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  border-radius: var(--radius-xl);
+  transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  background: linear-gradient(145deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+.merch-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(var(--color-primary-rgb), 0.3);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.25), 0 0 0 1px rgba(var(--color-primary-rgb), 0.1);
 }
 
 .merch-card-img {
@@ -1193,18 +1321,34 @@ textarea {
   width: 100%;
   aspect-ratio: 4 / 3;
   overflow: hidden;
-  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
 }
 
 .merch-card-img img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.4s ease;
+  transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .merch-card:hover .merch-card-img img {
-  transform: scale(1.08);
+  transform: scale(1.1);
+}
+
+.merch-card-img::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  background: linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 100%);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+.merch-card:hover .merch-card-img::after {
+  opacity: 1;
 }
 
 .merch-card-img-placeholder {
@@ -1213,54 +1357,196 @@ textarea {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--color-bg-secondary);
+  background: linear-gradient(135deg, rgba(var(--color-primary-rgb), 0.08) 0%, rgba(255,255,255,0.02) 100%);
   color: var(--color-text-muted);
 }
 
 .merch-badge {
   position: absolute;
-  top: 10px;
-  right: 10px;
-  padding: 4px 12px;
+  top: 12px;
+  right: 12px;
+  padding: 5px 14px;
   border-radius: var(--radius-full);
   font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
+  z-index: 2;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 .merch-badge.available {
   background: rgba(16, 185, 129, 0.2);
   color: #10b981;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2);
 }
 
 .merch-badge.unavailable {
   background: rgba(239, 68, 68, 0.2);
   color: #ef4444;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.2);
 }
 
 .merch-card-body {
-  padding: var(--spacing-md);
+  padding: var(--spacing-md) var(--spacing-lg);
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
 }
 
 .merch-card-body h4 {
   font-weight: 700;
   font-size: var(--font-size-md);
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .merch-price {
   color: var(--color-primary);
   font-weight: 800;
-  font-size: var(--font-size-md);
+  font-size: var(--font-size-lg);
 }
 
 .merch-kategori {
   font-size: var(--font-size-xs);
   color: var(--color-text-muted);
   text-transform: capitalize;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 10px;
+  background: rgba(255,255,255,0.04);
+  border-radius: var(--radius-full);
+  width: fit-content;
+  font-weight: 500;
+}
+
+/* ─── WhatsApp CTA Banner (Komunitas Page) ──────────────── */
+.merch-wa-banner {
+  margin-top: var(--spacing-lg);
+  margin-bottom: var(--spacing-xl);
+}
+
+.merch-wa-banner-content {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-lg) var(--spacing-xl);
+  background: linear-gradient(135deg, rgba(37, 211, 102, 0.1) 0%, rgba(37, 211, 102, 0.03) 100%);
+  border: 1px solid rgba(37, 211, 102, 0.2);
+  border-radius: var(--radius-xl);
+  position: relative;
+  overflow: hidden;
+}
+
+.merch-wa-banner-content::before {
+  content: '';
+  position: absolute;
+  top: -40px;
+  right: -40px;
+  width: 120px;
+  height: 120px;
+  background: radial-gradient(circle, rgba(37, 211, 102, 0.1) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.merch-wa-icon {
+  flex-shrink: 0;
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-full);
+  background: linear-gradient(135deg, #25d366, #128c7e);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(37, 211, 102, 0.3);
+}
+
+.merch-wa-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.merch-wa-text h4 {
+  font-size: var(--font-size-md);
+  font-weight: 700;
+  margin-bottom: 4px;
+  color: var(--color-text);
+}
+
+.merch-wa-text p {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}
+
+.merch-wa-btn {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 28px;
+  background: linear-gradient(135deg, #25d366, #128c7e);
+  color: #fff;
+  font-weight: 700;
+  font-size: var(--font-size-sm);
+  border-radius: var(--radius-full);
+  text-decoration: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 16px rgba(37, 211, 102, 0.25);
+  white-space: nowrap;
+}
+
+.merch-wa-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(37, 211, 102, 0.4);
+  color: #fff;
+}
+
+/* ─── WhatsApp CTA (Detail Page) ────────────────────────── */
+.merch-wa-cta-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-full);
+  background: linear-gradient(135deg, #25d366, #128c7e);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  margin-bottom: var(--spacing-sm);
+  box-shadow: 0 4px 16px rgba(37, 211, 102, 0.3);
+}
+
+.merch-wa-detail-btn {
+  background: linear-gradient(135deg, #25d366, #128c7e) !important;
+  border-color: transparent !important;
+  box-shadow: 0 4px 16px rgba(37, 211, 102, 0.25);
+}
+
+.merch-wa-detail-btn:hover {
+  box-shadow: 0 6px 24px rgba(37, 211, 102, 0.5) !important;
+  transform: translateY(-2px);
+}
+
+.merch-wa-number {
+  display: inline-block;
+  margin-top: var(--spacing-sm);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  letter-spacing: 0.03em;
+}
+
+@media (max-width: 768px) {
+  .merch-wa-banner-content {
+    flex-direction: column;
+    text-align: center;
+    padding: var(--spacing-lg);
+    gap: var(--spacing-md);
+  }
 }
 
 /* ─── Merchandise Detail Page ───────────────────────────── */
@@ -1432,11 +1718,21 @@ textarea {
 }
 
 .merch-detail-cta {
-  padding: var(--spacing-lg);
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.08), rgba(167, 139, 250, 0.05));
-  border: 1px solid rgba(99, 102, 241, 0.2);
+  padding: var(--spacing-xl);
+  background: linear-gradient(135deg, rgba(37, 211, 102, 0.08), rgba(18, 140, 126, 0.04));
+  border: 1px solid rgba(37, 211, 102, 0.2);
   border-radius: var(--radius-lg);
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.merch-detail-cta h3 {
+  font-size: var(--font-size-lg);
+  font-weight: 800;
+  color: var(--color-text);
+  margin-bottom: var(--spacing-xs);
 }
 
 .merch-detail-cta p {
@@ -1444,6 +1740,7 @@ textarea {
   font-size: var(--font-size-sm);
   margin-bottom: var(--spacing-md);
   line-height: 1.6;
+  max-width: 380px;
 }
 
 .merch-contact-btn {
@@ -1544,6 +1841,7 @@ textarea {
 @media (max-width: 768px) {
   .kcal-cell {
     font-size: 12px;
+    aspect-ratio: 1;
   }
   .kcal-dots {
     bottom: 2px;
@@ -1552,9 +1850,36 @@ textarea {
     width: 4px;
     height: 4px;
   }
+  .kcal-day-label {
+    font-size: 10px;
+    letter-spacing: 0;
+  }
+  .kcal-event-meta {
+    gap: var(--spacing-xs);
+  }
+  .kcal-event-meta span {
+    padding: 2px 6px;
+    font-size: 10px;
+  }
+  .komunitas-calendar-wrapper {
+    padding: var(--spacing-md);
+  }
+  .kcal-split {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+  .kcal-right {
+    max-height: 300px;
+  }
   .merch-grid {
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     gap: var(--spacing-md);
+  }
+  .merch-card-body {
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+  .merch-price {
+    font-size: var(--font-size-md);
   }
 }
 

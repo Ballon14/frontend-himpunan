@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { exportTable, exportAll } from '../../api/admin';
-import { FiDownload, FiUsers, FiFileText, FiBriefcase, FiImage, FiMail, FiPackage, FiCheck } from 'react-icons/fi';
+import { FiDownload, FiUsers, FiFileText, FiBriefcase, FiImage, FiMail, FiPackage, FiCheck, FiCalendar, FiShoppingBag } from 'react-icons/fi';
 import toast from 'react-hot-toast';
 
 const EXPORT_TABLES = [
@@ -9,6 +9,8 @@ const EXPORT_TABLES = [
     { key: 'program_kerjas', label: 'Program Kerja', desc: 'Daftar program kerja organisasi', icon: FiBriefcase, color: '#f59e0b' },
     { key: 'galeris', label: 'Galeri', desc: 'Data foto dan dokumentasi kegiatan', icon: FiImage, color: '#ec4899' },
     { key: 'pesans', label: 'Pesan', desc: 'Pesan masuk dari pengunjung website', icon: FiMail, color: '#8b5cf6' },
+    { key: 'kegiatan', label: 'Kegiatan', desc: 'Data jadwal kegiatan dan acara organisasi', icon: FiCalendar, color: '#14b8a6' },
+    { key: 'merchandise', label: 'Merchandise', desc: 'Data produk merchandise organisasi', icon: FiShoppingBag, color: '#f97316' },
 ];
 
 function triggerDownload(blob, filename) {
