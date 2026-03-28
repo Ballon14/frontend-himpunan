@@ -16,18 +16,24 @@ const EXPORT_TABLES = [
 function triggerDownload(blob, filename) {
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
+    a.style.display = 'none';
     a.href = url;
     a.download = filename;
     document.body.appendChild(a);
     a.click();
-    a.remove();
-    window.URL.revokeObjectURL(url);
+    
+    // We delay the cleanup to prevent the browser download manager from losing 
+    // the object reference and falling back to saving the Blob's UUID.
+    setTimeout(() => {
+        a.remove();
+        window.URL.revokeObjectURL(url);
+    }, 1000);
 }
 
 export default function ExportDataPage() {
     const [loadingTable, setLoadingTable] = useState(null);
     const [loadingAll, setLoadingAll] = useState(false);
-    const [format, setFormat] = useState('xlsx');
+    const [format, setFormat] = useState('csv');
     const [doneTable, setDoneTable] = useState(null);
 
     const handleExportSingle = async (tableKey, label) => {
@@ -35,9 +41,13 @@ export default function ExportDataPage() {
         setDoneTable(null);
         try {
             const res = await exportTable(tableKey, format);
-            const ext = format === 'json' ? 'json' : 'xlsx';
+            const ext = format === 'json' ? 'json' : 'csv';
             const timestamp = new Date().toISOString().slice(0, 10);
-            triggerDownload(new Blob([res.data]), `${label}_${timestamp}.${ext}`);
+            
+            // Axios responseType: 'blob' makes res.data already a valid Blob with the correct MIME type.
+            // Wrapping it in new Blob([res.data]) without a type parameter strips the MIME type.
+            const fileBlob = res.data instanceof Blob ? res.data : new Blob([res.data]);
+            triggerDownload(fileBlob, `${label}_${timestamp}.${ext}`);
             setDoneTable(tableKey);
             toast.success(`${label} berhasil di-export!`);
             setTimeout(() => setDoneTable(null), 2000);
@@ -55,7 +65,8 @@ export default function ExportDataPage() {
         try {
             const res = await exportAll(format);
             const timestamp = new Date().toISOString().slice(0, 10);
-            triggerDownload(new Blob([res.data]), `Backup_HMTKBG_${timestamp}.zip`);
+            const fileBlob = res.data instanceof Blob ? res.data : new Blob([res.data]);
+            triggerDownload(fileBlob, `Backup_HMTKBG_${timestamp}.zip`);
             toast.success('Semua data berhasil di-export!');
         } catch (err) {
             console.error(err);
@@ -76,11 +87,11 @@ export default function ExportDataPage() {
                 <div className="export-header-actions">
                     <div className="export-format-selector">
                         <button
-                            className={`export-format-btn ${format === 'xlsx' ? 'active' : ''}`}
-                            onClick={() => setFormat('xlsx')}
+                            className={`export-format-btn ${format === 'csv' ? 'active' : ''}`}
+                            onClick={() => setFormat('csv')}
                         >
-                            <span className="export-format-dot" style={{ background: '#10b981' }} />
-                            Excel (.xlsx)
+                            <span className="export-format-dot" style={{ background: '#3b82f6' }} />
+                            CSV (.csv)
                         </button>
                         <button
                             className={`export-format-btn ${format === 'json' ? 'active' : ''}`}
@@ -101,7 +112,7 @@ export default function ExportDataPage() {
                     </div>
                     <div>
                         <h3>Export Semua Data</h3>
-                        <p>Download seluruh data dalam satu file ZIP berisi {format === 'xlsx' ? 'Excel' : 'JSON'} per tabel.</p>
+                        <p>Download seluruh data dalam satu file ZIP berisi {format === 'csv' ? 'CSV' : 'JSON'} per tabel.</p>
                     </div>
                 </div>
                 <button
@@ -143,7 +154,7 @@ export default function ExportDataPage() {
                             </div>
                             <div className="export-card-footer">
                                 <span className="export-card-format">
-                                    {format === 'xlsx' ? '📊 Excel' : '📄 JSON'}
+                                    {format === 'csv' ? '📊 CSV' : '📄 JSON'}
                                 </span>
                                 <button
                                     className={`export-card-btn ${isDone ? 'done' : ''}`}
