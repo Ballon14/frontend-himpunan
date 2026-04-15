@@ -13,14 +13,18 @@ export const getMerchandiseById = (id) => api.get(`/merchandise/${id}`);
 export const createMerchandise = (data) => {
     const formData = new FormData();
     Object.entries(data).forEach(([key, val]) => {
-        if (val !== null && val !== undefined && val !== '') formData.append(key, val);
+        if (key === 'foto' && (Array.isArray(val) || val instanceof FileList)) {
+            Array.from(val).forEach(file => formData.append('foto', file));
+        } else if (val !== null && val !== undefined && val !== '') formData.append(key, val);
     });
     return api.post('/merchandise', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
 };
 export const updateMerchandise = (id, data) => {
     const formData = new FormData();
     Object.entries(data).forEach(([key, val]) => {
-        if (val !== null && val !== undefined && val !== '') formData.append(key, val);
+        if (key === 'foto' && (Array.isArray(val) || val instanceof FileList)) {
+            Array.from(val).forEach(file => formData.append('foto', file));
+        } else if (val !== null && val !== undefined && val !== '') formData.append(key, val);
     });
     return api.put(`/merchandise/${id}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
 };

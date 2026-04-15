@@ -443,20 +443,56 @@
 }
 
 @keyframes adminRowIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.admin-table tbody tr:nth-child(1) { animation-delay: 0.05s; }
-.admin-table tbody tr:nth-child(2) { animation-delay: 0.1s; }
-.admin-table tbody tr:nth-child(3) { animation-delay: 0.15s; }
-.admin-table tbody tr:nth-child(4) { animation-delay: 0.2s; }
-.admin-table tbody tr:nth-child(5) { animation-delay: 0.25s; }
-.admin-table tbody tr:nth-child(6) { animation-delay: 0.3s; }
-.admin-table tbody tr:nth-child(7) { animation-delay: 0.35s; }
-.admin-table tbody tr:nth-child(8) { animation-delay: 0.4s; }
-.admin-table tbody tr:nth-child(9) { animation-delay: 0.45s; }
-.admin-table tbody tr:nth-child(10) { animation-delay: 0.5s; }
+.admin-table tbody tr:nth-child(1) {
+  animation-delay: 0.05s;
+}
+
+.admin-table tbody tr:nth-child(2) {
+  animation-delay: 0.1s;
+}
+
+.admin-table tbody tr:nth-child(3) {
+  animation-delay: 0.15s;
+}
+
+.admin-table tbody tr:nth-child(4) {
+  animation-delay: 0.2s;
+}
+
+.admin-table tbody tr:nth-child(5) {
+  animation-delay: 0.25s;
+}
+
+.admin-table tbody tr:nth-child(6) {
+  animation-delay: 0.3s;
+}
+
+.admin-table tbody tr:nth-child(7) {
+  animation-delay: 0.35s;
+}
+
+.admin-table tbody tr:nth-child(8) {
+  animation-delay: 0.4s;
+}
+
+.admin-table tbody tr:nth-child(9) {
+  animation-delay: 0.45s;
+}
+
+.admin-table tbody tr:nth-child(10) {
+  animation-delay: 0.5s;
+}
 
 .admin-table tbody tr:nth-child(even) {
   background: rgba(255, 255, 255, 0.015);
@@ -791,7 +827,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(145deg, rgba(255,255,255,0.03), transparent);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.03), transparent);
   opacity: 0;
   transition: opacity 0.3s;
 }
@@ -799,7 +835,7 @@
 .admin-stats-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 12px 24px -4px rgba(0, 0, 0, 0.3);
-  border-color: rgba(255,255,255,0.1);
+  border-color: rgba(255, 255, 255, 0.1);
 }
 
 .admin-stats-card:hover::after {
@@ -1809,7 +1845,9 @@
 }
 
 @keyframes exportSpin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* ─── Info Note ───────────────────────────────────────────────────────────── */
@@ -1897,27 +1935,27 @@
     width: 100%;
     justify-content: center;
   }
-  
+
   .admin-topbar {
     padding: 0 16px;
   }
-  
+
   .admin-page-title {
     font-size: 17px;
   }
-  
+
   .admin-content {
     padding: 16px;
   }
-  
+
   .admin-stats-grid {
     gap: 10px;
   }
-  
+
   .admin-stats-card {
     padding: 16px;
   }
-  
+
   .admin-stats-value {
     font-size: 24px;
   }

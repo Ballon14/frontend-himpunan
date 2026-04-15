@@ -304,8 +304,39 @@ export default function HomePage() {
                     </div>
                 </section>
 
-                {/* CTA */}
+                {/* Campus Tour */}
                 <section className="section">
+                    <div className="container">
+                        <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-50px' }} variants={fadeInUp}>
+                            <SectionTitle
+                                label="Video Profil"
+                                title="Campus Tour"
+                                description="Kenali lebih dekat fasilitas dan suasana lingkungan kampus Politeknik Pekerjaan Umum."
+                            />
+                        </motion.div>
+
+                        <motion.div 
+                            initial="hidden" 
+                            whileInView="visible" 
+                            viewport={{ once: true, margin: '-50px' }} 
+                            variants={fadeInUp}
+                            style={{ maxWidth: '900px', margin: '0 auto', borderRadius: 'var(--radius-xl)', overflow: 'hidden', boxShadow: '0 25px 50px rgba(0,0,0,0.25)', border: '1px solid var(--color-border)' }}
+                        >
+                            <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, backgroundColor: 'var(--color-bg-secondary)' }}>
+                                <iframe 
+                                    style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 0 }}
+                                    src="https://www.youtube.com/embed/lnCI-aSoXqw?rel=0" 
+                                    title="Campus Tour Politeknik PU" 
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                                    allowFullScreen
+                                ></iframe>
+                            </div>
+                        </motion.div>
+                    </div>
+                </section>
+
+                {/* CTA */}
+                <section className="section section-alt">
                     <div className="container" style={{ position: 'relative' }}>
                         <motion.div
                             className="cta-box"

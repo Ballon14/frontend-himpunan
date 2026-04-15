@@ -102,8 +102,8 @@ export default function MerchandiseManagePage() {
                             ) : data.map((item) => (
                                 <tr key={item.id}>
                                     <td data-label="Foto">
-                                        {item.foto ? (
-                                            <img src={item.foto} alt={item.nama} className="admin-table-img" />
+                                        {item.foto && item.foto.length > 0 ? (
+                                            <img src={item.foto[0]} alt={item.nama} className="admin-table-img" />
                                         ) : (
                                             <div className="admin-table-img-placeholder">{item.nama.charAt(0)}</div>
                                         )}
@@ -167,9 +167,22 @@ export default function MerchandiseManagePage() {
                         </div>
                     </div>
                     <div className="admin-form-group">
-                        <label>Foto</label>
-                        <input type="file" accept="image/*" onChange={(e) => setForm({ ...form, foto: e.target.files[0] })} />
-                        {editing?.foto && <img src={editing.foto} alt="" className="admin-preview-img" style={{ marginTop: 8, maxHeight: 120, borderRadius: 8 }} />}
+                        <label>Foto (Pilih > 1)</label>
+                        <input type="file" multiple accept="image/*" onChange={(e) => setForm({ ...form, foto: e.target.files })} />
+                        
+                        {form.foto ? (
+                            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginTop: '12px' }}>
+                                {Array.from(form.foto).map((f, i) => (
+                                    <img key={i} src={URL.createObjectURL(f)} alt="" className="admin-preview-img" style={{ maxHeight: 80, borderRadius: 8, border: '1px solid var(--color-border)' }} />
+                                ))}
+                            </div>
+                        ) : editing?.foto && editing.foto.length > 0 ? (
+                            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginTop: '12px' }}>
+                                {editing.foto.map((url, i) => (
+                                    <img key={i} src={url} alt="" className="admin-preview-img" style={{ maxHeight: 80, borderRadius: 8, border: '1px solid var(--color-border)' }} />
+                                ))}
+                            </div>
+                        ) : null}
                     </div>
                     <div className="admin-form-actions">
                         <button type="button" className="admin-btn admin-btn-secondary" onClick={() => setModalOpen(false)}>Batal</button>

@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Instagram, Mail, MapPin } from 'lucide-react';
+import { Instagram, Mail, MapPin, Youtube } from 'lucide-react';
 
 export default function Footer() {
     const year = new Date().getFullYear();
@@ -31,6 +31,7 @@ export default function Footer() {
                         <h4>Lainnya</h4>
                         <Link to="/program-kerja">Program Kerja</Link>
                         <Link to="/galeri">Galeri</Link>
+                        <Link to="/komunitas">Komunitas</Link>
                         <Link to="/kontak">Kontak</Link>
                     </div>
 
@@ -60,9 +61,9 @@ export default function Footer() {
                         <a href="mailto:hima.kbg@gmail.com" aria-label="Email">
                             <Mail size={20} />
                         </a>
-                        {/* <a href="http://www.youtube.com/@hmtkbgpoliteknikpu6903" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+                        <a href="http://www.youtube.com/@hmtkbgpoliteknikpu6903" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
                             <Youtube size={20} />
-                        </a> */}
+                        </a>
                     </div>
                 </div>
             </div>
