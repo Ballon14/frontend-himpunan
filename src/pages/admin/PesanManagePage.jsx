@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { getPesanAdmin, markPesanRead, deletePesan } from '../../api/admin';
 import toast from 'react-hot-toast';
-import { FiSearch, FiChevronLeft, FiChevronRight, FiTrash2, FiCheck, FiMail, FiEye } from 'react-icons/fi';
+import { Search, ChevronLeft, ChevronRight, Trash2, Check, Mail, Eye } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 export default function PesanManagePage() {
@@ -59,7 +59,7 @@ export default function PesanManagePage() {
         <div className="admin-page">
             <div className="admin-page-header">
                 <div className="admin-search-bar">
-                    <FiSearch className="admin-search-icon" />
+                    <Search size={16} className="admin-search-icon" />
                     <input
                         type="text"
                         placeholder="Cari pesan..."
@@ -69,7 +69,7 @@ export default function PesanManagePage() {
                 </div>
                 {unreadCount > 0 && (
                     <div className="admin-unread-badge">
-                        <FiMail /> {unreadCount} belum dibaca
+                        <Mail size={16} /> {unreadCount} belum dibaca
                     </div>
                 )}
             </div>
@@ -113,7 +113,7 @@ export default function PesanManagePage() {
                                         onClick={() => setSelectedPesan(null)}
                                         style={{ marginBottom: '12px', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
                                     >
-                                        <FiChevronLeft /> Batal / Kembali
+                                        <ChevronLeft size={16} /> Batal / Kembali
                                     </button>
                                     <h3>{selectedPesan.nama}</h3>
                                     <span className="admin-pesan-detail-email">{selectedPesan.email || 'Tanpa email'}</span>
@@ -124,11 +124,11 @@ export default function PesanManagePage() {
                                 <div className="admin-pesan-detail-actions">
                                     {!selectedPesan.is_read && (
                                         <button className="admin-btn admin-btn-sm" onClick={() => handleMarkRead(selectedPesan.id)}>
-                                            <FiCheck /> Tandai Dibaca
+                                            <Check size={16} /> Tandai Dibaca
                                         </button>
                                     )}
                                     <button className="admin-btn admin-btn-sm admin-btn-danger" onClick={() => handleDelete(selectedPesan.id)}>
-                                        <FiTrash2 /> Hapus
+                                        <Trash2 size={16} /> Hapus
                                     </button>
                                 </div>
                             </div>
@@ -138,7 +138,7 @@ export default function PesanManagePage() {
                         </>
                     ) : (
                         <div className="admin-pesan-empty">
-                            <FiEye size={48} />
+                            <Eye size={48} />
                             <p>Pilih pesan untuk melihat detail</p>
                         </div>
                     )}
@@ -147,9 +147,9 @@ export default function PesanManagePage() {
 
             {meta.last_page > 1 && (
                 <div className="admin-pagination">
-                    <button disabled={page <= 1} onClick={() => setPage(page - 1)}><FiChevronLeft /></button>
+                    <button disabled={page <= 1} onClick={() => setPage(page - 1)}><ChevronLeft size={16} /></button>
                     <span>Halaman {meta.current_page} dari {meta.last_page}</span>
-                    <button disabled={page >= meta.last_page} onClick={() => setPage(page + 1)}><FiChevronRight /></button>
+                    <button disabled={page >= meta.last_page} onClick={() => setPage(page + 1)}><ChevronRight size={16} /></button>
                 </div>
             )}
         </div>

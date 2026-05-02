@@ -2,21 +2,21 @@ import { useState } from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import {
-    FiGrid, FiUsers, FiFileText, FiBriefcase,
-    FiImage, FiMail, FiDownload, FiLogOut, FiMenu, FiX, FiChevronLeft,
-    FiCalendar, FiShoppingBag
-} from 'react-icons/fi';
+    LayoutGrid, Users, FileText, Briefcase,
+    Image, Mail, Download, LogOut, Menu, X, ChevronLeft,
+    Calendar, ShoppingBag
+} from 'lucide-react';
 
 const navItems = [
-    { to: '/admin/dashboard', icon: FiGrid, label: 'Dashboard' },
-    { to: '/admin/anggota', icon: FiUsers, label: 'Anggota' },
-    { to: '/admin/berita', icon: FiFileText, label: 'Berita' },
-    { to: '/admin/program-kerja', icon: FiBriefcase, label: 'Program Kerja' },
-    { to: '/admin/galeri', icon: FiImage, label: 'Galeri' },
-    { to: '/admin/kegiatan', icon: FiCalendar, label: 'Kegiatan' },
-    { to: '/admin/merchandise', icon: FiShoppingBag, label: 'Merchandise' },
-    { to: '/admin/pesan', icon: FiMail, label: 'Pesan' },
-    { to: '/admin/export', icon: FiDownload, label: 'Export Data' },
+    { to: '/admin/dashboard', icon: LayoutGrid, label: 'Dashboard' },
+    { to: '/admin/anggota', icon: Users, label: 'Anggota' },
+    { to: '/admin/berita', icon: FileText, label: 'Berita' },
+    { to: '/admin/program-kerja', icon: Briefcase, label: 'Program Kerja' },
+    { to: '/admin/galeri', icon: Image, label: 'Galeri' },
+    { to: '/admin/kegiatan', icon: Calendar, label: 'Kegiatan' },
+    { to: '/admin/merchandise', icon: ShoppingBag, label: 'Merchandise' },
+    { to: '/admin/pesan', icon: Mail, label: 'Pesan' },
+    { to: '/admin/export', icon: Download, label: 'Export Data' },
 ];
 
 export default function AdminLayout({ children }) {
@@ -48,7 +48,7 @@ export default function AdminLayout({ children }) {
                         <span className="admin-logo-text">HMTKBG</span>
                     </div>
                     <button className="admin-sidebar-close" onClick={() => setSidebarOpen(false)}>
-                        <FiX />
+                        <X size={20} />
                     </button>
                 </div>
 
@@ -60,7 +60,7 @@ export default function AdminLayout({ children }) {
                             className={({ isActive }) => `admin-nav-item ${isActive ? 'active' : ''}`}
                             onClick={() => setSidebarOpen(false)}
                         >
-                            <item.icon className="admin-nav-icon" />
+                            <item.icon className="admin-nav-icon" size={18} />
                             <span>{item.label}</span>
                         </NavLink>
                     ))}
@@ -75,7 +75,7 @@ export default function AdminLayout({ children }) {
                         </div>
                     </div>
                     <button className="admin-logout-btn" onClick={handleLogout}>
-                        <FiLogOut />
+                        <LogOut size={18} />
                         <span>Logout</span>
                     </button>
                 </div>
@@ -86,13 +86,13 @@ export default function AdminLayout({ children }) {
                 <header className="admin-topbar">
                     <div className="admin-topbar-left">
                         <button className="admin-menu-btn" onClick={() => setSidebarOpen(true)}>
-                            <FiMenu />
+                            <Menu size={20} />
                         </button>
                         <h1 className="admin-page-title">{getPageTitle()}</h1>
                     </div>
                     <div className="admin-topbar-right">
                         <NavLink to="/" className="admin-back-link">
-                            <FiChevronLeft />
+                            <ChevronLeft size={18} />
                             <span>Ke Website</span>
                         </NavLink>
                     </div>

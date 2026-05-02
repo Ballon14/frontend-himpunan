@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate, Navigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
-import { FiMail, FiLock, FiLogIn } from 'react-icons/fi';
+import { Mail, Lock, LogIn } from 'lucide-react';
 
 export default function LoginPage() {
     const [email, setEmail] = useState('');
@@ -41,7 +41,7 @@ export default function LoginPage() {
                 <form onSubmit={handleSubmit} className="admin-login-form">
                     <div className="admin-form-group">
                         <label>
-                            <FiMail className="admin-input-icon" />
+                            <Mail size={16} className="admin-input-icon" />
                             <input
                                 type="email"
                                 placeholder="Email"
@@ -55,7 +55,7 @@ export default function LoginPage() {
 
                     <div className="admin-form-group">
                         <label>
-                            <FiLock className="admin-input-icon" />
+                            <Lock size={16} className="admin-input-icon" />
                             <input
                                 type="password"
                                 placeholder="Password"
@@ -71,7 +71,7 @@ export default function LoginPage() {
                             <span className="admin-btn-loading">Memproses...</span>
                         ) : (
                             <>
-                                <FiLogIn /> Masuk
+                                <LogIn size={16} /> Masuk
                             </>
                         )}
                     </button>

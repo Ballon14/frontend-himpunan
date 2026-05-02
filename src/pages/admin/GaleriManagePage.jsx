@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { getGaleriAdmin, createGaleri, updateGaleri, deleteGaleri } from '../../api/admin';
 import Modal from '../../components/admin/Modal';
 import toast from 'react-hot-toast';
-import { FiPlus, FiEdit2, FiTrash2, FiSearch, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
+import { Plus, Pencil, Trash2, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 const emptyForm = { judul: '', kategori: '', tanggal: '', foto: null };
@@ -97,7 +97,7 @@ export default function GaleriManagePage() {
         <div className="admin-page">
             <div className="admin-page-header">
                 <div className="admin-search-bar">
-                    <FiSearch className="admin-search-icon" />
+                    <Search size={16} className="admin-search-icon" />
                     <input
                         type="text"
                         placeholder="Cari galeri..."
@@ -106,7 +106,7 @@ export default function GaleriManagePage() {
                     />
                 </div>
                 <button className="admin-btn admin-btn-primary" onClick={openCreate}>
-                    <FiPlus /> Tambah Galeri
+                    <Plus size={16} /> Tambah Galeri
                 </button>
             </div>
 
@@ -125,8 +125,8 @@ export default function GaleriManagePage() {
                                     <div className="admin-galeri-placeholder">No Image</div>
                                 )}
                                 <div className="admin-galeri-overlay">
-                                    <button className="admin-action-btn edit" onClick={() => openEdit(item)}><FiEdit2 /></button>
-                                    <button className="admin-action-btn delete" onClick={() => handleDelete(item.id)}><FiTrash2 /></button>
+                                    <button className="admin-action-btn edit" onClick={() => openEdit(item)}><Pencil size={16} /></button>
+                                    <button className="admin-action-btn delete" onClick={() => handleDelete(item.id)}><Trash2 size={16} /></button>
                                 </div>
                             </div>
                             <div className="admin-galeri-info">
@@ -141,9 +141,9 @@ export default function GaleriManagePage() {
 
             {meta.last_page > 1 && (
                 <div className="admin-pagination">
-                    <button disabled={page <= 1} onClick={() => setPage(page - 1)}><FiChevronLeft /></button>
+                    <button disabled={page <= 1} onClick={() => setPage(page - 1)}><ChevronLeft size={16} /></button>
                     <span>Halaman {meta.current_page} dari {meta.last_page}</span>
-                    <button disabled={page >= meta.last_page} onClick={() => setPage(page + 1)}><FiChevronRight /></button>
+                    <button disabled={page >= meta.last_page} onClick={() => setPage(page + 1)}><ChevronRight size={16} /></button>
                 </div>
             )}
 

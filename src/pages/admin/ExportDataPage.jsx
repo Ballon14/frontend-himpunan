@@ -1,16 +1,16 @@
 import { useState } from 'react';
 import { exportTable, exportAll } from '../../api/admin';
-import { FiDownload, FiUsers, FiFileText, FiBriefcase, FiImage, FiMail, FiPackage, FiCheck, FiCalendar, FiShoppingBag } from 'react-icons/fi';
+import { Download, Users, FileText, Briefcase, Image, Mail, Package, Check, Calendar, ShoppingBag } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 const EXPORT_TABLES = [
-    { key: 'anggotas', label: 'Anggota', desc: 'Data seluruh anggota organisasi', icon: FiUsers, color: '#6366f1' },
-    { key: 'beritas', label: 'Berita', desc: 'Artikel dan berita yang dipublikasikan', icon: FiFileText, color: '#10b981' },
-    { key: 'program_kerjas', label: 'Program Kerja', desc: 'Daftar program kerja organisasi', icon: FiBriefcase, color: '#f59e0b' },
-    { key: 'galeris', label: 'Galeri', desc: 'Data foto dan dokumentasi kegiatan', icon: FiImage, color: '#ec4899' },
-    { key: 'pesans', label: 'Pesan', desc: 'Pesan masuk dari pengunjung website', icon: FiMail, color: '#8b5cf6' },
-    { key: 'kegiatan', label: 'Kegiatan', desc: 'Data jadwal kegiatan dan acara organisasi', icon: FiCalendar, color: '#14b8a6' },
-    { key: 'merchandise', label: 'Merchandise', desc: 'Data produk merchandise organisasi', icon: FiShoppingBag, color: '#f97316' },
+    { key: 'anggotas', label: 'Anggota', desc: 'Data seluruh anggota organisasi', icon: Users, color: '#6366f1' },
+    { key: 'beritas', label: 'Berita', desc: 'Artikel dan berita yang dipublikasikan', icon: FileText, color: '#10b981' },
+    { key: 'program_kerjas', label: 'Program Kerja', desc: 'Daftar program kerja organisasi', icon: Briefcase, color: '#f59e0b' },
+    { key: 'galeris', label: 'Galeri', desc: 'Data foto dan dokumentasi kegiatan', icon: Image, color: '#ec4899' },
+    { key: 'pesans', label: 'Pesan', desc: 'Pesan masuk dari pengunjung website', icon: Mail, color: '#8b5cf6' },
+    { key: 'kegiatan', label: 'Kegiatan', desc: 'Data jadwal kegiatan dan acara organisasi', icon: Calendar, color: '#14b8a6' },
+    { key: 'merchandise', label: 'Merchandise', desc: 'Data produk merchandise organisasi', icon: ShoppingBag, color: '#f97316' },
 ];
 
 function triggerDownload(blob, filename) {
@@ -108,7 +108,7 @@ export default function ExportDataPage() {
             <div className="export-all-card">
                 <div className="export-all-info">
                     <div className="export-all-icon">
-                        <FiPackage />
+                        <Package size={16} />
                     </div>
                     <div>
                         <h3>Export Semua Data</h3>
@@ -127,7 +127,7 @@ export default function ExportDataPage() {
                         </>
                     ) : (
                         <>
-                            <FiDownload />
+                            <Download size={16} />
                             Download ZIP
                         </>
                     )}
@@ -164,9 +164,9 @@ export default function ExportDataPage() {
                                     {isLoading ? (
                                         <span className="export-spinner" />
                                     ) : isDone ? (
-                                        <FiCheck />
+                                        <Check size={16} />
                                     ) : (
-                                        <FiDownload />
+                                        <Download size={16} />
                                     )}
                                     {isLoading ? 'Proses...' : isDone ? 'Selesai' : 'Download'}
                                 </button>

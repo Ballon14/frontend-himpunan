@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { getDashboardStats, getDashboardCharts } from '../../api/admin';
 import StatsCard from '../../components/admin/StatsCard';
-import { FiUsers, FiFileText, FiBriefcase, FiImage, FiMail, FiInbox, FiTrendingUp } from 'react-icons/fi';
+import { Users, FileText, Briefcase, Image, Mail, Inbox, TrendingUp } from 'lucide-react';
 import {
     AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
     PieChart, Pie, Cell, Legend,
@@ -51,19 +51,19 @@ export default function DashboardPage() {
         <div className="admin-dashboard">
             {/* Stats Cards */}
             <div className="admin-stats-grid">
-                <StatsCard icon={FiUsers} label="Total Anggota" value={stats?.anggota || 0} color="#6366f1" />
-                <StatsCard icon={FiFileText} label="Total Berita" value={stats?.berita || 0} color="#10b981" />
-                <StatsCard icon={FiBriefcase} label="Program Kerja" value={stats?.program_kerja || 0} color="#f59e0b" />
-                <StatsCard icon={FiImage} label="Total Galeri" value={stats?.galeri || 0} color="#ec4899" />
-                <StatsCard icon={FiMail} label="Pesan Belum Dibaca" value={stats?.pesan_unread || 0} color="#ef4444" />
-                <StatsCard icon={FiInbox} label="Total Pesan" value={stats?.pesan_total || 0} color="#8b5cf6" />
+                <StatsCard icon={Users} label="Total Anggota" value={stats?.anggota || 0} color="#6366f1" />
+                <StatsCard icon={FileText} label="Total Berita" value={stats?.berita || 0} color="#10b981" />
+                <StatsCard icon={Briefcase} label="Program Kerja" value={stats?.program_kerja || 0} color="#f59e0b" />
+                <StatsCard icon={Image} label="Total Galeri" value={stats?.galeri || 0} color="#ec4899" />
+                <StatsCard icon={Mail} label="Pesan Belum Dibaca" value={stats?.pesan_unread || 0} color="#ef4444" />
+                <StatsCard icon={Inbox} label="Total Pesan" value={stats?.pesan_total || 0} color="#8b5cf6" />
             </div>
 
             {/* Charts Row 1: Area + Pie */}
             <div className="admin-charts-row">
                 <div className="admin-chart-card admin-chart-wide">
                     <div className="admin-chart-header">
-                        <h3><FiTrendingUp /> Tren Konten Bulanan</h3>
+                        <h3><TrendingUp size={16} /> Tren Konten Bulanan</h3>
                         <span className="admin-chart-year">{new Date().getFullYear()}</span>
                     </div>
                     <div className="admin-chart-body">

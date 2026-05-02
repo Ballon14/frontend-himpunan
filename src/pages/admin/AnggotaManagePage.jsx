@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { getAnggotaAdmin, createAnggota, updateAnggota, deleteAnggota } from '../../api/admin';
 import Modal from '../../components/admin/Modal';
 import toast from 'react-hot-toast';
-import { FiPlus, FiEdit2, FiTrash2, FiSearch, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
+import { Plus, Pencil, Trash2, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 const emptyForm = { nama: '', nim: '', angkatan: '', jabatan: '', email: '', instagram: '', linkedin: '', motto: '', status_aktif: true, foto: null };
@@ -99,7 +99,7 @@ export default function AnggotaManagePage() {
         <div className="admin-page">
             <div className="admin-page-header">
                 <div className="admin-search-bar">
-                    <FiSearch className="admin-search-icon" />
+                    <Search size={16} className="admin-search-icon" />
                     <input
                         type="text"
                         placeholder="Cari anggota..."
@@ -108,7 +108,7 @@ export default function AnggotaManagePage() {
                     />
                 </div>
                 <button className="admin-btn admin-btn-primary" onClick={openCreate}>
-                    <FiPlus /> Tambah Anggota
+                    <Plus size={16} /> Tambah Anggota
                 </button>
             </div>
 
@@ -152,10 +152,10 @@ export default function AnggotaManagePage() {
                                     <td data-label="Aksi">
                                         <div className="admin-actions">
                                             <button className="admin-action-btn edit" onClick={() => openEdit(item)} title="Edit">
-                                                <FiEdit2 />
+                                                <Pencil size={16} />
                                             </button>
                                             <button className="admin-action-btn delete" onClick={() => handleDelete(item.id)} title="Hapus">
-                                                <FiTrash2 />
+                                                <Trash2 size={16} />
                                             </button>
                                         </div>
                                     </td>
@@ -168,9 +168,9 @@ export default function AnggotaManagePage() {
 
             {meta.last_page > 1 && (
                 <div className="admin-pagination">
-                    <button disabled={page <= 1} onClick={() => setPage(page - 1)}><FiChevronLeft /></button>
+                    <button disabled={page <= 1} onClick={() => setPage(page - 1)}><ChevronLeft size={16} /></button>
                     <span>Halaman {meta.current_page} dari {meta.last_page}</span>
-                    <button disabled={page >= meta.last_page} onClick={() => setPage(page + 1)}><FiChevronRight /></button>
+                    <button disabled={page >= meta.last_page} onClick={() => setPage(page + 1)}><ChevronRight size={16} /></button>
                 </div>
             )}
 

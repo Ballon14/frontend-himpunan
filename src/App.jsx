@@ -5,28 +5,29 @@ import ReactGA from 'react-ga4';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './context/AuthContext';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import ErrorBoundary from './components/ErrorBoundary';
 
 const queryClient = new QueryClient();
 
-// Public components
+// Public components (always loaded — used on every page)
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import ScrollProgress from './components/ScrollProgress';
 import LoadingSpinner from './components/LoadingSpinner';
 
-// Public pages
-import HomePage from './pages/HomePage';
-import AboutPage from './pages/AboutPage';
-import AnggotaPage from './pages/AnggotaPage';
-import BeritaPage from './pages/BeritaPage';
-import BeritaDetailPage from './pages/BeritaDetailPage';
-import ProgramKerjaPage from './pages/ProgramKerjaPage';
-import ProgramKerjaDetailPage from './pages/ProgramKerjaDetailPage';
-import GaleriPage from './pages/GaleriPage';
-import ContactPage from './pages/ContactPage';
-import KomunitasPage from './pages/KomunitasPage';
-import MerchandiseDetailPage from './pages/MerchandiseDetailPage';
-import NotFoundPage from './pages/NotFoundPage';
+// Public pages (Lazy Loaded — only loaded when visited)
+const HomePage = lazy(() => import('./pages/HomePage'));
+const AboutPage = lazy(() => import('./pages/AboutPage'));
+const AnggotaPage = lazy(() => import('./pages/AnggotaPage'));
+const BeritaPage = lazy(() => import('./pages/BeritaPage'));
+const BeritaDetailPage = lazy(() => import('./pages/BeritaDetailPage'));
+const ProgramKerjaPage = lazy(() => import('./pages/ProgramKerjaPage'));
+const ProgramKerjaDetailPage = lazy(() => import('./pages/ProgramKerjaDetailPage'));
+const GaleriPage = lazy(() => import('./pages/GaleriPage'));
+const ContactPage = lazy(() => import('./pages/ContactPage'));
+const KomunitasPage = lazy(() => import('./pages/KomunitasPage'));
+const MerchandiseDetailPage = lazy(() => import('./pages/MerchandiseDetailPage'));
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 
 // Admin components (Lazy Loaded)
 const AdminLayout = lazy(() => import('./components/admin/AdminLayout'));
@@ -70,20 +71,22 @@ function AnimatedRoutes() {
 
   return (
     <AnimatePresence mode="wait">
-      <Routes location={location} key={location.pathname}>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/tentang" element={<AboutPage />} />
-        <Route path="/anggota" element={<AnggotaPage />} />
-        <Route path="/berita" element={<BeritaPage />} />
-        <Route path="/berita/:slug" element={<BeritaDetailPage />} />
-        <Route path="/program-kerja" element={<ProgramKerjaPage />} />
-        <Route path="/program-kerja/:id" element={<ProgramKerjaDetailPage />} />
-        <Route path="/galeri" element={<GaleriPage />} />
-        <Route path="/kontak" element={<ContactPage />} />
-        <Route path="/komunitas" element={<KomunitasPage />} />
-        <Route path="/komunitas/merchandise/:id" element={<MerchandiseDetailPage />} />
-        <Route path="*" element={<NotFoundPage />} />
-      </Routes>
+      <Suspense fallback={<LoadingSpinner />}>
+        <Routes location={location} key={location.pathname}>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/tentang" element={<AboutPage />} />
+          <Route path="/anggota" element={<AnggotaPage />} />
+          <Route path="/berita" element={<BeritaPage />} />
+          <Route path="/berita/:slug" element={<BeritaDetailPage />} />
+          <Route path="/program-kerja" element={<ProgramKerjaPage />} />
+          <Route path="/program-kerja/:id" element={<ProgramKerjaDetailPage />} />
+          <Route path="/galeri" element={<GaleriPage />} />
+          <Route path="/kontak" element={<ContactPage />} />
+          <Route path="/komunitas" element={<KomunitasPage />} />
+          <Route path="/komunitas/merchandise/:id" element={<MerchandiseDetailPage />} />
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      </Suspense>
     </AnimatePresence>
   );
 }
@@ -141,26 +144,28 @@ export default function App() {
   }, []);
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <BrowserRouter>
-          <ScrollToTopAndTrack />
-          <Toaster
-            position="top-right"
-            toastOptions={{
-              style: {
-                background: '#1a1d27',
-                color: '#e4e6ed',
-                border: '1px solid #2a2e3a',
-              },
-            }}
-          />
-          <Routes>
-            <Route path="/admin/*" element={<AdminRoutes />} />
-            <Route path="*" element={<PublicLayout />} />
-          </Routes>
-        </BrowserRouter>
-      </AuthProvider>
-    </QueryClientProvider>
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <BrowserRouter>
+            <ScrollToTopAndTrack />
+            <Toaster
+              position="top-right"
+              toastOptions={{
+                style: {
+                  background: '#1a1d27',
+                  color: '#e4e6ed',
+                  border: '1px solid #2a2e3a',
+                },
+              }}
+            />
+            <Routes>
+              <Route path="/admin/*" element={<AdminRoutes />} />
+              <Route path="*" element={<PublicLayout />} />
+            </Routes>
+          </BrowserRouter>
+        </AuthProvider>
+      </QueryClientProvider>
+    </ErrorBoundary>
   );
 }

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { getBeritaAdmin, createBerita, updateBerita, deleteBerita } from '../../api/admin';
 import Modal from '../../components/admin/Modal';
 import toast from 'react-hot-toast';
-import { FiPlus, FiEdit2, FiTrash2, FiSearch, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
+import { Plus, Pencil, Trash2, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -97,7 +97,7 @@ export default function BeritaManagePage() {
         <div className="admin-page">
             <div className="admin-page-header">
                 <div className="admin-search-bar">
-                    <FiSearch className="admin-search-icon" />
+                    <Search size={16} className="admin-search-icon" />
                     <input
                         type="text"
                         placeholder="Cari berita..."
@@ -106,7 +106,7 @@ export default function BeritaManagePage() {
                     />
                 </div>
                 <button className="admin-btn admin-btn-primary" onClick={openCreate}>
-                    <FiPlus /> Tambah Berita
+                    <Plus size={16} /> Tambah Berita
                 </button>
             </div>
 
@@ -145,8 +145,8 @@ export default function BeritaManagePage() {
                                     <td data-label="Tanggal">{item.created_at ? new Date(item.created_at).toLocaleDateString('id-ID') : '-'}</td>
                                     <td data-label="Aksi">
                                         <div className="admin-actions">
-                                            <button className="admin-action-btn edit" onClick={() => openEdit(item)}><FiEdit2 /></button>
-                                            <button className="admin-action-btn delete" onClick={() => handleDelete(item.id)}><FiTrash2 /></button>
+                                            <button className="admin-action-btn edit" onClick={() => openEdit(item)}><Pencil size={16} /></button>
+                                            <button className="admin-action-btn delete" onClick={() => handleDelete(item.id)}><Trash2 size={16} /></button>
                                         </div>
                                     </td>
                                 </tr>
@@ -158,9 +158,9 @@ export default function BeritaManagePage() {
 
             {meta.last_page > 1 && (
                 <div className="admin-pagination">
-                    <button disabled={page <= 1} onClick={() => setPage(page - 1)}><FiChevronLeft /></button>
+                    <button disabled={page <= 1} onClick={() => setPage(page - 1)}><ChevronLeft size={16} /></button>
                     <span>Halaman {meta.current_page} dari {meta.last_page}</span>
-                    <button disabled={page >= meta.last_page} onClick={() => setPage(page + 1)}><FiChevronRight /></button>
+                    <button disabled={page >= meta.last_page} onClick={() => setPage(page + 1)}><ChevronRight size={16} /></button>
                 </div>
             )}
 

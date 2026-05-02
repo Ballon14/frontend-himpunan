@@ -1,4 +1,4 @@
-import { FiX } from 'react-icons/fi';
+import { X } from 'lucide-react';
 
 export default function Modal({ isOpen, onClose, title, children, size = 'md' }) {
     if (!isOpen) return null;
@@ -12,7 +12,7 @@ export default function Modal({ isOpen, onClose, title, children, size = 'md' })
                 <div className="admin-modal-header">
                     <h2 className="admin-modal-title">{title}</h2>
                     <button className="admin-modal-close" onClick={onClose}>
-                        <FiX />
+                        <X size={20} />
                     </button>
                 </div>
                 <div className="admin-modal-body">
