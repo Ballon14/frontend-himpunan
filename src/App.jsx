@@ -47,8 +47,8 @@ const AdminMerchandisePage = lazy(() => import('./pages/admin/MerchandiseManageP
 // Styles
 import './styles/admin.css';
 
-// Replace 'G-XXXXXXXXXX' with real Measurement ID when ready
-const MEASUREMENT_ID = 'G-XXXXXXXXXX';
+// Google Analytics — set VITE_GA_MEASUREMENT_ID in .env to enable tracking
+const GA_MEASUREMENT_ID = import.meta.env.VITE_GA_MEASUREMENT_ID;
 
 function ScrollToTopAndTrack() {
   const location = useLocation();
@@ -56,8 +56,10 @@ function ScrollToTopAndTrack() {
   useEffect(() => {
     window.scrollTo(0, 0);
 
-    // Track pageview on route change
-    ReactGA.send({ hitType: "pageview", page: location.pathname + location.search });
+    // Track pageview on route change (only if GA is initialized)
+    if (GA_MEASUREMENT_ID) {
+      ReactGA.send({ hitType: "pageview", page: location.pathname + location.search });
+    }
   }, [location]);
 
   return null;
@@ -132,8 +134,10 @@ function AdminRoutes() {
 
 export default function App() {
   useEffect(() => {
-    // Initialize GA once on app load
-    ReactGA.initialize(MEASUREMENT_ID);
+    // Initialize GA once on app load (skip if no real measurement ID)
+    if (GA_MEASUREMENT_ID) {
+      ReactGA.initialize(GA_MEASUREMENT_ID);
+    }
   }, []);
 
   return (
