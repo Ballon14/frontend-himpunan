@@ -1,6 +1,7 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, User, Instagram, Linkedin, Mail, X } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
 import SectionTitle from '../components/SectionTitle';
 import LoadingSpinner from '../components/LoadingSpinner';
 import PageTransition from '../components/PageTransition';
@@ -8,35 +9,25 @@ import SEO from '../components/SEO';
 import { getAnggota } from '../api/anggota';
 
 export default function AnggotaPage() {
-    const [anggota, setAnggota] = useState([]);
-    const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
     const [angkatan, setAngkatan] = useState('');
     const [page, setPage] = useState(1);
-    const [meta, setMeta] = useState(null);
     const [selectedMember, setSelectedMember] = useState(null);
 
-    const fetchData = useCallback(async () => {
-        setLoading(true);
-        try {
-            const params = { page, per_page: 12 };
+    const { data, isLoading: loading } = useQuery({
+        queryKey: ['anggota', { page, search, angkatan }],
+        queryFn: async () => {
+            const params = { page, per_page: 12, status_aktif: 1 };
             if (search) params.search = search;
             if (angkatan) params.angkatan = angkatan;
-            params.status_aktif = 1;
-
             const res = await getAnggota(params);
-            setAnggota(res.data?.data?.data || []);
-            setMeta(res.data?.data?.meta || null);
-        } catch {
-            setAnggota([]);
-        } finally {
-            setLoading(false);
-        }
-    }, [page, search, angkatan]);
+            return res.data?.data || { data: [], meta: null };
+        },
+        staleTime: 5 * 60 * 1000,
+    });
 
-    useEffect(() => {
-        fetchData();
-    }, [fetchData]);
+    const anggota = data?.data || [];
+    const meta = data?.meta || null;
 
     const handleSearch = (e) => {
         setSearch(e.target.value);
@@ -48,7 +39,7 @@ export default function AnggotaPage() {
             <SEO title="Anggota" />
             <div className="page">
                 <div className="container">
-                    <div data-aos="fade-down">
+                    <div>
                         <SectionTitle
                             label="Anggota"
                             title="Daftar Anggota"
@@ -56,7 +47,7 @@ export default function AnggotaPage() {
                         />
                     </div>
 
-                    <div className="filter-bar" data-aos="fade-up" data-aos-delay="100">
+                    <div className="filter-bar">
                         <div style={{ position: 'relative', flex: 1, minWidth: 250 }}>
                             <Search size={18} style={{
                                 position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)',
@@ -91,8 +82,7 @@ export default function AnggotaPage() {
                                 <motion.div
                                     key={item.id}
                                     className="member-card glass-card"
-                                    data-aos="zoom-in"
-                                    data-aos-delay={(i % 12) * 50}
+
                                     whileHover={{ y: -8, boxShadow: '0 15px 30px rgba(0,0,0,0.1)' }}
                                     transition={{ type: 'spring', stiffness: 300, damping: 20 }}
                                     onClick={() => setSelectedMember(item)}
@@ -120,7 +110,7 @@ export default function AnggotaPage() {
                             ))}
                         </div>
                     ) : (
-                        <div className="empty-state" data-aos="fade-in">
+                        <div className="empty-state">
                             <div className="empty-icon"><User size={48} /></div>
                             <p>Tidak ada anggota ditemukan.</p>
                         </div>
@@ -128,7 +118,7 @@ export default function AnggotaPage() {
 
                     {/* Pagination */}
                     {meta && meta.last_page > 1 && (
-                        <div className="pagination" data-aos="fade-up">
+                        <div className="pagination">
                             <button
                                 onClick={() => setPage(p => Math.max(1, p - 1))}
                                 disabled={page <= 1}

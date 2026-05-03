@@ -3,8 +3,7 @@ import { getProgramKerjaAdmin, createProgramKerja, updateProgramKerja, deletePro
 import Modal from '../../components/admin/Modal';
 import toast from 'react-hot-toast';
 import { Plus, Pencil, Trash2, Search, ChevronLeft, ChevronRight } from 'lucide-react';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
+import TiptapEditor from '../../components/admin/TiptapEditor';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 const statusOptions = [
@@ -185,7 +184,7 @@ export default function ProgramKerjaManagePage() {
                     </div>
                     <div className="admin-form-group">
                         <label>Deskripsi *</label>
-                        <ReactQuill theme="snow" value={form.deskripsi} onChange={(content) => setForm({ ...form, deskripsi: content })} style={{ height: '200px', marginBottom: '40px' }} />
+                        <TiptapEditor value={form.deskripsi} onChange={(content) => setForm({ ...form, deskripsi: content })} />
                     </div>
                     <div className="admin-form-grid">
                         <div className="admin-form-group">

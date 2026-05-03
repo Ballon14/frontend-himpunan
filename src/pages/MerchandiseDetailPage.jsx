@@ -3,24 +3,49 @@ import { useParams, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, ShoppingBag, Tag, CheckCircle, XCircle, Share2, MessageCircle, Phone, ZoomIn, ChevronLeft, ChevronRight, X, Package, Calendar, Eye, Sparkles } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { useQuery } from '@tanstack/react-query';
 import LoadingSpinner from '../components/LoadingSpinner';
 import PageTransition from '../components/PageTransition';
 import SEO from '../components/SEO';
 import { getMerchandiseById, getMerchandise } from '../api/komunitas';
-
-function formatRupiah(num) {
-    return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(num);
-}
-
-
+import { formatRupiah } from '../utils/format';
 
 export default function MerchandiseDetailPage() {
     const { id } = useParams();
-    const [item, setItem] = useState(null);
-    const [related, setRelated] = useState([]);
-    const [recommendations, setRecommendations] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+
+    const { data: item, isLoading: itemLoading, isError } = useQuery({
+        queryKey: ['merchandiseDetail', id],
+        queryFn: async () => {
+            const res = await getMerchandiseById(id);
+            return res.data?.data || null;
+        },
+        staleTime: 5 * 60 * 1000,
+    });
+
+    const { data: relatedData } = useQuery({
+        queryKey: ['merchandiseRelated', item?.kategori],
+        queryFn: async () => {
+            const res = await getMerchandise({ kategori: item.kategori, per_page: 5 });
+            return (res.data?.data?.data || []).filter(r => r.id !== id).slice(0, 4);
+        },
+        enabled: !!item?.kategori,
+        staleTime: 5 * 60 * 1000,
+    });
+
+    const { data: recommendationsData } = useQuery({
+        queryKey: ['merchandiseRecommendations', id],
+        queryFn: async () => {
+            const res = await getMerchandise({ per_page: 12 });
+            const allItems = res.data?.data?.data || [];
+            return allItems.filter(r => r.id !== id).slice(0, 8);
+        },
+        staleTime: 5 * 60 * 1000,
+    });
+
+    const loading = itemLoading;
+    const error = isError ? 'Merchandise tidak ditemukan.' : null;
+    const related = relatedData || [];
+    const recommendations = recommendationsData || [];
 
     // Gallery state
     const [activeIndex, setActiveIndex] = useState(0);
@@ -31,36 +56,6 @@ export default function MerchandiseDetailPage() {
     const mainImageRef = useRef(null);
 
     useEffect(() => {
-        const fetchDetail = async () => {
-            setLoading(true);
-            setError(null);
-            try {
-                const res = await getMerchandiseById(id);
-                const data = res.data?.data || null;
-                setItem(data);
-
-                if (data?.kategori) {
-                    try {
-                        const relRes = await getMerchandise({ kategori: data.kategori, per_page: 5 });
-                        const relItems = (relRes.data?.data?.data || []).filter(r => r.id !== data.id).slice(0, 4);
-                        setRelated(relItems);
-                    } catch { setRelated([]); }
-                }
-
-                // Fetch recommendations from all categories
-                try {
-                    const recRes = await getMerchandise({ per_page: 12 });
-                    const allItems = recRes.data?.data?.data || [];
-                    const recItems = allItems.filter(r => r.id !== data?.id).slice(0, 8);
-                    setRecommendations(recItems);
-                } catch { setRecommendations([]); }
-            } catch {
-                setError('Merchandise tidak ditemukan.');
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchDetail();
         setActiveIndex(0);
         setImgError(false);
         window.scrollTo(0, 0);
@@ -128,7 +123,7 @@ export default function MerchandiseDetailPage() {
                 <div className="container">
 
                     {/* Breadcrumb Navigation */}
-                    <nav className="merch-breadcrumb" data-aos="fade-down">
+                    <nav className="merch-breadcrumb">
                         <Link to="/" className="merch-breadcrumb-link">Beranda</Link>
                         <span className="merch-breadcrumb-sep">/</span>
                         <Link to="/komunitas" className="merch-breadcrumb-link">Komunitas</Link>
@@ -137,7 +132,7 @@ export default function MerchandiseDetailPage() {
                     </nav>
 
                     {/* Main Product Layout */}
-                    <div className="merch-detail-layout" data-aos="fade-up">
+                    <div className="merch-detail-layout">
 
                         {/* === Gallery Section === */}
                         <div className="merch-gallery-section">
@@ -324,11 +319,11 @@ export default function MerchandiseDetailPage() {
 
                     {/* Related Items (Same Category) */}
                     {related.length > 0 && (
-                        <div className="merch-related" data-aos="fade-up">
+                        <div className="merch-related">
                             <h2 className="merch-related-title">Merchandise Lainnya</h2>
                             <div className="merch-related-grid">
                                 {related.map((rel, i) => (
-                                    <Link key={rel.id} to={`/komunitas/merchandise/${rel.id}`} className="merch-related-card" data-aos="zoom-in" data-aos-delay={i * 80}>
+                                    <Link key={rel.id} to={`/komunitas/merchandise/${rel.id}`} className="merch-related-card">
                                         <div className="merch-related-img">
                                             {rel.foto ? (
                                                 <img src={rel.foto} alt={rel.nama} loading="lazy" />
@@ -348,7 +343,7 @@ export default function MerchandiseDetailPage() {
 
                     {/* Recommendations Section */}
                     {recommendations.length > 0 && (
-                        <div className="merch-recommendations" data-aos="fade-up">
+                        <div className="merch-recommendations">
                             <div className="merch-rec-header">
                                 <div className="merch-rec-header-left">
                                     <Sparkles size={20} className="merch-rec-icon" />
@@ -364,8 +359,7 @@ export default function MerchandiseDetailPage() {
                                         key={rec.id}
                                         to={`/komunitas/merchandise/${rec.id}`}
                                         className="merch-rec-card"
-                                        data-aos="fade-up"
-                                        data-aos-delay={i * 60}
+
                                     >
                                         <div className="merch-rec-card-img">
                                             {rec.foto ? (

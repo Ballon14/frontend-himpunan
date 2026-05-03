@@ -1,12 +1,14 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Search, Clipboard, Calendar } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
 import SectionTitle from '../components/SectionTitle';
 import LoadingSpinner from '../components/LoadingSpinner';
 import PageTransition from '../components/PageTransition';
 import SEO from '../components/SEO';
 import { getProgramKerja } from '../api/programKerja';
+import { formatDate } from '../utils/format';
 
 const STATUS_MAP = {
     perencanaan: { class: 'badge-gray', label: 'Perencanaan' },
@@ -16,48 +18,31 @@ const STATUS_MAP = {
 };
 
 export default function ProgramKerjaPage() {
-    const [proker, setProker] = useState([]);
-    const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
     const [status, setStatus] = useState('');
     const [page, setPage] = useState(1);
-    const [meta, setMeta] = useState(null);
 
-    useEffect(() => {
-        // Init logic
-    }, []);
-
-    const fetchData = useCallback(async () => {
-        setLoading(true);
-        try {
+    const { data, isLoading: loading } = useQuery({
+        queryKey: ['programKerja', { page, search, status }],
+        queryFn: async () => {
             const params = { page, per_page: 9 };
             if (search) params.search = search;
             if (status) params.status = status;
             const res = await getProgramKerja(params);
-            setProker(res.data?.data?.data || []);
-            setMeta(res.data?.data?.meta || null);
-        } catch {
-            setProker([]);
-        } finally {
-            setLoading(false);
-        }
-    }, [page, search, status]);
+            return res.data?.data || { data: [], meta: null };
+        },
+        staleTime: 5 * 60 * 1000,
+    });
 
-    useEffect(() => { fetchData(); }, [fetchData]);
-
-    const formatDate = (dateStr) => {
-        if (!dateStr) return '-';
-        return new Date(dateStr).toLocaleDateString('id-ID', {
-            day: 'numeric', month: 'short', year: 'numeric',
-        });
-    };
+    const proker = data?.data || [];
+    const meta = data?.meta || null;
 
     return (
         <PageTransition>
             <SEO title="Program Kerja" description="Program dan kegiatan yang diselenggarakan oleh himpunan." />
             <div className="page">
                 <div className="container">
-                    <div data-aos="fade-down">
+                    <div>
                         <SectionTitle
                             label="Program Kerja"
                             title="Daftar Program Kerja"
@@ -65,7 +50,7 @@ export default function ProgramKerjaPage() {
                         />
                     </div>
 
-                    <div className="filter-bar" data-aos="fade-up" data-aos-delay="100">
+                    <div className="filter-bar">
                         <div style={{ position: 'relative', flex: 1, minWidth: 250 }}>
                             <Search size={18} style={{
                                 position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)',
@@ -106,8 +91,7 @@ export default function ProgramKerjaPage() {
                                         key={item.id}
                                         className="content-card glass-card"
                                         style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}
-                                        data-aos="fade-up"
-                                        data-aos-delay={(i % 9) * 100}
+
                                         whileHover={{ y: -8, boxShadow: '0 20px 40px rgba(0,0,0,0.15)' }}
                                         transition={{ type: 'spring', stiffness: 300, damping: 20 }}
                                     >
@@ -141,14 +125,14 @@ export default function ProgramKerjaPage() {
                             })}
                         </div>
                     ) : (
-                        <div className="empty-state" data-aos="fade-in">
+                        <div className="empty-state">
                             <div className="empty-icon"><Clipboard size={48} /></div>
                             <p>{search || status ? 'Tidak ada program kerja yang cocok.' : 'Belum ada program kerja.'}</p>
                         </div>
                     )}
 
                     {meta && meta.last_page > 1 && (
-                        <div className="pagination" data-aos="fade-up">
+                        <div className="pagination">
                             <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page <= 1}>← Prev</button>
                             {Array.from({ length: meta.last_page }, (_, i) => i + 1).map(p => (
                                 <button key={p} className={page === p ? 'active' : ''} onClick={() => setPage(p)}>{p}</button>

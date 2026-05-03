@@ -167,7 +167,7 @@ export default function MerchandiseManagePage() {
                         </div>
                     </div>
                     <div className="admin-form-group">
-                        <label>Foto (Pilih > 1)</label>
+                        <label>Foto (Pilih &gt; 1)</label>
                         <input type="file" multiple accept="image/*" onChange={(e) => setForm({ ...form, foto: e.target.files })} />
                         
                         {form.foto ? (

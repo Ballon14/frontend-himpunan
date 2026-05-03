@@ -339,22 +339,21 @@ export default function HomePage() {
                 <section className="section section-alt">
                     <div className="container" style={{ position: 'relative' }}>
                         <motion.div
-                            className="cta-box"
-                            style={{ textAlign: 'center', maxWidth: 800, margin: '0 auto' }}
+                            className="cta-box cta-box-center"
                             initial={{ opacity: 0, scale: 0.9 }}
                             whileInView={{ opacity: 1, scale: 1, transition: { duration: 0.8, ease: 'easeOut' } }}
                             viewport={{ once: true, margin: '-50px' }}
                         >
                             <div className="cta-box-bg" />
-                            <div style={{ position: 'relative', zIndex: 1 }}>
-                                <h2 style={{ fontSize: 'clamp(1.75rem, 4vw, 2.75rem)', fontWeight: 900, marginBottom: '1rem', letterSpacing: '-0.03em' }}>
+                            <div className="cta-content-wrapper">
+                                <h2 className="cta-title">
                                     Mari Berkembang <span className="text-gradient">Bersama Kami!</span>
                                 </h2>
-                                <p className="cta-desc-text" style={{ color: 'var(--color-text-secondary)', marginBottom: '2.5rem', fontSize: 'var(--font-size-lg)', maxWidth: 600, margin: '0 auto 2.5rem', lineHeight: 1.8 }}>
+                                <p className="cta-desc-text cta-desc">
                                     Himpunan Mahasiswa memberikan wadah bagi kamu untuk melatih kepemimpinan, mengasah keterampilan, dan membangun relasi di ranah akademik maupun profesional.
                                 </p>
-                                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} style={{ display: 'inline-block', width: '100%', maxWidth: '300px' }}>
-                                    <Link to="/kontak" className="btn btn-primary cta-btn" style={{ padding: '1rem 2.5rem', fontSize: 'var(--font-size-md)', borderRadius: 'var(--radius-full)', display: 'inline-flex', width: '100%', justifyContent: 'center' }}>
+                                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="cta-btn-wrapper">
+                                    <Link to="/kontak" className="btn btn-primary cta-btn cta-btn-large">
                                         Hubungi Kami Sekarang <ArrowRight size={20} style={{ marginLeft: '0.75rem' }} />
                                     </Link>
                                 </motion.div>

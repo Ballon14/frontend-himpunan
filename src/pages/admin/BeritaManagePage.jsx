@@ -3,8 +3,7 @@ import { getBeritaAdmin, createBerita, updateBerita, deleteBerita } from '../../
 import Modal from '../../components/admin/Modal';
 import toast from 'react-hot-toast';
 import { Plus, Pencil, Trash2, Search, ChevronLeft, ChevronRight } from 'lucide-react';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
+import TiptapEditor from '../../components/admin/TiptapEditor';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 const emptyForm = { judul: '', isi: '', status: 'draft', published_at: '', thumbnail: null };
@@ -172,7 +171,7 @@ export default function BeritaManagePage() {
                     </div>
                     <div className="admin-form-group">
                         <label>Isi *</label>
-                        <ReactQuill theme="snow" value={form.isi} onChange={(content) => setForm({ ...form, isi: content })} style={{ height: '200px', marginBottom: '40px' }} />
+                        <TiptapEditor value={form.isi} onChange={(content) => setForm({ ...form, isi: content })} />
                     </div>
                     <div className="admin-form-grid">
                         <div className="admin-form-group">

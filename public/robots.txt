@@ -1,0 +1,14 @@
+# HMTKBG — Himpunan Mahasiswa Teknologi Konstruksi Bangunan Gedung
+# https://himpunan.site
+
+User-agent: *
+Allow: /
+
+# Admin panel should not be indexed
+Disallow: /admin/
+Disallow: /admin/*
+
+# Static assets
+Disallow: /assets/
+
+Sitemap: https://himpunan.site/sitemap.xml

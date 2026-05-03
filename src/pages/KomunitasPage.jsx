@@ -1,12 +1,14 @@
-import { useEffect, useState, useCallback, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Calendar, ChevronLeft, ChevronRight, MapPin, Clock, Tag, ShoppingBag, X, MessageCircle, Phone } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
 import SectionTitle from '../components/SectionTitle';
 import LoadingSpinner from '../components/LoadingSpinner';
 import PageTransition from '../components/PageTransition';
 import SEO from '../components/SEO';
 import { getKegiatan, getMerchandise } from '../api/komunitas';
+import { formatRupiah } from '../utils/format';
 
 const HARI = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
 const BULAN = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
@@ -26,48 +28,35 @@ const KATEGORI_COLORS = {
     lainnya: '#8b5cf6',
 };
 
-function formatRupiah(num) {
-    return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(num);
-}
-
 export default function KomunitasPage() {
     const now = new Date();
     const [currentMonth, setCurrentMonth] = useState(now.getMonth());
     const [currentYear, setCurrentYear] = useState(now.getFullYear());
-    const [events, setEvents] = useState([]);
-    const [loadingEvents, setLoadingEvents] = useState(true);
     const [selectedDate, setSelectedDate] = useState(null);
     const [selectedEvent, setSelectedEvent] = useState(null);
-
-    const [merch, setMerch] = useState([]);
-    const [loadingMerch, setLoadingMerch] = useState(true);
     const [merchKategori, setMerchKategori] = useState('');
 
-    // ─── Fetch events for current month ────────────────────────
-    const fetchEvents = useCallback(async () => {
-        setLoadingEvents(true);
-        try {
+    const { data: eventsData, isLoading: loadingEvents } = useQuery({
+        queryKey: ['kegiatan', { month: currentMonth + 1, year: currentYear }],
+        queryFn: async () => {
             const res = await getKegiatan({ bulan: currentMonth + 1, tahun: currentYear, per_page: 100 });
-            setEvents(res.data?.data?.data || []);
-        } catch { setEvents([]); }
-        finally { setLoadingEvents(false); }
-    }, [currentMonth, currentYear]);
+            return res.data?.data?.data || [];
+        },
+        staleTime: 5 * 60 * 1000,
+    });
+    const events = eventsData || [];
 
-    useEffect(() => { fetchEvents(); }, [fetchEvents]);
-
-    // ─── Fetch merchandise ─────────────────────────────────────
-    const fetchMerch = useCallback(async () => {
-        setLoadingMerch(true);
-        try {
+    const { data: merchData, isLoading: loadingMerch } = useQuery({
+        queryKey: ['merchandise', { kategori: merchKategori }],
+        queryFn: async () => {
             const params = { per_page: 50 };
             if (merchKategori) params.kategori = merchKategori;
             const res = await getMerchandise(params);
-            setMerch(res.data?.data?.data || []);
-        } catch { setMerch([]); }
-        finally { setLoadingMerch(false); }
-    }, [merchKategori]);
-
-    useEffect(() => { fetchMerch(); }, [fetchMerch]);
+            return res.data?.data?.data || [];
+        },
+        staleTime: 5 * 60 * 1000,
+    });
+    const merch = merchData || [];
 
     // ─── Calendar logic ────────────────────────────────────────
     const calendarDays = useMemo(() => {
@@ -125,7 +114,7 @@ export default function KomunitasPage() {
                 <div className="container">
 
                     {/* ─── Section 1: Kalender Kegiatan ─────────────── */}
-                    <div data-aos="fade-down">
+                    <div>
                         <SectionTitle
                             label="Komunitas"
                             title="Kalender Kegiatan"
@@ -133,7 +122,7 @@ export default function KomunitasPage() {
                         />
                     </div>
 
-                    <div className="komunitas-calendar-wrapper" data-aos="fade-up">
+                    <div className="komunitas-calendar-wrapper">
                         <div className="kcal-split">
                             {/* LEFT — Calendar */}
                             <div className="kcal-left">
@@ -228,7 +217,7 @@ export default function KomunitasPage() {
                     </div>
 
                     {/* ─── Section 2: Merchandise Showcase ──────────── */}
-                    <div style={{ marginTop: 'var(--spacing-3xl)' }} data-aos="fade-down">
+                    <div style={{ marginTop: 'var(--spacing-3xl)' }}>
                         <SectionTitle
                             label="Merchandise"
                             title="Showcase Merchandise"
@@ -236,7 +225,7 @@ export default function KomunitasPage() {
                         />
                     </div>
 
-                    <div className="merch-filter" data-aos="fade-up">
+                    <div className="merch-filter">
                         {MERCH_KATEGORI.map(k => (
                             <button
                                 key={k.value}
@@ -251,14 +240,13 @@ export default function KomunitasPage() {
                     {loadingMerch ? (
                         <LoadingSpinner />
                     ) : merch.length > 0 ? (
-                        <div className="merch-grid" data-aos="fade-up">
+                        <div className="merch-grid">
                             {merch.map((item, i) => (
                                 <Link
                                     key={item.id}
                                     to={`/komunitas/merchandise/${item.id}`}
                                     className="merch-card glass-card"
-                                    data-aos="zoom-in"
-                                    data-aos-delay={(i % 8) * 60}
+
                                     style={{ textDecoration: 'none', color: 'inherit' }}
                                 >
                                     <div className="merch-card-img">
@@ -280,14 +268,14 @@ export default function KomunitasPage() {
                             ))}
                         </div>
                     ) : (
-                        <div className="empty-state" data-aos="fade-in">
+                        <div className="empty-state">
                             <div className="empty-icon"><ShoppingBag size={48} /></div>
                             <p>Belum ada merchandise tersedia.</p>
                         </div>
                     )}
 
                     {/* WhatsApp CTA Banner */}
-                    <div className="merch-wa-banner" data-aos="fade-up">
+                    <div className="merch-wa-banner">
                         <div className="merch-wa-banner-content">
                             <div className="merch-wa-icon">
                                 <MessageCircle size={32} />

@@ -1,58 +1,39 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Search, FileText, ArrowRight } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
 import SectionTitle from '../components/SectionTitle';
 import LoadingSpinner from '../components/LoadingSpinner';
 import PageTransition from '../components/PageTransition';
 import SEO from '../components/SEO';
 import { getBerita } from '../api/berita';
+import { formatDate, stripHtml } from '../utils/format';
 
 export default function BeritaPage() {
-    const [berita, setBerita] = useState([]);
-    const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
     const [page, setPage] = useState(1);
-    const [meta, setMeta] = useState(null);
 
-    // Use the SEO component below instead of document.title
-    useEffect(() => { }, []);
-
-    const fetchData = useCallback(async () => {
-        setLoading(true);
-        try {
+    const { data, isLoading: loading } = useQuery({
+        queryKey: ['berita', { page, search }],
+        queryFn: async () => {
             const params = { page, per_page: 9 };
             if (search) params.search = search;
             const res = await getBerita(params);
-            setBerita(res.data?.data?.data || []);
-            setMeta(res.data?.data?.meta || null);
-        } catch {
-            setBerita([]);
-        } finally {
-            setLoading(false);
-        }
-    }, [page, search]);
+            return res.data?.data || { data: [], meta: null };
+        },
+        staleTime: 5 * 60 * 1000, // 5 minutes
+    });
 
-    useEffect(() => { fetchData(); }, [fetchData]);
-
-    const formatDate = (dateStr) => {
-        if (!dateStr) return '-';
-        return new Date(dateStr).toLocaleDateString('id-ID', {
-            day: 'numeric', month: 'long', year: 'numeric',
-        });
-    };
-
-    const stripHtml = (html) => {
-        if (!html) return '';
-        return html.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim();
-    };
+    const berita = data?.data || [];
+    const meta = data?.meta || null;
 
     return (
         <PageTransition>
             <SEO title="Berita" description="Informasi terkini seputar kegiatan dan aktivitas himpunan." />
             <div className="page">
                 <div className="container">
-                    <div data-aos="fade-down">
+                    <div>
                         <SectionTitle
                             label="Berita"
                             title="Semua Berita"
@@ -60,7 +41,7 @@ export default function BeritaPage() {
                         />
                     </div>
 
-                    <div className="filter-bar" data-aos="fade-up" data-aos-delay="100">
+                    <div className="filter-bar">
                         <div style={{ position: 'relative', flex: 1, minWidth: 250 }}>
                             <Search size={18} style={{
                                 position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)',
@@ -85,8 +66,7 @@ export default function BeritaPage() {
                                 <motion.div
                                     key={item.id}
                                     className="content-card glass-card"
-                                    data-aos="fade-up"
-                                    data-aos-delay={(i % 9) * 100}
+
                                     whileHover={{ y: -8, boxShadow: '0 20px 40px rgba(0,0,0,0.15)' }}
                                     transition={{ type: 'spring', stiffness: 300, damping: 20 }}
                                 >
@@ -120,14 +100,14 @@ export default function BeritaPage() {
                             ))}
                         </div>
                     ) : (
-                        <div className="empty-state" data-aos="fade-in">
+                        <div className="empty-state">
                             <div className="empty-icon"><FileText size={48} /></div>
                             <p>{search ? 'Tidak ada berita yang cocok.' : 'Belum ada berita.'}</p>
                         </div>
                     )}
 
                     {meta && meta.last_page > 1 && (
-                        <div className="pagination" data-aos="fade-up">
+                        <div className="pagination">
                             <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page <= 1}>← Prev</button>
                             {Array.from({ length: meta.last_page }, (_, i) => i + 1).map(p => (
                                 <button key={p} className={page === p ? 'active' : ''} onClick={() => setPage(p)}>{p}</button>

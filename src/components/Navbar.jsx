@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const links = [
     { to: '/', label: 'Beranda' },
@@ -13,9 +14,25 @@ const links = [
     { to: '/kontak', label: 'Kontak' },
 ];
 
+const mobileNavVariants = {
+    hidden: { opacity: 0, y: -20 },
+    visible: {
+        opacity: 1,
+        y: 0,
+        transition: { duration: 0.25, ease: 'easeOut', staggerChildren: 0.04, delayChildren: 0.05 },
+    },
+    exit: { opacity: 0, y: -20, transition: { duration: 0.2, ease: 'easeIn' } },
+};
+
+const mobileLinkVariants = {
+    hidden: { opacity: 0, x: -16 },
+    visible: { opacity: 1, x: 0 },
+};
+
 export default function Navbar() {
     const [scrolled, setScrolled] = useState(false);
     const [mobileOpen, setMobileOpen] = useState(false);
+    const location = useLocation();
 
     useEffect(() => {
         const onScroll = () => setScrolled(window.scrollY > 20);
@@ -26,7 +43,7 @@ export default function Navbar() {
     // Close mobile nav on route change
     useEffect(() => {
         setMobileOpen(false);
-    }, []);
+    }, [location.pathname]);
 
     return (
         <>
@@ -62,20 +79,31 @@ export default function Navbar() {
                 </div>
             </nav>
 
-            {/* Mobile Navigation */}
-            <div className={`mobile-nav ${mobileOpen ? 'open' : ''}`}>
-                {links.map((link) => (
-                    <NavLink
-                        key={link.to}
-                        to={link.to}
-                        className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
-                        onClick={() => setMobileOpen(false)}
-                        end={link.to === '/'}
+            {/* Mobile Navigation — Animated */}
+            <AnimatePresence>
+                {mobileOpen && (
+                    <motion.div
+                        className="mobile-nav open"
+                        variants={mobileNavVariants}
+                        initial="hidden"
+                        animate="visible"
+                        exit="exit"
                     >
-                        {link.label}
-                    </NavLink>
-                ))}
-            </div>
+                        {links.map((link) => (
+                            <motion.div key={link.to} variants={mobileLinkVariants}>
+                                <NavLink
+                                    to={link.to}
+                                    className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+                                    onClick={() => setMobileOpen(false)}
+                                    end={link.to === '/'}
+                                >
+                                    {link.label}
+                                </NavLink>
+                            </motion.div>
+                        ))}
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </>
     );
 }

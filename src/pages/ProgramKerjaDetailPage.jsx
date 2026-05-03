@@ -1,12 +1,14 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Calendar, Clipboard, Share2 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { useQuery } from '@tanstack/react-query';
 import LoadingSpinner from '../components/LoadingSpinner';
 import PageTransition from '../components/PageTransition';
 import SEO from '../components/SEO';
 import { getProgramKerjaById } from '../api/programKerja';
+import { formatDate } from '../utils/format';
 
 const STATUS_MAP = {
     perencanaan: { class: 'badge-gray', label: 'Perencanaan' },
@@ -17,34 +19,21 @@ const STATUS_MAP = {
 
 export default function ProgramKerjaDetailPage() {
     const { id } = useParams();
-    const [proker, setProker] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+
+    const { data: proker, isLoading: loading, isError } = useQuery({
+        queryKey: ['programKerjaDetail', id],
+        queryFn: async () => {
+            const res = await getProgramKerjaById(id);
+            return res.data?.data || null;
+        },
+        staleTime: 5 * 60 * 1000,
+    });
+
+    const error = isError ? 'Program kerja tidak ditemukan.' : null;
 
     useEffect(() => {
-        const fetchDetail = async () => {
-            setLoading(true);
-            try {
-                const res = await getProgramKerjaById(id);
-                setProker(res.data?.data || null);
-            } catch {
-                setError('Program kerja tidak ditemukan.');
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchDetail();
-
-        // Ensure scroll to top when page changes (id dependency)
         window.scrollTo(0, 0);
     }, [id]);
-
-    const formatDate = (dateStr) => {
-        if (!dateStr) return '-';
-        return new Date(dateStr).toLocaleDateString('id-ID', {
-            day: 'numeric', month: 'long', year: 'numeric',
-        });
-    };
 
     const handleShare = async () => {
         const url = window.location.href;
@@ -83,7 +72,7 @@ export default function ProgramKerjaDetailPage() {
             {proker && <SEO title={proker.nama_program} description={proker.deskripsi?.substring(0, 150) + '...'} image={proker.foto} type="article" />}
             <div className="detail-page">
                 <div className="container" style={{ maxWidth: 800 }}>
-                    <div className="detail-header" data-aos="fade-down" style={{ textAlign: 'center', marginBottom: 'var(--spacing-3xl)' }}>
+                    <div className="detail-header" style={{ textAlign: 'center', marginBottom: 'var(--spacing-3xl)' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 'var(--spacing-lg)', alignItems: 'center' }}>
                             <Link to="/program-kerja" className="back-link btn-outline" style={{ display: 'inline-flex', padding: '0.5rem 1rem', fontSize: 'var(--font-size-sm)', gap: '0.5rem', alignItems: 'center', textDecoration: 'none', marginBottom: 0 }}>
                                 <ArrowLeft size={18} /> Kembali
@@ -104,19 +93,18 @@ export default function ProgramKerjaDetailPage() {
                     </div>
 
                     {proker.foto ? (
-                        <div className="detail-thumbnail" data-aos="zoom-in" data-aos-delay="100" style={{ borderRadius: 'var(--radius-lg)', overflow: 'hidden', boxShadow: '0 20px 40px rgba(0,0,0,0.1)', marginBottom: 'var(--spacing-2xl)', maxHeight: '500px' }}>
+                        <div className="detail-thumbnail" style={{ borderRadius: 'var(--radius-lg)', overflow: 'hidden', boxShadow: '0 20px 40px rgba(0,0,0,0.1)', marginBottom: 'var(--spacing-2xl)', maxHeight: '500px' }}>
                             <img src={proker.foto} alt={proker.nama_program} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                         </div>
                     ) : (
-                        <div data-aos="zoom-in" data-aos-delay="100" style={{ height: 300, backgroundColor: 'var(--color-bg-alt)', borderRadius: 'var(--radius-lg)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-text-muted)', fontSize: '3rem', marginBottom: 'var(--spacing-2xl)' }}>
+                        <div style={{ height: 300, backgroundColor: 'var(--color-bg-alt)', borderRadius: 'var(--radius-lg)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-text-muted)', fontSize: '3rem', marginBottom: 'var(--spacing-2xl)' }}>
                             <Clipboard size={64} />
                         </div>
                     )}
 
                     <div
                         className="detail-content glass-card"
-                        data-aos="fade-up"
-                        data-aos-delay="200"
+
                         style={{ padding: 'var(--spacing-2xl)', lineHeight: 1.8, fontSize: 'var(--font-size-md)' }}
                     >
                         <h3 style={{ marginBottom: 'var(--spacing-md)' }}>Deskripsi Program</h3>
