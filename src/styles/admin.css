@@ -3,18 +3,19 @@
    ═══════════════════════════════════════════════════════════════════════════════ */
 
 :root {
-  --admin-bg: #0f1117;
-  --admin-surface: #1a1d27;
-  --admin-surface-hover: #242836;
-  --admin-border: #2a2e3a;
-  --admin-text: #e4e6ed;
-  --admin-text-muted: #8b8fa3;
-  --admin-primary: #6366f1;
-  --admin-primary-hover: #818cf8;
+  --admin-bg: #0a0d12;
+  --admin-surface: #12161f;
+  --admin-surface-hover: #1b212d;
+  --admin-border: rgba(255, 255, 255, 0.08);
+  --admin-text: #ecf0f1;
+  --admin-text-muted: #8a96a3;
+  --admin-primary: #2e86de; /* Steel Blue */
+  --admin-primary-hover: #54a0ff;
+  --admin-secondary: #e17055; /* Safety Orange */
   --admin-danger: #ef4444;
   --admin-success: #10b981;
   --admin-warning: #f59e0b;
-  --admin-info: #3b82f6;
+  --admin-info: #0abde3; /* Blueprint Cyan */
   --admin-sidebar-w: 260px;
   --admin-topbar-h: 64px;
   --admin-radius: 12px;
@@ -36,6 +37,8 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  background: radial-gradient(circle at 50% 50%, #121723 0%, #07090d 100%);
+  transition: all 0.3s ease;
 }
 
 .admin-content {
@@ -50,8 +53,10 @@
   left: 0;
   width: var(--admin-sidebar-w);
   height: 100vh;
-  background: var(--admin-surface);
-  border-right: 1px solid var(--admin-border);
+  background: rgba(18, 22, 31, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
   display: flex;
   flex-direction: column;
   z-index: 1000;
@@ -80,17 +85,17 @@
   gap: 12px;
 }
 
-.admin-logo-icon {
-  width: 40px;
-  height: 40px;
-  background: linear-gradient(135deg, var(--admin-primary), #a78bfa);
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 800;
-  font-size: 18px;
-  color: white;
+.admin-sidebar-logo-img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--admin-border);
+  transition: transform 0.3s ease;
+}
+
+.admin-logo:hover .admin-sidebar-logo-img {
+  transform: rotate(15deg) scale(1.05);
 }
 
 .admin-logo-text {
@@ -124,25 +129,31 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 12px 16px;
+  padding: 12px 18px;
   border-radius: var(--admin-radius-sm);
   color: var(--admin-text-muted);
   text-decoration: none;
   font-size: 14px;
   font-weight: 500;
-  transition: all 0.2s;
-  margin-bottom: 4px;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  margin-bottom: 6px;
+  border: 1px solid transparent;
+  position: relative;
 }
 
 .admin-nav-item:hover {
   background: var(--admin-surface-hover);
   color: var(--admin-text);
+  transform: translateX(4px);
 }
 
 .admin-nav-item.active {
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(167, 139, 250, 0.1));
+  background: linear-gradient(90deg, rgba(46, 134, 222, 0.15) 0%, transparent 100%);
   color: var(--admin-primary-hover);
-  border: 1px solid rgba(99, 102, 241, 0.3);
+  border-left: 3px solid var(--admin-primary) !important;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  box-shadow: inset 1px 0 0 rgba(46, 134, 222, 0.1);
 }
 
 .admin-nav-icon {
@@ -164,7 +175,7 @@
 .admin-user-avatar {
   width: 36px;
   height: 36px;
-  background: linear-gradient(135deg, var(--admin-primary), #a78bfa);
+  background: linear-gradient(135deg, var(--admin-primary), #e17055);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -212,8 +223,8 @@
 /* ─── Topbar ──────────────────────────────────────────────────────────────── */
 .admin-topbar {
   height: var(--admin-topbar-h);
-  background: var(--admin-surface);
-  border-bottom: 1px solid var(--admin-border);
+  background: rgba(18, 22, 31, 0.75);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -221,7 +232,8 @@
   position: sticky;
   top: 0;
   z-index: 100;
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
 }
 
 .admin-topbar-left {
@@ -325,7 +337,7 @@
 }
 
 .admin-btn-primary {
-  background: linear-gradient(135deg, var(--admin-primary), #818cf8);
+  background: linear-gradient(135deg, var(--admin-primary), #54a0ff);
   color: white;
   position: relative;
   overflow: hidden;
@@ -339,7 +351,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(135deg, #818cf8, var(--admin-primary));
+  background: linear-gradient(135deg, #54a0ff, var(--admin-primary));
   opacity: 0;
   z-index: -1;
   transition: opacity 0.3s ease;
@@ -350,7 +362,7 @@
 }
 
 .admin-btn-primary:hover {
-  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.4);
+  box-shadow: 0 4px 16px rgba(46, 134, 222, 0.4);
   transform: translateY(-1px);
 }
 
@@ -400,9 +412,12 @@
 
 /* ─── Table ───────────────────────────────────────────────────────────────── */
 .admin-table-wrapper {
-  background: var(--admin-surface);
+  background: rgba(18, 22, 31, 0.6);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   border-radius: var(--admin-radius);
-  border: 1px solid var(--admin-border);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.15);
   overflow: hidden;
 }
 
@@ -412,10 +427,11 @@
 }
 
 .admin-table thead {
-  background: rgba(99, 102, 241, 0.08);
+  background: linear-gradient(90deg, rgba(46, 134, 222, 0.12) 0%, rgba(46, 134, 222, 0.02) 100%);
   position: sticky;
   top: 0;
   backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   z-index: 10;
 }
 
@@ -499,8 +515,8 @@
 }
 
 .admin-table tbody tr:hover {
-  background: var(--admin-surface-hover);
-  box-shadow: inset 2px 0 0 0 var(--admin-primary);
+  background: rgba(46, 134, 222, 0.05);
+  box-shadow: inset 3px 0 0 0 var(--admin-primary);
 }
 
 .admin-table tbody tr:last-child td {
@@ -596,12 +612,12 @@
 }
 
 .admin-action-btn.edit {
-  background: rgba(99, 102, 241, 0.15);
+  background: rgba(46, 134, 222, 0.15);
   color: var(--admin-primary);
 }
 
 .admin-action-btn.edit:hover {
-  background: rgba(99, 102, 241, 0.3);
+  background: rgba(46, 134, 222, 0.3);
 }
 
 .admin-action-btn.delete {
@@ -773,7 +789,7 @@
 .admin-form-group select:focus,
 .admin-form-group textarea:focus {
   border-color: var(--admin-primary);
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+  box-shadow: 0 0 0 3px rgba(46, 134, 222, 0.15);
 }
 
 .admin-form-group input[type="file"] {
@@ -886,7 +902,7 @@
 }
 
 .admin-chart-card:hover {
-  border-color: rgba(99, 102, 241, 0.3);
+  border-color: rgba(46, 134, 222, 0.3);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 }
 
@@ -1069,12 +1085,12 @@
 }
 
 .admin-pesan-item.selected {
-  background: rgba(99, 102, 241, 0.1);
+  background: rgba(46, 134, 222, 0.1);
   border-left: 3px solid var(--admin-primary);
 }
 
 .admin-pesan-item.unread {
-  background: rgba(99, 102, 241, 0.05);
+  background: rgba(46, 134, 222, 0.05);
 }
 
 .admin-pesan-item-header {
@@ -1201,22 +1217,39 @@
   align-items: center;
   justify-content: center;
   background: var(--admin-bg);
+  background-size: 60px 60px;
   background-image:
-    radial-gradient(rgba(99, 102, 241, 0.1) 1px, transparent 1px),
-    radial-gradient(rgba(99, 102, 241, 0.05) 1px, transparent 1px);
-  background-size: 40px 40px, 20px 20px;
-  background-position: 0 0, 10px 10px;
+    linear-gradient(to right, rgba(46, 134, 222, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(46, 134, 222, 0.05) 1px, transparent 1px);
+  position: relative;
+  overflow: hidden;
   padding: 20px;
 }
 
+.admin-login-page::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(225, 112, 85, 0.08) 0%, transparent 70%);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
 .admin-login-card {
+  position: relative;
+  z-index: 1;
   background: var(--admin-surface);
   border: 1px solid var(--admin-border);
   border-radius: var(--admin-radius);
   padding: 40px;
   width: 100%;
   max-width: 420px;
-  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(10px);
 }
 
 .admin-login-header {
@@ -1224,18 +1257,30 @@
   margin-bottom: 32px;
 }
 
-.admin-login-logo {
-  width: 60px;
-  height: 60px;
-  background: linear-gradient(135deg, var(--admin-primary), #a78bfa);
-  border-radius: 16px;
+.admin-login-logo-container {
+  width: 72px;
+  height: 72px;
+  background: var(--admin-surface-hover);
+  border: 1px solid var(--admin-border);
+  border-radius: var(--admin-radius);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-weight: 800;
-  font-size: 28px;
-  color: white;
   margin-bottom: 16px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.admin-login-logo-container:hover {
+  transform: scale(1.05) rotate(5deg);
+  border-color: var(--admin-secondary);
+}
+
+.admin-login-logo-img {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  object-fit: cover;
 }
 
 .admin-login-header h1 {
@@ -1285,13 +1330,13 @@
 
 .admin-login-form input:focus {
   border-color: var(--admin-primary);
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+  box-shadow: 0 0 0 3px rgba(46, 134, 222, 0.15);
 }
 
 .admin-login-btn {
   width: 100%;
   padding: 12px;
-  background: linear-gradient(135deg, var(--admin-primary), #818cf8);
+  background: linear-gradient(135deg, var(--admin-primary), #54a0ff);
   border: none;
   border-radius: var(--admin-radius-sm);
   color: white;
@@ -1307,7 +1352,7 @@
 }
 
 .admin-login-btn:hover {
-  box-shadow: 0 4px 20px rgba(99, 102, 241, 0.5);
+  box-shadow: 0 4px 20px rgba(46, 134, 222, 0.5);
   transform: translateY(-1px);
 }
 
@@ -1631,7 +1676,7 @@
   font-size: 22px;
   font-weight: 800;
   margin: 0 0 4px;
-  background: linear-gradient(135deg, var(--admin-primary), #a78bfa);
+  background: linear-gradient(135deg, var(--admin-primary), #e17055);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -1687,15 +1732,15 @@
   justify-content: space-between;
   gap: 20px;
   padding: 24px;
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.08), rgba(167, 139, 250, 0.05));
-  border: 1px solid rgba(99, 102, 241, 0.25);
+  background: linear-gradient(135deg, rgba(46, 134, 222, 0.08), rgba(225, 112, 85, 0.05));
+  border: 1px solid rgba(46, 134, 222, 0.25);
   border-radius: var(--admin-radius);
   transition: all 0.3s;
 }
 
 .export-all-card:hover {
-  border-color: rgba(99, 102, 241, 0.4);
-  box-shadow: 0 4px 24px rgba(99, 102, 241, 0.1);
+  border-color: rgba(46, 134, 222, 0.4);
+  box-shadow: 0 4px 24px rgba(46, 134, 222, 0.1);
 }
 
 .export-all-info {
@@ -1708,7 +1753,7 @@
   width: 52px;
   height: 52px;
   border-radius: 14px;
-  background: linear-gradient(135deg, var(--admin-primary), #a78bfa);
+  background: linear-gradient(135deg, var(--admin-primary), #e17055);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1754,7 +1799,7 @@
 }
 
 .export-card:hover {
-  border-color: rgba(99, 102, 241, 0.3);
+  border-color: rgba(46, 134, 222, 0.3);
   transform: translateY(-2px);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
 }
@@ -1973,7 +2018,7 @@
 
 .tiptap-container:focus-within {
   border-color: var(--admin-primary);
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+  box-shadow: 0 0 0 3px rgba(46, 134, 222, 0.15);
 }
 
 .tiptap-toolbar {
@@ -2006,7 +2051,7 @@
 }
 
 .tiptap-toolbar button.is-active {
-  background: rgba(99, 102, 241, 0.15);
+  background: rgba(46, 134, 222, 0.15);
   color: var(--admin-primary);
 }
 
@@ -2076,3 +2121,50 @@
   text-decoration: underline;
   cursor: pointer;
 }
+
+/* ─── Global Scrollbar Refinement ────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--admin-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: var(--admin-radius-sm);
+  border: 2px solid var(--admin-bg);
+  transition: background 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--admin-primary);
+}
+
+/* For Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.08) var(--admin-bg);
+}
+
+/* ─── Setting Page Dropzone & Preview Styles ──────────────────────────────── */
+.upload-dropzone {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.upload-dropzone:hover {
+  border-color: var(--admin-primary) !important;
+  background: rgba(46, 134, 222, 0.05) !important;
+}
+
+.glass-card {
+  background: rgba(18, 22, 31, 0.6);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: var(--admin-radius);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+}
+

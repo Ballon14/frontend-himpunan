@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
-import { Instagram, Mail, MapPin, Youtube } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Instagram, Mail, MapPin, Youtube, Building2 } from 'lucide-react';
 
 export default function Footer() {
     const year = new Date().getFullYear();
@@ -10,12 +11,21 @@ export default function Footer() {
                 <div className="footer-grid">
                     <div className="footer-brand">
                         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '1rem' }}>
-                            <img src="/logo.jpg" alt="Logo HMTKBG" style={{ height: '50px', width: 'auto', borderRadius: '50%' }} />
+                            <motion.img
+                                src="/logo.jpg"
+                                alt="Logo HMTKBG"
+                                style={{ height: '50px', width: 'auto', borderRadius: '50%' }}
+                                whileHover={{ rotate: 10, scale: 1.1 }}
+                                transition={{ type: 'spring', stiffness: 300, damping: 15 }}
+                            />
                             <h3 style={{ margin: 0 }}>HM<span>TKBG</span></h3>
                         </div>
-                        <p>
+                        <p style={{ marginBottom: '0.75rem' }}>
                             Himpunan Mahasiswa Teknologi Konstruksi Bangunan Gedung Semarang.
                             Membangun generasi unggul, berprestasi, dan berkarakter.
+                        </p>
+                        <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-primary)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '6px' }}>
+                            <Building2 size={14} /> Membangun dari Pondasi Ilmu
                         </p>
                     </div>
 

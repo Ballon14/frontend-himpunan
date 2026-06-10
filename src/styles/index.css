@@ -6,27 +6,35 @@
 
 /* ─── CSS Custom Properties ──────────────────────────────── */
 :root {
-  /* Brand Colors */
-  --color-primary: #f59e0b;
-  --color-primary-light: #fbbf24;
-  --color-primary-dark: #d97706;
-  --color-primary-rgb: 245, 158, 11;
+  /* Brand Colors — Civil Engineering Palette */
+  --color-primary: #2e86de;
+  --color-primary-light: #54a0ff;
+  --color-primary-dark: #1e6fbf;
+  --color-primary-rgb: 46, 134, 222;
 
-  --color-secondary: #8b5cf6;
-  --color-accent: #06b6d4;
+  --color-secondary: #e17055;
+  --color-secondary-rgb: 225, 112, 85;
+  --color-accent: #0abde3;
+
+  /* Construction Accent Colors */
+  --color-safety: #e17055;
+  --color-safety-rgb: 225, 112, 85;
+  --color-blueprint: #74b9ff;
+  --color-steel: #636e72;
+  --color-concrete: #b2bec3;
 
   /* Neutral — Dark Theme (default) */
-  --color-bg: #0a0a0f;
-  --color-bg-secondary: #111118;
-  --color-bg-tertiary: #1a1a24;
-  --color-bg-card: rgba(26, 26, 36, 0.7);
-  --color-surface: #1e1e2e;
+  --color-bg: #0a0d12;
+  --color-bg-secondary: #0f1318;
+  --color-bg-tertiary: #161b22;
+  --color-bg-card: rgba(22, 27, 34, 0.75);
+  --color-surface: #1c2128;
   --color-border: rgba(255, 255, 255, 0.08);
-  --color-border-hover: rgba(255, 255, 255, 0.15);
+  --color-border-hover: rgba(255, 255, 255, 0.18);
 
-  --color-text: #f1f1f4;
-  --color-text-secondary: #a1a1b5;
-  --color-text-muted: #6b6b80;
+  --color-text: #ecf0f1;
+  --color-text-secondary: #b2bec3;
+  --color-text-muted: #7f8c8d;
 
   /* Glass */
   --glass-bg: rgba(255, 255, 255, 0.03);
@@ -177,7 +185,7 @@ textarea {
 }
 
 .text-gradient {
-  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light), var(--color-secondary));
+  background: linear-gradient(135deg, var(--color-primary-light), var(--color-primary), var(--color-secondary));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -438,8 +446,9 @@ textarea {
   left: -50%;
   width: 200%;
   height: 200%;
-  background: radial-gradient(circle at 30% 30%, rgba(var(--color-primary-rgb), 0.08) 0%, transparent 50%),
-    radial-gradient(circle at 70% 70%, rgba(139, 92, 246, 0.06) 0%, transparent 50%);
+  background: radial-gradient(circle at 30% 30%, rgba(var(--color-primary-rgb), 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 70% 70%, rgba(var(--color-secondary-rgb), 0.06) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(116, 185, 255, 0.04) 0%, transparent 60%);
   animation: heroGlow 15s ease-in-out infinite alternate;
 }
 
@@ -458,20 +467,27 @@ textarea {
   inset: 0;
   width: 100%;
   height: 100%;
-  background-size: 40px 40px;
+  background-size: 60px 60px;
   background-image:
-    linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    linear-gradient(to right, rgba(46, 134, 222, 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(46, 134, 222, 0.06) 1px, transparent 1px);
   mask-image: linear-gradient(to bottom, black 20%, transparent 100%);
   -webkit-mask-image: linear-gradient(to bottom, black 20%, transparent 100%);
   pointer-events: none;
   z-index: 0;
 }
 
-[data-theme="light"] .grid-pattern {
+/* Blueprint cross marks at grid intersections */
+.grid-pattern::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-size: 60px 60px;
   background-image:
-    linear-gradient(to right, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+    radial-gradient(circle, rgba(46, 134, 222, 0.12) 1px, transparent 1px);
+  mask-image: linear-gradient(to bottom, black 10%, transparent 80%);
+  -webkit-mask-image: linear-gradient(to bottom, black 10%, transparent 80%);
+  pointer-events: none;
 }
 
 .hero-content {
@@ -3336,4 +3352,569 @@ textarea {
   display: inline-flex;
   width: 100%;
   justify-content: center;
+}
+
+/* ============================================================
+   CIVIL ENGINEERING — THEMED COMPONENTS
+   ============================================================ */
+
+/* ─── Blueprint Card (Technical Drawing Style) ──────────── */
+.blueprint-card {
+  position: relative;
+  background: linear-gradient(145deg, rgba(46, 134, 222, 0.04) 0%, rgba(255, 255, 255, 0.02) 100%);
+  border: 1px solid rgba(46, 134, 222, 0.15);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-2xl);
+  transition: all 0.35s ease;
+  overflow: hidden;
+}
+
+.blueprint-card::before,
+.blueprint-card::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border-color: rgba(46, 134, 222, 0.3);
+  border-style: solid;
+  transition: all 0.35s ease;
+}
+
+.blueprint-card::before {
+  top: 8px;
+  left: 8px;
+  border-width: 2px 0 0 2px;
+  border-radius: 4px 0 0 0;
+}
+
+.blueprint-card::after {
+  bottom: 8px;
+  right: 8px;
+  border-width: 0 2px 2px 0;
+  border-radius: 0 0 4px 0;
+}
+
+.blueprint-card:hover {
+  border-color: rgba(46, 134, 222, 0.35);
+  box-shadow: 0 8px 32px rgba(46, 134, 222, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  transform: translateY(-4px);
+}
+
+.blueprint-card:hover::before,
+.blueprint-card:hover::after {
+  width: 28px;
+  height: 28px;
+  border-color: rgba(46, 134, 222, 0.5);
+}
+
+/* ─── Construction Divider ──────────────────────────────── */
+.section-divider {
+  position: relative;
+  height: 80px;
+  overflow: hidden;
+}
+
+.section-divider--angle {
+  background: var(--color-bg);
+}
+
+.section-divider--angle::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  background: var(--color-bg-secondary);
+  clip-path: polygon(0 60%, 100% 0, 100% 100%, 0 100%);
+}
+
+.section-divider--angle-reverse {
+  background: var(--color-bg-secondary);
+}
+
+.section-divider--angle-reverse::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  background: var(--color-bg);
+  clip-path: polygon(0 0, 100% 60%, 100% 100%, 0 100%);
+}
+
+/* Steel beam divider */
+.section-divider--beam {
+  height: 6px;
+  background: linear-gradient(90deg,
+    transparent,
+    rgba(var(--color-primary-rgb), 0.3) 20%,
+    rgba(var(--color-primary-rgb), 0.6) 50%,
+    rgba(var(--color-primary-rgb), 0.3) 80%,
+    transparent);
+  margin: var(--spacing-2xl) auto;
+  max-width: 600px;
+  border-radius: 3px;
+  position: relative;
+}
+
+.section-divider--beam::before,
+.section-divider--beam::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 12px;
+  height: 12px;
+  background: var(--color-primary);
+  border-radius: 50%;
+  box-shadow: 0 0 10px rgba(var(--color-primary-rgb), 0.4);
+}
+
+.section-divider--beam::before { left: -6px; }
+.section-divider--beam::after { right: -6px; }
+
+/* ─── Organizational Chart ──────────────────────────────── */
+.org-chart {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  padding: var(--spacing-xl) 0;
+}
+
+.org-level {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  width: 100%;
+}
+
+/* Vertical connector from parent to children area */
+.org-level .org-connector-vertical {
+  width: 2px;
+  height: 32px;
+  background: linear-gradient(to bottom, rgba(var(--color-primary-rgb), 0.5), rgba(var(--color-primary-rgb), 0.2));
+}
+
+/* Horizontal connector bar spanning all children */
+.org-level .org-connector-horizontal {
+  height: 2px;
+  background: rgba(var(--color-primary-rgb), 0.25);
+  position: relative;
+}
+
+.org-children {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-lg);
+  flex-wrap: wrap;
+  position: relative;
+  padding-top: var(--spacing-lg);
+}
+
+.org-children::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 15%;
+  right: 15%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(var(--color-primary-rgb), 0.2) 20%, rgba(var(--color-primary-rgb), 0.2) 80%, transparent);
+}
+
+/* Individual org card */
+.org-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: var(--spacing-lg) var(--spacing-xl);
+  background: linear-gradient(145deg, rgba(46, 134, 222, 0.06) 0%, rgba(255, 255, 255, 0.02) 100%);
+  border: 1px solid rgba(46, 134, 222, 0.15);
+  border-radius: var(--radius-lg);
+  min-width: 180px;
+  max-width: 220px;
+  position: relative;
+  transition: all 0.3s ease;
+  cursor: default;
+}
+
+.org-card::before {
+  content: '';
+  position: absolute;
+  top: -17px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 17px;
+  background: rgba(var(--color-primary-rgb), 0.3);
+}
+
+/* Top-level card has no connector line above */
+.org-level:first-child > .org-card::before {
+  display: none;
+}
+
+.org-card:hover {
+  border-color: rgba(46, 134, 222, 0.4);
+  box-shadow: 0 8px 24px rgba(46, 134, 222, 0.12);
+  transform: translateY(-4px);
+}
+
+.org-card-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: var(--spacing-sm);
+  border: 2px solid rgba(var(--color-primary-rgb), 0.3);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.org-card-avatar-placeholder {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  margin-bottom: var(--spacing-sm);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: var(--font-size-xl);
+  font-weight: 800;
+}
+
+.org-card-name {
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: 2px;
+  line-height: 1.3;
+}
+
+.org-card-role {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--color-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* Ketua Card — Larger & Emphasized */
+.org-card--ketua {
+  min-width: 220px;
+  max-width: 260px;
+  padding: var(--spacing-xl) var(--spacing-2xl);
+  background: linear-gradient(145deg, rgba(46, 134, 222, 0.1) 0%, rgba(225, 112, 85, 0.04) 100%);
+  border-color: rgba(46, 134, 222, 0.25);
+  box-shadow: 0 4px 24px rgba(46, 134, 222, 0.08);
+}
+
+.org-card--ketua .org-card-avatar,
+.org-card--ketua .org-card-avatar-placeholder {
+  width: 90px;
+  height: 90px;
+  border-width: 3px;
+}
+
+.org-card--ketua .org-card-name {
+  font-size: var(--font-size-base);
+}
+
+.org-card--ketua .org-card-role {
+  font-size: var(--font-size-sm);
+  color: var(--color-secondary);
+}
+
+/* Sekretaris/Bendahara — medium emphasis */
+.org-card--wakil {
+  background: linear-gradient(145deg, rgba(46, 134, 222, 0.07) 0%, rgba(255, 255, 255, 0.02) 100%);
+}
+
+/* Responsive Org Chart */
+@media (max-width: 768px) {
+  .org-children {
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-md);
+  }
+
+  .org-children::before {
+    display: none;
+  }
+
+  .org-card {
+    min-width: 160px;
+    max-width: 280px;
+    width: 100%;
+  }
+
+  .org-card--ketua {
+    min-width: 200px;
+    max-width: 300px;
+  }
+}
+
+/* ─── Section with Construction Accent ──────────────────── */
+.section-construction {
+  position: relative;
+}
+
+.section-construction::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--color-primary), var(--color-secondary), var(--color-accent));
+}
+
+/* ─── Count-Up Number Animation ─────────────────────────── */
+.count-number {
+  font-variant-numeric: tabular-nums;
+  display: inline-block;
+}
+
+/* ─── Hexagonal Values Grid ─────────────────────────────── */
+.values-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--spacing-lg);
+}
+
+.value-card {
+  position: relative;
+  text-align: center;
+  padding: var(--spacing-2xl) var(--spacing-lg);
+  background: linear-gradient(145deg, rgba(46, 134, 222, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+  border: 1px solid rgba(46, 134, 222, 0.12);
+  border-radius: var(--radius-lg);
+  transition: all 0.3s ease;
+}
+
+.value-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(var(--color-primary-rgb), 0.3);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+}
+
+.value-card-icon {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto var(--spacing-md);
+  border-radius: 14px;
+  background: rgba(var(--color-primary-rgb), 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-primary);
+  font-size: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.value-card:hover .value-card-icon {
+  background: var(--color-primary);
+  color: #fff;
+  transform: scale(1.1);
+  box-shadow: 0 4px 16px rgba(var(--color-primary-rgb), 0.3);
+}
+
+.value-card-title {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  margin-bottom: var(--spacing-xs);
+  color: var(--color-text);
+}
+
+.value-card-desc {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
+/* ─── About Page: Struktur Organisasi Header ─────────────── */
+.org-structure-section {
+  margin-top: var(--spacing-4xl);
+  padding-top: var(--spacing-2xl);
+}
+
+.org-period-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: 0.5rem 1.25rem;
+  background: rgba(var(--color-primary-rgb), 0.1);
+  border: 1px solid rgba(var(--color-primary-rgb), 0.2);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-primary);
+  margin: 0 auto var(--spacing-xl);
+  display: flex;
+  justify-content: center;
+  width: fit-content;
+}
+
+/* ─── Enhanced Stat Card with Construction Theme ─────────── */
+.stat-card-construction {
+  text-align: center;
+  padding: var(--spacing-2xl) var(--spacing-lg);
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card-construction::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--color-primary), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.stat-card-construction:hover::after {
+  opacity: 1;
+}
+
+/* ─── Blueprint-Styled Alert/Info Boxes ─────────────────── */
+.alert {
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--spacing-lg);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+}
+
+.alert-success {
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.2);
+  color: #22c55e;
+}
+
+.alert-error {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+}
+
+/* ─── Construction-themed Content Card Enhancement ───────── */
+.content-card.glass-card:hover {
+  border-color: rgba(var(--color-primary-rgb), 0.2);
+}
+
+.content-card .card-footer {
+  border-top-color: rgba(var(--color-primary-rgb), 0.1);
+}
+
+/* ─── Custom Organizational Diagram Image Layout ─────────────── */
+.org-image-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 1100px;
+  margin: 2rem auto 0 auto;
+  padding: 1.5rem;
+  background: var(--color-bg-secondary);
+  border: 2px solid var(--color-primary);
+  border-radius: 0px; /* Sharp 90-degree corners to match engineering theme */
+  box-shadow: 6px 6px 0px rgba(var(--color-primary-rgb), 0.15); /* Strong technical shadows */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[data-theme="light"] .org-image-container {
+  background: #ffffff;
+  border-color: #1a1a2e;
+  box-shadow: 6px 6px 0px rgba(26, 26, 46, 0.15);
+}
+
+.org-image-container:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 8px 8px 0px rgba(var(--color-primary-rgb), 0.25);
+  border-color: var(--color-secondary);
+}
+
+[data-theme="light"] .org-image-container:hover {
+  border-color: #e17055; /* Safety Orange */
+  box-shadow: 8px 8px 0px rgba(26, 26, 46, 0.25);
+}
+
+.org-structure-image {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  display: block;
+  /* Slightly adjust contrast and brightness */
+  filter: brightness(0.98) contrast(1.02);
+  transition: filter 0.3s ease;
+}
+
+[data-theme="dark"] .org-structure-image {
+  /* Elegant invert for black and white diagrams in dark mode */
+  filter: invert(0.9) hue-rotate(180deg) brightness(0.95) contrast(1.05);
+}
+
+.org-image-actions {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.btn-download {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background-color: var(--color-primary);
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.875rem;
+  border: none;
+  border-radius: 0px;
+  cursor: pointer;
+  box-shadow: 3px 3px 0px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
+}
+
+[data-theme="light"] .btn-download {
+  background-color: #1a1a2e;
+}
+
+.btn-download:hover {
+  background-color: var(--color-secondary);
+  color: #ffffff;
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.25);
+}
+
+[data-theme="light"] .btn-download:hover {
+  background-color: #e17055;
+}
+
+.btn-download:active {
+  transform: translate(1px, 1px);
+  box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .org-image-container {
+    padding: 1rem;
+    box-shadow: 4px 4px 0px rgba(var(--color-primary-rgb), 0.15);
+  }
+  
+  [data-theme="light"] .org-image-container {
+    box-shadow: 4px 4px 0px rgba(26, 26, 46, 0.15);
+  }
 }

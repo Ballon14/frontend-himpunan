@@ -1,24 +1,23 @@
-import { useEffect } from 'react';
 import { motion } from 'framer-motion';
-
+import { Target, Award, Star, Users, Shield, Lightbulb, Handshake, Download } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
 import SectionTitle from '../components/SectionTitle';
 import PageTransition from '../components/PageTransition';
 import SEO from '../components/SEO';
-import { Target, Award, Heart, Star } from 'lucide-react';
+import { getStrukturImage } from '../api/admin';
+import { fadeInUp, staggerContainer, scaleIn } from '../utils/animations';
 
 export default function AboutPage() {
-    const fadeInUp = {
-        hidden: { opacity: 0, y: 30 },
-        visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: 'easeOut' } }
-    };
+    const { data: strukturData } = useQuery({
+        queryKey: ['struktur-image'],
+        queryFn: async () => {
+            const res = await getStrukturImage();
+            return res.data?.data;
+        },
+        staleTime: 5 * 60 * 1000,
+    });
 
-    const staggerContainer = {
-        hidden: { opacity: 0 },
-        visible: {
-            opacity: 1,
-            transition: { staggerChildren: 0.2 }
-        }
-    };
+    const imageUrl = strukturData?.url || '/images/bagan-organisasi.png';
 
     return (
         <PageTransition>
@@ -26,60 +25,62 @@ export default function AboutPage() {
             <motion.div className="page" initial="hidden" animate="visible" variants={staggerContainer}>
                 <div className="container">
                     <motion.div variants={fadeInUp}>
-                    <SectionTitle
-                        label="Tentang Kami"
-                        title="Himpunan Mahasiswa TKBG Semarang"
-                        description="Organisasi kemahasiswaan yang berkomitmen membangun generasi unggul."
-                    />
-
+                        <SectionTitle
+                            label="Tentang Kami"
+                            title="Himpunan Mahasiswa TKBG Semarang"
+                            description="Organisasi kemahasiswaan di bawah Program Studi Teknologi Konstruksi Bangunan Gedung — Politeknik Pekerjaan Umum."
+                        />
                     </motion.div>
 
-                    <motion.div
-                        className="about-content"
-                        variants={fadeInUp}
-                    >
+                    {/* About Content — Blueprint styled */}
+                    <motion.div className="about-content" variants={fadeInUp}>
                         <p>
                             Himpunan Mahasiswa Teknologi Konstruksi Bangunan Gedung (HMTKBG) Semarang merupakan
                             organisasi kemahasiswaan yang menjadi wadah bagi seluruh mahasiswa untuk
-                            mengembangkan potensi, kreativitas, dan jiwa kepemimpinan.
+                            mengembangkan potensi, kreativitas, dan jiwa kepemimpinan di bidang konstruksi dan teknik sipil.
                         </p>
-
                         <p>
                             Didirikan dengan semangat untuk memajukan kehidupan kampus, HMTKBG aktif
                             menyelenggarakan berbagai kegiatan yang bermanfaat mulai dari seminar,
                             workshop, bakti sosial, hingga kompetisi yang dapat meningkatkan soft skill
-                            maupun hard skill mahasiswa.
+                            maupun hard skill mahasiswa di ranah konstruksi bangunan gedung.
                         </p>
                     </motion.div>
 
-                    <motion.div className="vision-mission-grid" variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-100px' }}>
+                    {/* Visi & Misi — Blueprint Cards */}
+                    <motion.div
+                        className="vision-mission-grid"
+                        variants={staggerContainer}
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{ once: true, margin: '-100px' }}
+                    >
                         <motion.div
-                            className="vm-card glass-card"
+                            className="blueprint-card"
                             variants={{
                                 hidden: { opacity: 0, x: -30 },
                                 visible: { opacity: 1, x: 0, transition: { duration: 0.6 } }
                             }}
-                            whileHover={{ y: -5, boxShadow: '0 10px 30px rgba(0,0,0,0.1)' }}
                         >
-                            <h3>
-                                <Target className="vm-icon" size={28} /> Visi
+                            <h3 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
+                                <Target className="vm-icon" size={28} style={{ color: 'var(--color-primary)' }} /> Visi
                             </h3>
                             <p style={{ color: 'var(--color-text-secondary)', lineHeight: 1.8 }}>
                                 Menjadi organisasi kemahasiswaan terdepan yang menghasilkan
-                                kader-kader unggul, berprestasi, berkarakter, dan berdaya saing global.
+                                kader-kader unggul, berprestasi, berkarakter, dan berdaya saing global
+                                di bidang Teknologi Konstruksi Bangunan Gedung.
                             </p>
                         </motion.div>
 
                         <motion.div
-                            className="vm-card glass-card"
+                            className="blueprint-card"
                             variants={{
                                 hidden: { opacity: 0, x: 30 },
                                 visible: { opacity: 1, x: 0, transition: { duration: 0.6 } }
                             }}
-                            whileHover={{ y: -5, boxShadow: '0 10px 30px rgba(0,0,0,0.1)' }}
                         >
-                            <h3>
-                                <Star className="vm-icon" size={28} /> Misi
+                            <h3 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
+                                <Star className="vm-icon" size={28} style={{ color: 'var(--color-primary)' }} /> Misi
                             </h3>
                             <ul>
                                 <li>Meningkatkan kualitas akademik dan non-akademik mahasiswa</li>
@@ -91,8 +92,11 @@ export default function AboutPage() {
                         </motion.div>
                     </motion.div>
 
-                    {/* Values */}
-                    <div style={{ marginTop: 'var(--spacing-4xl)' }}>
+                    {/* Steel Beam Divider */}
+                    <div className="section-divider--beam" />
+
+                    {/* Values — New Card Design */}
+                    <div style={{ marginTop: 'var(--spacing-2xl)' }}>
                         <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-50px' }} variants={fadeInUp}>
                             <SectionTitle
                                 label="Nilai-Nilai"
@@ -100,30 +104,75 @@ export default function AboutPage() {
                             />
                         </motion.div>
 
-                        <motion.div className="stats-grid" initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-50px' }} variants={staggerContainer}>
+                        <motion.div
+                            className="values-grid"
+                            initial="hidden"
+                            whileInView="visible"
+                            viewport={{ once: true, margin: '-50px' }}
+                            variants={staggerContainer}
+                        >
                             {[
-                                { icon: <Heart size={32} />, title: 'Solidaritas', desc: 'Membangun kebersamaan dan rasa kekeluargaan' },
-                                { icon: <Award size={32} />, title: 'Integritas', desc: 'Menjunjung tinggi kejujuran dan tanggung jawab' },
-                                { icon: <Target size={32} />, title: 'Inovasi', desc: 'Selalu berpikir kreatif dan solutif' },
-                                { icon: <Star size={32} />, title: 'Profesional', desc: 'Bekerja dengan standar kualitas terbaik' },
-                            ].map((value, i) => (
+                                { icon: <Handshake size={28} />, title: 'Solidaritas', desc: 'Membangun kebersamaan dan rasa kekeluargaan antar mahasiswa' },
+                                { icon: <Shield size={28} />, title: 'Integritas', desc: 'Menjunjung tinggi kejujuran dan tanggung jawab dalam berorganisasi' },
+                                { icon: <Lightbulb size={28} />, title: 'Inovasi', desc: 'Selalu berpikir kreatif dan solutif untuk kemajuan bersama' },
+                                { icon: <Award size={28} />, title: 'Profesional', desc: 'Bekerja dengan standar kualitas terbaik di bidang konstruksi' },
+                            ].map((value) => (
                                 <motion.div
                                     key={value.title}
-                                    className="stat-card glass-card"
-                                    variants={{
-                                        hidden: { opacity: 0, scale: 0.8 },
-                                        visible: { opacity: 1, scale: 1, transition: { type: 'spring', stiffness: 100 } }
-                                    }}
-                                    whileHover={{ scale: 1.05, y: -5 }}
+                                    className="value-card"
+                                    variants={scaleIn}
+                                    whileHover={{ y: -6 }}
                                     transition={{ type: 'spring', stiffness: 300, damping: 20 }}
                                 >
-                                    <div className="stat-icon">{value.icon}</div>
-                                    <div style={{ fontSize: 'var(--font-size-lg)', fontWeight: 700, marginBottom: '0.5rem' }}>
-                                        {value.title}
-                                    </div>
-                                    <div className="stat-label">{value.desc}</div>
+                                    <div className="value-card-icon">{value.icon}</div>
+                                    <div className="value-card-title">{value.title}</div>
+                                    <div className="value-card-desc">{value.desc}</div>
                                 </motion.div>
                             ))}
+                        </motion.div>
+                    </div>
+
+                    {/* Steel Beam Divider */}
+                    <div className="section-divider--beam" />
+
+                    {/* ─── Struktur Organisasi ──────────────────────── */}
+                    <div className="org-structure-section">
+                        <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-50px' }} variants={fadeInUp}>
+                            <SectionTitle
+                                label="Struktur Organisasi"
+                                title="Pengurus HMTKBG"
+                                description="Susunan kepengurusan Himpunan Mahasiswa Teknologi Konstruksi Bangunan Gedung."
+                            />
+                        </motion.div>
+
+                        <motion.div className="org-period-badge" variants={fadeInUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+                            <Users size={16} /> Periode 2024 — 2025
+                        </motion.div>
+
+                        <motion.div
+                            className="org-image-container"
+                            variants={fadeInUp}
+                            initial="hidden"
+                            whileInView="visible"
+                            viewport={{ once: true, margin: '-50px' }}
+                        >
+                            <img
+                                src={imageUrl}
+                                alt="Bagan Struktur Organisasi HMTKBG"
+                                className="org-structure-image"
+                            />
+                            <div className="org-image-actions">
+                                <a
+                                    href={imageUrl}
+                                    download="Bagan-Struktur-Organisasi-HMTKBG.png"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="btn-download"
+                                >
+                                    <Download size={18} />
+                                    <span>Unduh Bagan Organisasi</span>
+                                </a>
+                            </div>
                         </motion.div>
                     </div>
                 </div>

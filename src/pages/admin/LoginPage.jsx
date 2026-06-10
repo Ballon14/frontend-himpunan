@@ -3,6 +3,7 @@ import { useNavigate, Navigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
 import { Mail, Lock, LogIn } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 export default function LoginPage() {
     const [email, setEmail] = useState('');
@@ -31,9 +32,16 @@ export default function LoginPage() {
 
     return (
         <div className="admin-login-page">
-            <div className="admin-login-card">
+            <motion.div 
+                className="admin-login-card"
+                initial={{ opacity: 0, y: 30, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ duration: 0.5, ease: 'easeOut' }}
+            >
                 <div className="admin-login-header">
-                    <div className="admin-login-logo">H</div>
+                    <div className="admin-login-logo-container">
+                        <img src="/logo.jpg" alt="Logo HMTKBG" className="admin-login-logo-img" />
+                    </div>
                     <h1>HMTKBG Admin</h1>
                     <p>Masuk untuk mengelola website</p>
                 </div>
@@ -66,7 +74,13 @@ export default function LoginPage() {
                         </label>
                     </div>
 
-                    <button type="submit" className="admin-login-btn" disabled={loading}>
+                    <motion.button 
+                        type="submit" 
+                        className="admin-login-btn" 
+                        disabled={loading}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                    >
                         {loading ? (
                             <span className="admin-btn-loading">Memproses...</span>
                         ) : (
@@ -74,9 +88,9 @@ export default function LoginPage() {
                                 <LogIn size={16} /> Masuk
                             </>
                         )}
-                    </button>
+                    </motion.button>
                 </form>
-            </div>
+            </motion.div>
         </div>
     );
 }

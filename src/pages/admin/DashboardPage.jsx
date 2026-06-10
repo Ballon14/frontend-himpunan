@@ -9,7 +9,7 @@ import {
     LineChart, Line,
 } from 'recharts';
 
-const CHART_COLORS = ['#6366f1', '#10b981', '#f59e0b', '#ec4899', '#8b5cf6', '#3b82f6', '#14b8a6', '#f97316'];
+const CHART_COLORS = ['#2e86de', '#e17055', '#0abde3', '#10b981', '#f59e0b', '#636e72', '#ef4444', '#f97316'];
 
 const CustomTooltip = ({ active, payload, label }) => {
     if (!active || !payload?.length) return null;
@@ -51,12 +51,12 @@ export default function DashboardPage() {
         <div className="admin-dashboard">
             {/* Stats Cards */}
             <div className="admin-stats-grid">
-                <StatsCard icon={Users} label="Total Anggota" value={stats?.anggota || 0} color="#6366f1" />
+                <StatsCard icon={Users} label="Total Anggota" value={stats?.anggota || 0} color="#2e86de" />
                 <StatsCard icon={FileText} label="Total Berita" value={stats?.berita || 0} color="#10b981" />
-                <StatsCard icon={Briefcase} label="Program Kerja" value={stats?.program_kerja || 0} color="#f59e0b" />
-                <StatsCard icon={Image} label="Total Galeri" value={stats?.galeri || 0} color="#ec4899" />
+                <StatsCard icon={Briefcase} label="Program Kerja" value={stats?.program_kerja || 0} color="#e17055" />
+                <StatsCard icon={Image} label="Total Galeri" value={stats?.galeri || 0} color="#0abde3" />
                 <StatsCard icon={Mail} label="Pesan Belum Dibaca" value={stats?.pesan_unread || 0} color="#ef4444" />
-                <StatsCard icon={Inbox} label="Total Pesan" value={stats?.pesan_total || 0} color="#8b5cf6" />
+                <StatsCard icon={Inbox} label="Total Pesan" value={stats?.pesan_total || 0} color="#636e72" />
             </div>
 
             {/* Charts Row 1: Area + Pie */}
@@ -71,12 +71,12 @@ export default function DashboardPage() {
                             <AreaChart data={charts?.content_trend || []}>
                                 <defs>
                                     <linearGradient id="gradBerita" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor="#6366f1" stopOpacity={0.3} />
-                                        <stop offset="95%" stopColor="#6366f1" stopOpacity={0} />
+                                        <stop offset="5%" stopColor="#2e86de" stopOpacity={0.3} />
+                                        <stop offset="95%" stopColor="#2e86de" stopOpacity={0} />
                                     </linearGradient>
                                     <linearGradient id="gradGaleri" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor="#10b981" stopOpacity={0.3} />
-                                        <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
+                                        <stop offset="5%" stopColor="#0abde3" stopOpacity={0.3} />
+                                        <stop offset="95%" stopColor="#0abde3" stopOpacity={0} />
                                     </linearGradient>
                                 </defs>
                                 <CartesianGrid strokeDasharray="3 3" stroke="#2a2e3a" />
@@ -84,8 +84,8 @@ export default function DashboardPage() {
                                 <YAxis stroke="#8b8fa3" fontSize={12} allowDecimals={false} />
                                 <Tooltip content={<CustomTooltip />} />
                                 <Legend iconType="circle" wrapperStyle={{ fontSize: 12, color: '#8b8fa3' }} />
-                                <Area type="monotone" dataKey="berita" name="Berita" stroke="#6366f1" fill="url(#gradBerita)" strokeWidth={2.5} dot={{ r: 4, fill: '#6366f1' }} />
-                                <Area type="monotone" dataKey="galeri" name="Galeri" stroke="#10b981" fill="url(#gradGaleri)" strokeWidth={2.5} dot={{ r: 4, fill: '#10b981' }} />
+                                <Area type="monotone" dataKey="berita" name="Berita" stroke="#2e86de" fill="url(#gradBerita)" strokeWidth={2.5} dot={{ r: 4, fill: '#2e86de' }} />
+                                <Area type="monotone" dataKey="galeri" name="Galeri" stroke="#0abde3" fill="url(#gradGaleri)" strokeWidth={2.5} dot={{ r: 4, fill: '#0abde3' }} />
                             </AreaChart>
                         </ResponsiveContainer>
                     </div>
@@ -170,10 +170,10 @@ export default function DashboardPage() {
                                     type="monotone"
                                     dataKey="pesan"
                                     name="Pesan"
-                                    stroke="#ec4899"
+                                    stroke="#e17055"
                                     strokeWidth={2.5}
-                                    dot={{ r: 4, fill: '#ec4899', stroke: '#ec4899' }}
-                                    activeDot={{ r: 6, stroke: '#ec4899', strokeWidth: 2, fill: '#0f1117' }}
+                                    dot={{ r: 4, fill: '#e17055', stroke: '#e17055' }}
+                                    activeDot={{ r: 6, stroke: '#e17055', strokeWidth: 2, fill: '#0a0d12' }}
                                     animationDuration={800}
                                 />
                             </LineChart>

@@ -50,7 +50,13 @@ export default function Navbar() {
             <nav className={`navbar ${scrolled ? 'scrolled' : ''}`}>
                 <div className="container">
                     <Link to="/" className="navbar-brand">
-                        <img src="/logo.jpg" alt="Logo HMTKBG" style={{ height: '40px', width: 'auto', borderRadius: '50%' }} />
+                        <motion.img
+                            src="/logo.jpg"
+                            alt="Logo HMTKBG"
+                            style={{ height: '40px', width: 'auto', borderRadius: '50%' }}
+                            whileHover={{ rotate: 10, scale: 1.1 }}
+                            transition={{ type: 'spring', stiffness: 300, damping: 15 }}
+                        />
                         HMTKBG
                     </Link>
 

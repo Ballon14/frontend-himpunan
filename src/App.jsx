@@ -37,6 +37,7 @@ const ProtectedRoute = lazy(() => import('./components/admin/ProtectedRoute'));
 const AdminLoginPage = lazy(() => import('./pages/admin/LoginPage'));
 const AdminDashboardPage = lazy(() => import('./pages/admin/DashboardPage'));
 const AdminAnggotaPage = lazy(() => import('./pages/admin/AnggotaManagePage'));
+const AdminStrukturPage = lazy(() => import('./pages/admin/StrukturManagePage'));
 const AdminBeritaPage = lazy(() => import('./pages/admin/BeritaManagePage'));
 const AdminProgramKerjaPage = lazy(() => import('./pages/admin/ProgramKerjaManagePage'));
 const AdminGaleriPage = lazy(() => import('./pages/admin/GaleriManagePage'));
@@ -44,6 +45,7 @@ const AdminPesanPage = lazy(() => import('./pages/admin/PesanManagePage'));
 const AdminExportPage = lazy(() => import('./pages/admin/ExportDataPage'));
 const AdminKegiatanPage = lazy(() => import('./pages/admin/KegiatanManagePage'));
 const AdminMerchandisePage = lazy(() => import('./pages/admin/MerchandiseManagePage'));
+const AdminLogsPage = lazy(() => import('./pages/admin/LogsPage'));
 
 // Styles
 import './styles/admin.css';
@@ -117,6 +119,7 @@ function AdminRoutes() {
                 <Routes>
                   <Route path="dashboard" element={<AdminDashboardPage />} />
                   <Route path="anggota" element={<AdminAnggotaPage />} />
+                  <Route path="struktur" element={<AdminStrukturPage />} />
                   <Route path="berita" element={<AdminBeritaPage />} />
                   <Route path="program-kerja" element={<AdminProgramKerjaPage />} />
                   <Route path="galeri" element={<AdminGaleriPage />} />
@@ -124,6 +127,7 @@ function AdminRoutes() {
                   <Route path="export" element={<AdminExportPage />} />
                   <Route path="kegiatan" element={<AdminKegiatanPage />} />
                   <Route path="merchandise" element={<AdminMerchandisePage />} />
+                  <Route path="logs" element={<AdminLogsPage />} />
                   <Route path="" element={<AdminDashboardPage />} />
                 </Routes>
               </AdminLayout>

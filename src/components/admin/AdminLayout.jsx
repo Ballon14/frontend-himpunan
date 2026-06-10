@@ -4,12 +4,13 @@ import { useAuth } from '../../context/AuthContext';
 import {
     LayoutGrid, Users, FileText, Briefcase,
     Image, Mail, Download, LogOut, Menu, X, ChevronLeft,
-    Calendar, ShoppingBag
+    Calendar, ShoppingBag, Network, Terminal
 } from 'lucide-react';
 
 const navItems = [
     { to: '/admin/dashboard', icon: LayoutGrid, label: 'Dashboard' },
     { to: '/admin/anggota', icon: Users, label: 'Anggota' },
+    { to: '/admin/struktur', icon: Network, label: 'Struktur Organisasi' },
     { to: '/admin/berita', icon: FileText, label: 'Berita' },
     { to: '/admin/program-kerja', icon: Briefcase, label: 'Program Kerja' },
     { to: '/admin/galeri', icon: Image, label: 'Galeri' },
@@ -17,6 +18,7 @@ const navItems = [
     { to: '/admin/merchandise', icon: ShoppingBag, label: 'Merchandise' },
     { to: '/admin/pesan', icon: Mail, label: 'Pesan' },
     { to: '/admin/export', icon: Download, label: 'Export Data' },
+    { to: '/admin/logs', icon: Terminal, label: 'Log Sistem' },
 ];
 
 export default function AdminLayout({ children }) {
@@ -44,7 +46,7 @@ export default function AdminLayout({ children }) {
             <aside className={`admin-sidebar ${sidebarOpen ? 'open' : ''}`}>
                 <div className="admin-sidebar-header">
                     <div className="admin-logo">
-                        <span className="admin-logo-icon">H</span>
+                        <img src="/logo.jpg" alt="Logo HMTKBG" className="admin-sidebar-logo-img" />
                         <span className="admin-logo-text">HMTKBG</span>
                     </div>
                     <button className="admin-sidebar-close" onClick={() => setSidebarOpen(false)}>

@@ -4,12 +4,12 @@ import { Download, Users, FileText, Briefcase, Image, Mail, Package, Check, Cale
 import toast from 'react-hot-toast';
 
 const EXPORT_TABLES = [
-    { key: 'anggotas', label: 'Anggota', desc: 'Data seluruh anggota organisasi', icon: Users, color: '#6366f1' },
+    { key: 'anggotas', label: 'Anggota', desc: 'Data seluruh anggota organisasi', icon: Users, color: '#2e86de' },
     { key: 'beritas', label: 'Berita', desc: 'Artikel dan berita yang dipublikasikan', icon: FileText, color: '#10b981' },
-    { key: 'program_kerjas', label: 'Program Kerja', desc: 'Daftar program kerja organisasi', icon: Briefcase, color: '#f59e0b' },
-    { key: 'galeris', label: 'Galeri', desc: 'Data foto dan dokumentasi kegiatan', icon: Image, color: '#ec4899' },
-    { key: 'pesans', label: 'Pesan', desc: 'Pesan masuk dari pengunjung website', icon: Mail, color: '#8b5cf6' },
-    { key: 'kegiatan', label: 'Kegiatan', desc: 'Data jadwal kegiatan dan acara organisasi', icon: Calendar, color: '#14b8a6' },
+    { key: 'program_kerjas', label: 'Program Kerja', desc: 'Daftar program kerja organisasi', icon: Briefcase, color: '#e17055' },
+    { key: 'galeris', label: 'Galeri', desc: 'Data foto dan dokumentasi kegiatan', icon: Image, color: '#0abde3' },
+    { key: 'pesans', label: 'Pesan', desc: 'Pesan masuk dari pengunjung website', icon: Mail, color: '#636e72' },
+    { key: 'kegiatan', label: 'Kegiatan', desc: 'Data jadwal kegiatan dan acara organisasi', icon: Calendar, color: '#f59e0b' },
     { key: 'merchandise', label: 'Merchandise', desc: 'Data produk merchandise organisasi', icon: ShoppingBag, color: '#f97316' },
 ];
 

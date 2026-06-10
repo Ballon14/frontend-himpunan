@@ -14,6 +14,13 @@ export const getDashboardCharts = () => api.get('/dashboard/charts');
 
 // ─── Anggota ─────────────────────────────────────────────────────────────────
 export const getAnggotaAdmin = (params = {}) => api.get('/anggota', { params });
+export const getStrukturAdmin = (params = {}) => api.get('/anggota', { params: { ...params, has_jabatan: true } });
+export const getStrukturImage = () => api.get('/struktur');
+export const uploadStrukturImage = (file) => {
+    const fd = new FormData();
+    fd.append('bagan', file);
+    return api.post('/struktur', fd, { headers: { 'Content-Type': 'multipart/form-data' } });
+};
 export const createAnggota = (data) => {
     const fd = new FormData();
     Object.entries(data).forEach(([k, v]) => { if (v !== null && v !== undefined) fd.append(k, v); });
@@ -78,3 +85,8 @@ export const exportTable = (table, format = 'xlsx') =>
     api.get(`/export/${table}`, { params: { format }, responseType: 'blob' });
 export const exportAll = (format = 'xlsx') =>
     api.get('/export', { params: { format }, responseType: 'blob' });
+
+// ─── Logs ───────────────────────────────────────────────────────────────────
+export const getLogs = (limit = 100) => api.get('/logs', { params: { limit } });
+export const clearLogs = () => api.delete('/logs');
+export const downloadLogs = () => api.get('/logs/download', { responseType: 'blob' });

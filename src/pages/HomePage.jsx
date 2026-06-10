@@ -2,8 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
-
-import { Users, FileText, Clipboard, Image as ImageIcon, ArrowRight } from 'lucide-react';
+import { Users, FileText, Clipboard, Image as ImageIcon, ArrowRight, HardHat, Building2 } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import SectionTitle from '../components/SectionTitle';
 import LoadingSpinner from '../components/LoadingSpinner';
@@ -16,22 +15,9 @@ import { getAnggota } from '../api/anggota';
 import { getGaleri } from '../api/galeri';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import 'react-lazy-load-image-component/src/effects/blur.css';
-
-
+import { fadeInUp, staggerContainer } from '../utils/animations';
 
 export default function HomePage() {
-    const fadeInUp = {
-        hidden: { opacity: 0, y: 30 },
-        visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: 'easeOut' } }
-    };
-
-    const staggerContainer = {
-        hidden: { opacity: 0 },
-        visible: {
-            opacity: 1,
-            transition: { staggerChildren: 0.15, delayChildren: 0.1 }
-        }
-    };
 
     const { data: anggotaData, isLoading: loadingAnggota } = useQuery({
         queryKey: ['anggota', 'homepage'],
@@ -92,7 +78,7 @@ export default function HomePage() {
                             hidden: { opacity: 0, scale: 0.5, y: -20 },
                             visible: { opacity: 1, scale: 1, y: 0, transition: { duration: 0.6 } }
                         }}>
-                            🏛️ Teknologi Konstruksi Bangunan Gedung Semarang
+                            <Building2 size={18} /> Teknologi Konstruksi Bangunan Gedung Semarang
                         </motion.div>
 
                         <motion.h1 variants={{
