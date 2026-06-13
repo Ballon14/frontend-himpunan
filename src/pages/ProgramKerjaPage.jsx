@@ -4,29 +4,25 @@ import { motion } from 'framer-motion';
 import { Search, Clipboard, Calendar } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import SectionTitle from '../components/SectionTitle';
-import LoadingSpinner from '../components/LoadingSpinner';
+import { SkeletonCard } from '../components/Skeleton';
 import PageTransition from '../components/PageTransition';
 import SEO from '../components/SEO';
+import useDebounce from '../hooks/useDebounce';
 import { getProgramKerja } from '../api/programKerja';
 import { formatDate } from '../utils/format';
-
-const STATUS_MAP = {
-    perencanaan: { class: 'badge-gray', label: 'Perencanaan' },
-    berjalan: { class: 'badge-info', label: 'Berjalan' },
-    selesai: { class: 'badge-success', label: 'Selesai' },
-    dibatalkan: { class: 'badge-danger', label: 'Dibatalkan' },
-};
+import { STATUS_MAP } from '../utils/constants';
 
 export default function ProgramKerjaPage() {
     const [search, setSearch] = useState('');
     const [status, setStatus] = useState('');
     const [page, setPage] = useState(1);
+    const debouncedSearch = useDebounce(search);
 
-    const { data, isLoading: loading } = useQuery({
-        queryKey: ['programKerja', { page, search, status }],
+    const { data, isLoading: loading, isError, error, refetch } = useQuery({
+        queryKey: ['programKerja', { page, debouncedSearch, status }],
         queryFn: async () => {
             const params = { page, per_page: 9 };
-            if (search) params.search = search;
+            if (debouncedSearch) params.search = debouncedSearch;
             if (status) params.status = status;
             const res = await getProgramKerja(params);
             return res.data?.data || { data: [], meta: null };
@@ -78,8 +74,20 @@ export default function ProgramKerjaPage() {
                         </select>
                     </div>
 
-                    {loading ? (
-                        <LoadingSpinner />
+                    {isError ? (
+                        <div className="error-container" style={{ textAlign: 'center', padding: '4rem 2rem' }}>
+                            <h2>Terjadi Kesalahan</h2>
+                            <p style={{ color: 'var(--color-text-secondary)', marginBottom: '1.5rem' }}>
+                                Gagal memuat data. Silakan coba lagi.
+                            </p>
+                            <button className="btn btn-primary" onClick={() => refetch()}>
+                                Coba Lagi
+                            </button>
+                        </div>
+                    ) : loading ? (
+                        <div className="cards-grid">
+                            {Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} />)}
+                        </div>
                     ) : proker.length > 0 ? (
                         <div className="cards-grid">
                             {proker.map((item, i) => {
@@ -134,9 +142,32 @@ export default function ProgramKerjaPage() {
                     {meta && meta.last_page > 1 && (
                         <div className="pagination">
                             <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page <= 1}>← Prev</button>
-                            {Array.from({ length: meta.last_page }, (_, i) => i + 1).map(p => (
-                                <button key={p} className={page === p ? 'active' : ''} onClick={() => setPage(p)}>{p}</button>
-                            ))}
+                            {Array.from({ length: meta.last_page }, (_, i) => i + 1)
+                                .filter(p => Math.abs(p - page) <= 2 || p === 1 || p === meta.last_page)
+                                .map((p, idx, arr) => {
+                                    if (idx > 0 && p - arr[idx - 1] > 1) {
+                                        return (
+                                            <span key={`dot-${p}`}>
+                                                <button disabled style={{ border: 'none', background: 'none' }}>...</button>
+                                                <button
+                                                    className={page === p ? 'active' : ''}
+                                                    onClick={() => setPage(p)}
+                                                >
+                                                    {p}
+                                                </button>
+                                            </span>
+                                        );
+                                    }
+                                    return (
+                                        <button
+                                            key={p}
+                                            className={page === p ? 'active' : ''}
+                                            onClick={() => setPage(p)}
+                                        >
+                                            {p}
+                                        </button>
+                                    );
+                                })}
                             <button onClick={() => setPage(p => Math.min(meta.last_page, p + 1))} disabled={page >= meta.last_page}>Next →</button>
                         </div>
                     )}

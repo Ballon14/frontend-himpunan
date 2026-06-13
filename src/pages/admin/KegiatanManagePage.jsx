@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { toast } from 'react-hot-toast';
+import { notifySuccess, notifyError } from '../../utils/toast';
 import Modal from '../../components/admin/Modal';
+import ConfirmDialog from '../../components/admin/ConfirmDialog';
 import { getKegiatan, createKegiatan, updateKegiatan, deleteKegiatan } from '../../api/komunitas';
 import { Plus, Pencil, Trash2, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 
@@ -22,6 +23,7 @@ export default function KegiatanManagePage() {
     const [modalOpen, setModalOpen] = useState(false);
     const [editing, setEditing] = useState(null);
     const [form, setForm] = useState(emptyForm);
+    const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: '', message: '', onConfirm: null });
 
     const queryClient = useQueryClient();
 
@@ -49,18 +51,18 @@ export default function KegiatanManagePage() {
 
     const createMut = useMutation({
         mutationFn: (payload) => createKegiatan(payload),
-        onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['kegiatan-admin'] }); toast.success('Kegiatan berhasil ditambahkan.'); setModalOpen(false); },
-        onError: (err) => toast.error(err.response?.data?.message || 'Gagal menyimpan.'),
+        onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['kegiatan-admin'] }); notifySuccess('Kegiatan berhasil ditambahkan.'); setModalOpen(false); },
+        onError: (err) => notifyError(err.response?.data?.message || 'Gagal menyimpan.'),
     });
     const updateMut = useMutation({
         mutationFn: ({ id, payload }) => updateKegiatan(id, payload),
-        onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['kegiatan-admin'] }); toast.success('Kegiatan berhasil diperbarui.'); setModalOpen(false); },
-        onError: (err) => toast.error(err.response?.data?.message || 'Gagal menyimpan.'),
+        onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['kegiatan-admin'] }); notifySuccess('Kegiatan berhasil diperbarui.'); setModalOpen(false); },
+        onError: (err) => notifyError(err.response?.data?.message || 'Gagal menyimpan.'),
     });
     const deleteMut = useMutation({
         mutationFn: deleteKegiatan,
-        onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['kegiatan-admin'] }); toast.success('Kegiatan berhasil dihapus.'); },
-        onError: () => toast.error('Gagal menghapus.'),
+        onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['kegiatan-admin'] }); notifySuccess('Kegiatan berhasil dihapus.'); },
+        onError: () => notifyError('Gagal menghapus.'),
     });
 
     const submitting = createMut.isPending || updateMut.isPending;
@@ -73,7 +75,14 @@ export default function KegiatanManagePage() {
         else createMut.mutate(payload);
     };
 
-    const handleDelete = (id) => { if (confirm('Yakin ingin menghapus kegiatan ini?')) deleteMut.mutate(id); };
+    const handleDelete = (id) => {
+        setConfirmDialog({
+            isOpen: true,
+            title: 'Hapus Data',
+            message: 'Yakin ingin menghapus kegiatan ini?',
+            onConfirm: () => deleteMut.mutateAsync(id),
+        });
+    };
 
     return (
         <div className="admin-page">
@@ -107,7 +116,7 @@ export default function KegiatanManagePage() {
                                     <td data-label="Judul" className="admin-td-primary">{item.judul}</td>
                                     <td data-label="Tanggal">{new Date(item.tanggal_mulai).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</td>
                                     <td data-label="Lokasi">{item.lokasi || '-'}</td>
-                                    <td data-label="Kategori"><span className="admin-badge badge-info" style={{ textTransform: 'capitalize' }}>{item.kategori}</span></td>
+                                    <td data-label="Kategori"><span className="admin-badge admin-badge-info" style={{ textTransform: 'capitalize' }}>{item.kategori}</span></td>
                                     <td data-label="Aksi">
                                         <div className="admin-actions">
                                             <button className="admin-action-btn edit" onClick={() => openEdit(item)} title="Edit"><Pencil size={16} /></button>
@@ -165,6 +174,8 @@ export default function KegiatanManagePage() {
                     </div>
                 </form>
             </Modal>
+
+            <ConfirmDialog {...confirmDialog} onClose={() => setConfirmDialog(d => ({ ...d, isOpen: false }))} />
         </div>
     );
 }

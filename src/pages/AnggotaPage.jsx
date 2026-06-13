@@ -3,9 +3,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Search, User, Instagram, Linkedin, Mail, X } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import SectionTitle from '../components/SectionTitle';
-import LoadingSpinner from '../components/LoadingSpinner';
+import { SkeletonCard } from '../components/Skeleton';
 import PageTransition from '../components/PageTransition';
 import SEO from '../components/SEO';
+import useDebounce from '../hooks/useDebounce';
 import { getAnggota } from '../api/anggota';
 
 export default function AnggotaPage() {
@@ -13,12 +14,13 @@ export default function AnggotaPage() {
     const [angkatan, setAngkatan] = useState('');
     const [page, setPage] = useState(1);
     const [selectedMember, setSelectedMember] = useState(null);
+    const debouncedSearch = useDebounce(search);
 
-    const { data, isLoading: loading } = useQuery({
-        queryKey: ['anggota', { page, search, angkatan }],
+    const { data, isLoading: loading, isError, error, refetch } = useQuery({
+        queryKey: ['anggota', { page, debouncedSearch, angkatan }],
         queryFn: async () => {
             const params = { page, per_page: 12, status_aktif: 1 };
-            if (search) params.search = search;
+            if (debouncedSearch) params.search = debouncedSearch;
             if (angkatan) params.angkatan = angkatan;
             const res = await getAnggota(params);
             return res.data?.data || { data: [], meta: null };
@@ -74,18 +76,32 @@ export default function AnggotaPage() {
                         </select>
                     </div>
 
-                    {loading ? (
-                        <LoadingSpinner />
+                    {isError ? (
+                        <div className="error-container" style={{ textAlign: 'center', padding: '4rem 2rem' }}>
+                            <h2>Terjadi Kesalahan</h2>
+                            <p style={{ color: 'var(--color-text-secondary)', marginBottom: '1.5rem' }}>
+                                Gagal memuat data. Silakan coba lagi.
+                            </p>
+                            <button className="btn btn-primary" onClick={() => refetch()}>
+                                Coba Lagi
+                            </button>
+                        </div>
+                    ) : loading ? (
+                        <div className="members-grid">
+                            {Array.from({ length: 8 }).map((_, i) => <SkeletonCard key={i} />)}
+                        </div>
                     ) : anggota.length > 0 ? (
                         <div className="members-grid">
                             {anggota.map((item, i) => (
                                 <motion.div
                                     key={item.id}
                                     className="member-card glass-card"
-
+                                    tabIndex={0}
+                                    role="button"
                                     whileHover={{ y: -8, boxShadow: '0 15px 30px rgba(0,0,0,0.1)' }}
                                     transition={{ type: 'spring', stiffness: 300, damping: 20 }}
                                     onClick={() => setSelectedMember(item)}
+                                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedMember(item); } }}
                                 >
                                     <motion.div whileHover={{ scale: 1.05 }} transition={{ duration: 0.3 }}>
                                         {item.foto ? (
@@ -167,6 +183,8 @@ export default function AnggotaPage() {
                 {selectedMember && (
                     <motion.div
                         className="member-modal-overlay"
+                        role="dialog"
+                        aria-modal="true"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
@@ -180,7 +198,7 @@ export default function AnggotaPage() {
                             transition={{ type: "spring", damping: 25, stiffness: 300 }}
                             onClick={(e) => e.stopPropagation()}
                         >
-                            <button className="member-modal-close" onClick={() => setSelectedMember(null)}>
+                            <button className="member-modal-close" aria-label="Tutup" onClick={() => setSelectedMember(null)}>
                                 <X size={20} />
                             </button>
 

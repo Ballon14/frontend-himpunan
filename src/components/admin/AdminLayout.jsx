@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import '../../styles/admin.css';
 import {
     LayoutGrid, Users, FileText, Briefcase,
     Image, Mail, Download, LogOut, Menu, X, ChevronLeft,

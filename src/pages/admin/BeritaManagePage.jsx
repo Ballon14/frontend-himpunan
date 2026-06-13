@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { getBeritaAdmin, createBerita, updateBerita, deleteBerita } from '../../api/admin';
 import Modal from '../../components/admin/Modal';
-import toast from 'react-hot-toast';
+import ConfirmDialog from '../../components/admin/ConfirmDialog';
+import { notifySuccess, notifyError } from '../../utils/toast';
 import { Plus, Pencil, Trash2, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import TiptapEditor from '../../components/admin/TiptapEditor';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -14,6 +15,7 @@ export default function BeritaManagePage() {
     const [modalOpen, setModalOpen] = useState(false);
     const [editing, setEditing] = useState(null);
     const [form, setForm] = useState(emptyForm);
+    const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: '', message: '', onConfirm: null });
 
     const queryClient = useQueryClient();
 
@@ -47,29 +49,29 @@ export default function BeritaManagePage() {
         mutationFn: createBerita,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['berita'] });
-            toast.success('Berita berhasil ditambahkan.');
+            notifySuccess('Berita berhasil ditambahkan.');
             setModalOpen(false);
         },
-        onError: (err) => toast.error(err.response?.data?.message || 'Gagal menyimpan data.')
+        onError: (err) => notifyError(err.response?.data?.message || 'Gagal menyimpan data.')
     });
 
     const updateMutation = useMutation({
         mutationFn: ({ id, payload }) => updateBerita(id, payload),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['berita'] });
-            toast.success('Berita berhasil diperbarui.');
+            notifySuccess('Berita berhasil diperbarui.');
             setModalOpen(false);
         },
-        onError: (err) => toast.error(err.response?.data?.message || 'Gagal menyimpan data.')
+        onError: (err) => notifyError(err.response?.data?.message || 'Gagal menyimpan data.')
     });
 
     const deleteMutation = useMutation({
         mutationFn: deleteBerita,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['berita'] });
-            toast.success('Berita berhasil dihapus.');
+            notifySuccess('Berita berhasil dihapus.');
         },
-        onError: () => toast.error('Gagal menghapus berita.')
+        onError: () => notifyError('Gagal menghapus berita.')
     });
 
     const submitting = createMutation.isPending || updateMutation.isPending;
@@ -88,8 +90,12 @@ export default function BeritaManagePage() {
     };
 
     const handleDelete = async (id) => {
-        if (!confirm('Yakin ingin menghapus berita ini?')) return;
-        deleteMutation.mutate(id);
+        setConfirmDialog({
+            isOpen: true,
+            title: 'Hapus Data',
+            message: 'Yakin ingin menghapus berita ini?',
+            onConfirm: () => deleteMutation.mutateAsync(id),
+        });
     };
 
     return (
@@ -137,7 +143,7 @@ export default function BeritaManagePage() {
                                     </td>
                                     <td data-label="Judul" className="admin-td-primary">{item.judul}</td>
                                     <td data-label="Status">
-                                        <span className={`admin-badge ${item.status === 'published' ? 'badge-success' : 'badge-warning'}`}>
+                                        <span className={`admin-badge ${item.status === 'published' ? 'admin-badge-success' : 'admin-badge-warning'}`}>
                                             {item.status === 'published' ? 'Published' : 'Draft'}
                                         </span>
                                     </td>
@@ -199,6 +205,8 @@ export default function BeritaManagePage() {
                     </div>
                 </form>
             </Modal>
+
+            <ConfirmDialog {...confirmDialog} onClose={() => setConfirmDialog(d => ({ ...d, isOpen: false }))} />
         </div>
     );
 }

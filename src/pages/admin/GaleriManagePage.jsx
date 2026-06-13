@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { getGaleriAdmin, createGaleri, updateGaleri, deleteGaleri } from '../../api/admin';
 import Modal from '../../components/admin/Modal';
-import toast from 'react-hot-toast';
+import ConfirmDialog from '../../components/admin/ConfirmDialog';
+import { notifySuccess, notifyError } from '../../utils/toast';
 import { Plus, Pencil, Trash2, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
@@ -13,6 +14,7 @@ export default function GaleriManagePage() {
     const [modalOpen, setModalOpen] = useState(false);
     const [editing, setEditing] = useState(null);
     const [form, setForm] = useState(emptyForm);
+    const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: '', message: '', onConfirm: null });
 
     const queryClient = useQueryClient();
 
@@ -45,29 +47,29 @@ export default function GaleriManagePage() {
         mutationFn: createGaleri,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['galeri'] });
-            toast.success('Galeri berhasil ditambahkan.');
+            notifySuccess('Galeri berhasil ditambahkan.');
             setModalOpen(false);
         },
-        onError: (err) => toast.error(err.response?.data?.message || 'Gagal menyimpan data.')
+        onError: (err) => notifyError(err.response?.data?.message || 'Gagal menyimpan data.')
     });
 
     const updateMutation = useMutation({
         mutationFn: ({ id, payload }) => updateGaleri(id, payload),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['galeri'] });
-            toast.success('Galeri berhasil diperbarui.');
+            notifySuccess('Galeri berhasil diperbarui.');
             setModalOpen(false);
         },
-        onError: (err) => toast.error(err.response?.data?.message || 'Gagal menyimpan data.')
+        onError: (err) => notifyError(err.response?.data?.message || 'Gagal menyimpan data.')
     });
 
     const deleteMutation = useMutation({
         mutationFn: deleteGaleri,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['galeri'] });
-            toast.success('Galeri berhasil dihapus.');
+            notifySuccess('Galeri berhasil dihapus.');
         },
-        onError: () => toast.error('Gagal menghapus galeri.')
+        onError: () => notifyError('Gagal menghapus galeri.')
     });
 
     const submitting = createMutation.isPending || updateMutation.isPending;
@@ -81,7 +83,7 @@ export default function GaleriManagePage() {
             updateMutation.mutate({ id: editing.id, payload });
         } else {
             if (!payload.foto && !form.foto) {
-                toast.error('Foto wajib diupload.');
+                notifyError('Foto wajib diupload.');
                 return;
             }
             createMutation.mutate(payload);
@@ -89,8 +91,12 @@ export default function GaleriManagePage() {
     };
 
     const handleDelete = async (id) => {
-        if (!confirm('Yakin ingin menghapus galeri ini?')) return;
-        deleteMutation.mutate(id);
+        setConfirmDialog({
+            isOpen: true,
+            title: 'Hapus Data',
+            message: 'Yakin ingin menghapus galeri ini?',
+            onConfirm: () => deleteMutation.mutateAsync(id),
+        });
     };
 
     return (
@@ -131,7 +137,7 @@ export default function GaleriManagePage() {
                             </div>
                             <div className="admin-galeri-info">
                                 <h4>{item.judul}</h4>
-                                <span className="admin-badge badge-info">{item.kategori}</span>
+                                <span className="admin-badge admin-badge-info">{item.kategori}</span>
                                 <span className="admin-galeri-date">{item.tanggal || '-'}</span>
                             </div>
                         </div>
@@ -176,6 +182,8 @@ export default function GaleriManagePage() {
                     </div>
                 </form>
             </Modal>
+
+            <ConfirmDialog {...confirmDialog} onClose={() => setConfirmDialog(d => ({ ...d, isOpen: false }))} />
         </div>
     );
 }

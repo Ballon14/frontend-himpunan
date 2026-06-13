@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
-import { Link, NavLink, useLocation } from 'react-router-dom';
-import { Menu, X } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { Menu, X, Search } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const links = [
@@ -32,7 +32,37 @@ const mobileLinkVariants = {
 export default function Navbar() {
     const [scrolled, setScrolled] = useState(false);
     const [mobileOpen, setMobileOpen] = useState(false);
+    const [showSearch, setShowSearch] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
     const location = useLocation();
+    const navigate = useNavigate();
+    const searchInputRef = useRef(null);
+
+    const handleSearchSubmit = () => {
+        const q = searchQuery.trim();
+        if (q) {
+            setShowSearch(false);
+            setSearchQuery('');
+            navigate(`/berita?search=${encodeURIComponent(q)}`);
+        }
+    };
+
+    useEffect(() => {
+        if (showSearch && searchInputRef.current) {
+            searchInputRef.current.focus();
+        }
+    }, [showSearch]);
+
+    useEffect(() => {
+        const onKeyDown = (e) => {
+            if (e.key === 'Escape' && showSearch) {
+                setShowSearch(false);
+                setSearchQuery('');
+            }
+        };
+        window.addEventListener('keydown', onKeyDown);
+        return () => window.removeEventListener('keydown', onKeyDown);
+    }, [showSearch]);
 
     useEffect(() => {
         const onScroll = () => setScrolled(window.scrollY > 20);
@@ -76,6 +106,14 @@ export default function Navbar() {
                     <div className="nav-actions">
                         <button
                             className="mobile-toggle"
+                            onClick={() => setShowSearch(true)}
+                            aria-label="Search"
+                            style={{ marginRight: '0.5rem', background: 'none', border: 'none', cursor: 'pointer', color: 'inherit', display: 'flex', alignItems: 'center' }}
+                        >
+                            <Search size={22} />
+                        </button>
+                        <button
+                            className="mobile-toggle"
                             onClick={() => setMobileOpen(!mobileOpen)}
                             aria-label="Toggle menu"
                         >
@@ -107,6 +145,96 @@ export default function Navbar() {
                                 </NavLink>
                             </motion.div>
                         ))}
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            {/* Search Overlay */}
+            <AnimatePresence>
+                {showSearch && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                        onClick={() => { setShowSearch(false); setSearchQuery(''); }}
+                        style={{
+                            position: 'fixed',
+                            inset: 0,
+                            zIndex: 9999,
+                            backgroundColor: 'rgba(0, 0, 0, 0.75)',
+                            display: 'flex',
+                            alignItems: 'flex-start',
+                            justifyContent: 'center',
+                            paddingTop: '20vh',
+                        }}
+                    >
+                        <motion.div
+                            initial={{ opacity: 0, y: -20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -20 }}
+                            transition={{ duration: 0.2 }}
+                            onClick={(e) => e.stopPropagation()}
+                            style={{
+                                width: '90%',
+                                maxWidth: '600px',
+                                display: 'flex',
+                                gap: '0.5rem',
+                                alignItems: 'center',
+                            }}
+                        >
+                            <input
+                                ref={searchInputRef}
+                                type="text"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                onKeyDown={(e) => { if (e.key === 'Enter') handleSearchSubmit(); }}
+                                placeholder="Cari berita..."
+                                style={{
+                                    flex: 1,
+                                    padding: '0.875rem 1.25rem',
+                                    fontSize: '1.125rem',
+                                    borderRadius: 'var(--radius-md, 8px)',
+                                    border: '2px solid rgba(255,255,255,0.2)',
+                                    backgroundColor: 'rgba(255,255,255,0.1)',
+                                    color: '#fff',
+                                    outline: 'none',
+                                    backdropFilter: 'blur(10px)',
+                                }}
+                            />
+                            <button
+                                onClick={handleSearchSubmit}
+                                style={{
+                                    padding: '0.875rem 1.25rem',
+                                    borderRadius: 'var(--radius-md, 8px)',
+                                    border: 'none',
+                                    backgroundColor: 'var(--color-primary, #2563eb)',
+                                    color: '#fff',
+                                    cursor: 'pointer',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    fontSize: '1rem',
+                                    fontWeight: 600,
+                                }}
+                            >
+                                <Search size={20} />
+                            </button>
+                            <button
+                                onClick={() => { setShowSearch(false); setSearchQuery(''); }}
+                                style={{
+                                    padding: '0.875rem',
+                                    borderRadius: 'var(--radius-md, 8px)',
+                                    border: '2px solid rgba(255,255,255,0.2)',
+                                    backgroundColor: 'transparent',
+                                    color: '#fff',
+                                    cursor: 'pointer',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                }}
+                            >
+                                <X size={20} />
+                            </button>
+                        </motion.div>
                     </motion.div>
                 )}
             </AnimatePresence>

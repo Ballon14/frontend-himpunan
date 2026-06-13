@@ -1,17 +1,18 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, ShoppingBag, Tag, CheckCircle, XCircle, Share2, MessageCircle, Phone, ZoomIn, ChevronLeft, ChevronRight, X, Package, Calendar, Eye, Sparkles } from 'lucide-react';
-import toast from 'react-hot-toast';
+import { ArrowLeft, ShoppingBag, Tag, CheckCircle, XCircle, Share2, MessageCircle, Phone, ZoomIn, ChevronLeft, ChevronRight, X, Package, Calendar, Eye, Sparkles, AlertCircle } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import LoadingSpinner from '../components/LoadingSpinner';
 import PageTransition from '../components/PageTransition';
 import SEO from '../components/SEO';
 import { getMerchandiseById, getMerchandise } from '../api/komunitas';
 import { formatRupiah } from '../utils/format';
+import useShare from '../hooks/useShare';
 
 export default function MerchandiseDetailPage() {
     const { id } = useParams();
+    const share = useShare();
 
     const { data: item, isLoading: itemLoading, isError } = useQuery({
         queryKey: ['merchandiseDetail', id],
@@ -70,18 +71,6 @@ export default function MerchandiseDetailPage() {
         galleryViews = [{ id: 'main', url: item.foto, label: 'Tampak Utama', objectPosition: 'center center' }];
     }
 
-    const handleShare = async () => {
-        const url = window.location.href;
-        const title = item?.nama || 'Merchandise Himpunan';
-        if (navigator.share) {
-            try { await navigator.share({ title, url }); }
-            catch (err) { if (err.name !== 'AbortError') console.error('Share error:', err); }
-        } else {
-            await navigator.clipboard.writeText(url);
-            toast.success('Link disalin ke clipboard!');
-        }
-    };
-
     const handleMouseMove = useCallback((e) => {
         if (!mainImageRef.current) return;
         const rect = mainImageRef.current.getBoundingClientRect();
@@ -107,7 +96,7 @@ export default function MerchandiseDetailPage() {
         <div className="page">
             <div className="container">
                 <div className="error-container">
-                    <h2>😕 {error || 'Merchandise tidak ditemukan'}</h2>
+                    <h2><AlertCircle size={24} style={{ display: 'inline', verticalAlign: 'text-bottom', marginRight: '0.4rem' }} />{error || 'Merchandise tidak ditemukan'}</h2>
                     <Link to="/komunitas" className="btn btn-outline">← Kembali ke Komunitas</Link>
                 </div>
             </div>
@@ -173,17 +162,17 @@ export default function MerchandiseDetailPage() {
                                         {/* Gallery Navigation Arrows */}
                                         {galleryViews.length > 1 && (
                                             <>
-                                                <button className="merch-gallery-arrow merch-gallery-arrow-left" onClick={(e) => { e.stopPropagation(); navigateGallery(-1); }}>
+                                                <button className="merch-gallery-arrow merch-gallery-arrow-left" aria-label="Gambar sebelumnya" onClick={(e) => { e.stopPropagation(); navigateGallery(-1); }}>
                                                     <ChevronLeft size={20} />
                                                 </button>
-                                                <button className="merch-gallery-arrow merch-gallery-arrow-right" onClick={(e) => { e.stopPropagation(); navigateGallery(1); }}>
+                                                <button className="merch-gallery-arrow merch-gallery-arrow-right" aria-label="Gambar selanjutnya" onClick={(e) => { e.stopPropagation(); navigateGallery(1); }}>
                                                     <ChevronRight size={20} />
                                                 </button>
                                             </>
                                         )}
 
                                         {/* Share Button (floating top right) */}
-                                        <button className="merch-gallery-share" onClick={handleShare} title="Bagikan">
+                                        <button className="merch-gallery-share" aria-label="Bagikan" onClick={() => share({ title: item?.nama || 'Merchandise Himpunan' })} title="Bagikan">
                                             <Share2 size={18} />
                                         </button>
                                     </>
@@ -402,7 +391,7 @@ export default function MerchandiseDetailPage() {
                             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
                             onClick={(e) => e.stopPropagation()}
                         >
-                            <button className="merch-lightbox-close" onClick={() => setLightboxOpen(false)}>
+                            <button className="merch-lightbox-close" aria-label="Tutup" onClick={() => setLightboxOpen(false)}>
                                 <X size={24} />
                             </button>
 
@@ -416,10 +405,10 @@ export default function MerchandiseDetailPage() {
                             {/* Lightbox Navigation */}
                             {galleryViews.length > 1 && (
                                 <>
-                                    <button className="merch-lightbox-nav merch-lightbox-prev" onClick={() => navigateGallery(-1)}>
+                                    <button className="merch-lightbox-nav merch-lightbox-prev" aria-label="Gambar sebelumnya" onClick={() => navigateGallery(-1)}>
                                         <ChevronLeft size={28} />
                                     </button>
-                                    <button className="merch-lightbox-nav merch-lightbox-next" onClick={() => navigateGallery(1)}>
+                                    <button className="merch-lightbox-nav merch-lightbox-next" aria-label="Gambar selanjutnya" onClick={() => navigateGallery(1)}>
                                         <ChevronRight size={28} />
                                     </button>
                                 </>

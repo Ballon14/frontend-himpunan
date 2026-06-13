@@ -5,9 +5,6 @@ import { HelmetProvider } from 'react-helmet-async'
 import './styles/index.css'
 import App from './App.jsx'
 
-// Set dark theme once on app load
-document.documentElement.setAttribute('data-theme', 'dark');
-
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <HelmetProvider>

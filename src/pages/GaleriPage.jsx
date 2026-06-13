@@ -1,27 +1,30 @@
 import { useState, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Image as ImageIcon, X as XIcon, Share2 } from 'lucide-react';
-import toast from 'react-hot-toast';
 import { useQuery } from '@tanstack/react-query';
 import SectionTitle from '../components/SectionTitle';
-import LoadingSpinner from '../components/LoadingSpinner';
+import { SkeletonCard } from '../components/Skeleton';
 import PageTransition from '../components/PageTransition';
 import SEO from '../components/SEO';
+import useDebounce from '../hooks/useDebounce';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import 'react-lazy-load-image-component/src/effects/blur.css';
 import { getGaleri } from '../api/galeri';
 import { formatDate } from '../utils/format';
+import useShare from '../hooks/useShare';
 
 export default function GaleriPage() {
+    const share = useShare();
     const [search, setSearch] = useState('');
     const [kategori, setKategori] = useState('');
     const [page, setPage] = useState(1);
+    const debouncedSearch = useDebounce(search);
 
-    const { data, isLoading: loading } = useQuery({
-        queryKey: ['galeri', { page, search, kategori }],
+    const { data, isLoading: loading, isError, error, refetch } = useQuery({
+        queryKey: ['galeri', { page, debouncedSearch, kategori }],
         queryFn: async () => {
             const params = { page, per_page: 12 };
-            if (search) params.search = search;
+            if (debouncedSearch) params.search = debouncedSearch;
             if (kategori) params.kategori = kategori;
             const res = await getGaleri(params);
             return res.data?.data || { data: [], meta: null };
@@ -31,21 +34,6 @@ export default function GaleriPage() {
 
     const galeri = data?.data || [];
     const meta = data?.meta || null;
-
-    const handleShare = async (item) => {
-        const url = item.foto;
-        const title = item.judul || 'Galeri Himpunan';
-        if (navigator.share) {
-            try {
-                await navigator.share({ title, url });
-            } catch (error) {
-                console.error('Share error:', error);
-            }
-        } else {
-            await navigator.clipboard.writeText(url);
-            toast.success('Link foto disalin ke clipboard!');
-        }
-    };
 
     // Lightbox Navigation Logic
     const [lightboxIndex, setLightboxIndex] = useState(-1);
@@ -113,18 +101,32 @@ export default function GaleriPage() {
                         </select>
                     </div>
 
-                    {loading ? (
-                        <LoadingSpinner />
+                    {isError ? (
+                        <div className="error-container" style={{ textAlign: 'center', padding: '4rem 2rem' }}>
+                            <h2>Terjadi Kesalahan</h2>
+                            <p style={{ color: 'var(--color-text-secondary)', marginBottom: '1.5rem' }}>
+                                Gagal memuat data. Silakan coba lagi.
+                            </p>
+                            <button className="btn btn-primary" onClick={() => refetch()}>
+                                Coba Lagi
+                            </button>
+                        </div>
+                    ) : loading ? (
+                        <div className="cards-grid">
+                            {Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} />)}
+                        </div>
                     ) : galeri.length > 0 ? (
                         <div className="gallery-grid">
                             {galeri.map((item, i) => (
                                 <motion.div
                                     key={item.id}
                                     className="gallery-item"
-
+                                    tabIndex={0}
+                                    role="button"
                                     whileHover={{ scale: 1.03, boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)' }}
                                     transition={{ type: 'spring', stiffness: 300, damping: 20 }}
                                     onClick={() => openLightbox(i)}
+                                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openLightbox(i); } }}
                                 >
                                     {item.foto ? (
                                         <LazyLoadImage
@@ -154,9 +156,32 @@ export default function GaleriPage() {
                     {meta && meta.last_page > 1 && (
                         <div className="pagination">
                             <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page <= 1}>← Prev</button>
-                            {Array.from({ length: meta.last_page }, (_, i) => i + 1).map(p => (
-                                <button key={p} className={page === p ? 'active' : ''} onClick={() => setPage(p)}>{p}</button>
-                            ))}
+                            {Array.from({ length: meta.last_page }, (_, i) => i + 1)
+                                .filter(p => Math.abs(p - page) <= 2 || p === 1 || p === meta.last_page)
+                                .map((p, idx, arr) => {
+                                    if (idx > 0 && p - arr[idx - 1] > 1) {
+                                        return (
+                                            <span key={`dot-${p}`}>
+                                                <button disabled style={{ border: 'none', background: 'none' }}>...</button>
+                                                <button
+                                                    className={page === p ? 'active' : ''}
+                                                    onClick={() => setPage(p)}
+                                                >
+                                                    {p}
+                                                </button>
+                                            </span>
+                                        );
+                                    }
+                                    return (
+                                        <button
+                                            key={p}
+                                            className={page === p ? 'active' : ''}
+                                            onClick={() => setPage(p)}
+                                        >
+                                            {p}
+                                        </button>
+                                    );
+                                })}
                             <button onClick={() => setPage(p => Math.min(meta.last_page, p + 1))} disabled={page >= meta.last_page}>Next →</button>
                         </div>
                     )}
@@ -167,6 +192,8 @@ export default function GaleriPage() {
                     {lightboxIndex >= 0 && galeri[lightboxIndex] && (
                         <motion.div
                             className="lightbox-overlay"
+                            role="dialog"
+                            aria-modal="true"
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
@@ -176,6 +203,7 @@ export default function GaleriPage() {
                             {galeri.length > 1 && (
                                 <motion.button
                                     className="lightbox-nav-btn prev"
+                                    aria-label="Sebelumnya"
                                     onClick={(e) => { e.stopPropagation(); goToPrev(); }}
                                     whileHover={{ scale: 1.1 }}
                                     whileTap={{ scale: 0.9 }}
@@ -194,10 +222,10 @@ export default function GaleriPage() {
                                 onClick={(e) => e.stopPropagation()}
                             >
                                 <div className="lightbox-actions">
-                                    <button className="lightbox-action-btn" onClick={() => handleShare(galeri[lightboxIndex])}>
+                                    <button className="lightbox-action-btn" aria-label="Bagikan" onClick={() => share({ title: galeri[lightboxIndex]?.judul || 'Galeri Himpunan', url: galeri[lightboxIndex]?.foto })}>
                                         <Share2 size={24} />
                                     </button>
-                                    <button className="lightbox-action-btn" onClick={closeLightbox}>
+                                    <button className="lightbox-action-btn" aria-label="Tutup" onClick={closeLightbox}>
                                         <XIcon size={24} />
                                     </button>
                                 </div>
@@ -222,6 +250,7 @@ export default function GaleriPage() {
                             {galeri.length > 1 && (
                                 <motion.button
                                     className="lightbox-nav-btn next"
+                                    aria-label="Selanjutnya"
                                     onClick={(e) => { e.stopPropagation(); goToNext(); }}
                                     whileHover={{ scale: 1.1 }}
                                     whileTap={{ scale: 0.9 }}

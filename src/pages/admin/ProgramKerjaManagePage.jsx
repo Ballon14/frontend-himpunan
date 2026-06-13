@@ -1,16 +1,17 @@
 import { useState } from 'react';
 import { getProgramKerjaAdmin, createProgramKerja, updateProgramKerja, deleteProgramKerja } from '../../api/admin';
 import Modal from '../../components/admin/Modal';
-import toast from 'react-hot-toast';
+import ConfirmDialog from '../../components/admin/ConfirmDialog';
+import { notifySuccess, notifyError } from '../../utils/toast';
 import { Plus, Pencil, Trash2, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import TiptapEditor from '../../components/admin/TiptapEditor';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 const statusOptions = [
-    { value: 'perencanaan', label: 'Perencanaan', color: 'badge-info' },
-    { value: 'berjalan', label: 'Berjalan', color: 'badge-warning' },
-    { value: 'selesai', label: 'Selesai', color: 'badge-success' },
-    { value: 'dibatalkan', label: 'Dibatalkan', color: 'badge-danger' },
+    { value: 'perencanaan', label: 'Perencanaan', color: 'admin-badge-info' },
+    { value: 'berjalan', label: 'Berjalan', color: 'admin-badge-warning' },
+    { value: 'selesai', label: 'Selesai', color: 'admin-badge-success' },
+    { value: 'dibatalkan', label: 'Dibatalkan', color: 'admin-badge-danger' },
 ];
 
 const emptyForm = { nama_program: '', deskripsi: '', tanggal_mulai: '', tanggal_selesai: '', status: 'perencanaan', foto: null };
@@ -21,6 +22,7 @@ export default function ProgramKerjaManagePage() {
     const [modalOpen, setModalOpen] = useState(false);
     const [editing, setEditing] = useState(null);
     const [form, setForm] = useState(emptyForm);
+    const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: '', message: '', onConfirm: null });
 
     const queryClient = useQueryClient();
 
@@ -55,29 +57,29 @@ export default function ProgramKerjaManagePage() {
         mutationFn: createProgramKerja,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['proker'] });
-            toast.success('Program kerja berhasil ditambahkan.');
+            notifySuccess('Program kerja berhasil ditambahkan.');
             setModalOpen(false);
         },
-        onError: (err) => toast.error(err.response?.data?.message || 'Gagal menyimpan data.')
+        onError: (err) => notifyError(err.response?.data?.message || 'Gagal menyimpan data.')
     });
 
     const updateMutation = useMutation({
         mutationFn: ({ id, payload }) => updateProgramKerja(id, payload),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['proker'] });
-            toast.success('Program kerja berhasil diperbarui.');
+            notifySuccess('Program kerja berhasil diperbarui.');
             setModalOpen(false);
         },
-        onError: (err) => toast.error(err.response?.data?.message || 'Gagal menyimpan data.')
+        onError: (err) => notifyError(err.response?.data?.message || 'Gagal menyimpan data.')
     });
 
     const deleteMutation = useMutation({
         mutationFn: deleteProgramKerja,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['proker'] });
-            toast.success('Program kerja berhasil dihapus.');
+            notifySuccess('Program kerja berhasil dihapus.');
         },
-        onError: () => toast.error('Gagal menghapus program kerja.')
+        onError: () => notifyError('Gagal menghapus program kerja.')
     });
 
     const submitting = createMutation.isPending || updateMutation.isPending;
@@ -95,13 +97,17 @@ export default function ProgramKerjaManagePage() {
     };
 
     const handleDelete = async (id) => {
-        if (!confirm('Yakin ingin menghapus program kerja ini?')) return;
-        deleteMutation.mutate(id);
+        setConfirmDialog({
+            isOpen: true,
+            title: 'Hapus Data',
+            message: 'Yakin ingin menghapus program kerja ini?',
+            onConfirm: () => deleteMutation.mutateAsync(id),
+        });
     };
 
     const getStatusBadge = (status) => {
         const opt = statusOptions.find((o) => o.value === status);
-        return opt || { label: status, color: 'badge-info' };
+        return opt || { label: status, color: 'admin-badge-info' };
     };
 
     return (
@@ -215,6 +221,8 @@ export default function ProgramKerjaManagePage() {
                     </div>
                 </form>
             </Modal>
+
+            <ConfirmDialog {...confirmDialog} onClose={() => setConfirmDialog(d => ({ ...d, isOpen: false }))} />
         </div>
     );
 }

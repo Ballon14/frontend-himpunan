@@ -9,6 +9,7 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import Skeleton, { SkeletonCard } from '../components/Skeleton';
 import PageTransition from '../components/PageTransition';
 import SEO from '../components/SEO';
+import CivilBackground from '../components/CivilBackground';
 import { getBerita } from '../api/berita';
 import { getProgramKerja } from '../api/programKerja';
 import { getAnggota } from '../api/anggota';
@@ -16,8 +17,11 @@ import { getGaleri } from '../api/galeri';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import 'react-lazy-load-image-component/src/effects/blur.css';
 import { fadeInUp, staggerContainer } from '../utils/animations';
+import { STATUS_MAP } from '../utils/constants';
 
 export default function HomePage() {
+
+    const [ytLoaded, setYtLoaded] = useState(false);
 
     const { data: anggotaData, isLoading: loadingAnggota } = useQuery({
         queryKey: ['anggota', 'homepage'],
@@ -25,13 +29,13 @@ export default function HomePage() {
         staleTime: 60000,
     });
 
-    const { data: beritaData, isLoading: loadingBerita } = useQuery({
+    const { data: beritaData, isLoading: loadingBerita, isError: isErrorBerita, refetch: refetchBerita } = useQuery({
         queryKey: ['berita', 'homepage'],
         queryFn: () => getBerita({ per_page: 3 }),
         staleTime: 60000,
     });
 
-    const { data: prokerData, isLoading: loadingProker } = useQuery({
+    const { data: prokerData, isLoading: loadingProker, isError: isErrorProker, refetch: refetchProker } = useQuery({
         queryKey: ['proker', 'homepage'],
         queryFn: () => getProgramKerja({ per_page: 3 }),
         staleTime: 60000,
@@ -72,7 +76,7 @@ export default function HomePage() {
             <div>
                 {/* Hero Section — Framer Motion */}
                 <section className="hero">
-                    <div className="grid-pattern" />
+                    <CivilBackground />
                     <motion.div className="hero-content" initial="hidden" animate="visible" variants={staggerContainer}>
                         <motion.div className="hero-badge" variants={{
                             hidden: { opacity: 0, scale: 0.5, y: -20 },
@@ -139,7 +143,16 @@ export default function HomePage() {
                             />
                         </motion.div>
 
-                        {loadingBerita ? (
+                        {isErrorBerita ? (
+                            <div style={{ textAlign: 'center', padding: '2rem' }}>
+                                <p style={{ color: 'var(--color-text-secondary)', marginBottom: '1rem' }}>
+                                    Gagal memuat berita. Silakan coba lagi.
+                                </p>
+                                <button className="btn btn-primary" onClick={() => refetchBerita()}>
+                                    Coba Lagi
+                                </button>
+                            </div>
+                        ) : loadingBerita ? (
                             <div className="cards-grid">
                                 {[1, 2, 3].map(i => <SkeletonCard key={i} />)}
                             </div>
@@ -218,20 +231,23 @@ export default function HomePage() {
                             />
                         </motion.div>
 
-                        {loadingProker ? (
+                        {isErrorProker ? (
+                            <div style={{ textAlign: 'center', padding: '2rem' }}>
+                                <p style={{ color: 'var(--color-text-secondary)', marginBottom: '1rem' }}>
+                                    Gagal memuat program kerja. Silakan coba lagi.
+                                </p>
+                                <button className="btn btn-primary" onClick={() => refetchProker()}>
+                                    Coba Lagi
+                                </button>
+                            </div>
+                        ) : loadingProker ? (
                             <div className="cards-grid">
                                 {[1, 2, 3].map(i => <SkeletonCard key={i} />)}
                             </div>
                         ) : proker.length > 0 ? (
                             <motion.div className="cards-grid" initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-50px' }} variants={staggerContainer}>
                                 {proker.map((item, i) => {
-                                    const statusMap = {
-                                        perencanaan: { class: 'badge-gray', label: 'Perencanaan' },
-                                        berjalan: { class: 'badge-info', label: 'Berjalan' },
-                                        selesai: { class: 'badge-success', label: 'Selesai' },
-                                        dibatalkan: { class: 'badge-danger', label: 'Dibatalkan' },
-                                    };
-                                    const s = statusMap[item.status] || { class: 'badge-gray', label: item.status };
+                                    const s = STATUS_MAP[item.status] || { class: 'badge-gray', label: item.status };
                                     return (
                                         <motion.div
                                             key={item.id}
@@ -301,21 +317,60 @@ export default function HomePage() {
                             />
                         </motion.div>
 
-                        <motion.div 
-                            initial="hidden" 
-                            whileInView="visible" 
-                            viewport={{ once: true, margin: '-50px' }} 
+                        <motion.div
+                            initial="hidden"
+                            whileInView="visible"
+                            viewport={{ once: true, margin: '-50px' }}
                             variants={fadeInUp}
                             style={{ maxWidth: '900px', margin: '0 auto', borderRadius: 'var(--radius-xl)', overflow: 'hidden', boxShadow: '0 25px 50px rgba(0,0,0,0.25)', border: '1px solid var(--color-border)' }}
                         >
-                            <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, backgroundColor: 'var(--color-bg-secondary)' }}>
-                                <iframe 
-                                    style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 0 }}
-                                    src="https://www.youtube.com/embed/lnCI-aSoXqw?rel=0" 
-                                    title="Campus Tour Politeknik PU" 
-                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                                    allowFullScreen
-                                ></iframe>
+                            <div className="video-container" style={{ position: 'relative', borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
+                                {ytLoaded ? (
+                                    <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, backgroundColor: 'var(--color-bg-secondary)' }}>
+                                        <iframe
+                                            style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 0 }}
+                                            src="https://www.youtube.com/embed/lnCI-aSoXqw?autoplay=1&rel=0"
+                                            title="Campus Tour Politeknik PU"
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                            allowFullScreen
+                                        ></iframe>
+                                    </div>
+                                ) : (
+                                    <button
+                                        onClick={() => setYtLoaded(true)}
+                                        style={{
+                                            width: '100%',
+                                            aspectRatio: '16/9',
+                                            background: '#000',
+                                            border: 'none',
+                                            cursor: 'pointer',
+                                            position: 'relative',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center'
+                                        }}
+                                        aria-label="Putar video campus tour"
+                                    >
+                                        <img
+                                            src="https://img.youtube.com/vi/lnCI-aSoXqw/maxresdefault.jpg"
+                                            alt="Campus Tour HMTKBG"
+                                            style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', inset: 0 }}
+                                        />
+                                        <div style={{
+                                            position: 'relative',
+                                            zIndex: 1,
+                                            width: 68,
+                                            height: 48,
+                                            background: 'var(--color-primary)',
+                                            borderRadius: 'var(--radius-md)',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center'
+                                        }}>
+                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="#fff"><polygon points="5,3 19,12 5,21" /></svg>
+                                        </div>
+                                    </button>
+                                )}
                             </div>
                         </motion.div>
                     </div>

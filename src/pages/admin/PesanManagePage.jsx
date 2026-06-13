@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { getPesanAdmin, markPesanRead, deletePesan } from '../../api/admin';
-import toast from 'react-hot-toast';
+import ConfirmDialog from '../../components/admin/ConfirmDialog';
+import { notifySuccess, notifyError } from '../../utils/toast';
 import { Search, ChevronLeft, ChevronRight, Trash2, Check, Mail, Eye } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
@@ -8,6 +9,7 @@ export default function PesanManagePage() {
     const [search, setSearch] = useState('');
     const [page, setPage] = useState(1);
     const [selectedPesan, setSelectedPesan] = useState(null);
+    const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: '', message: '', onConfirm: null });
 
     const queryClient = useQueryClient();
 
@@ -24,19 +26,19 @@ export default function PesanManagePage() {
         mutationFn: markPesanRead,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['pesan'] });
-            toast.success('Pesan ditandai sudah dibaca.');
+            notifySuccess('Pesan ditandai sudah dibaca.');
         },
-        onError: () => toast.error('Gagal menandai pesan.')
+        onError: () => notifyError('Gagal menandai pesan.')
     });
 
     const deleteMutation = useMutation({
         mutationFn: deletePesan,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['pesan'] });
-            toast.success('Pesan berhasil dihapus.');
+            notifySuccess('Pesan berhasil dihapus.');
             setSelectedPesan(null);
         },
-        onError: () => toast.error('Gagal menghapus pesan.')
+        onError: () => notifyError('Gagal menghapus pesan.')
     });
 
     const handleMarkRead = async (id) => {
@@ -44,8 +46,12 @@ export default function PesanManagePage() {
     };
 
     const handleDelete = async (id) => {
-        if (!confirm('Yakin ingin menghapus pesan ini?')) return;
-        deleteMutation.mutate(id);
+        setConfirmDialog({
+            isOpen: true,
+            title: 'Hapus Data',
+            message: 'Yakin ingin menghapus pesan ini?',
+            onConfirm: () => deleteMutation.mutateAsync(id),
+        });
     };
 
     const handleSelect = async (pesan) => {
@@ -152,6 +158,8 @@ export default function PesanManagePage() {
                     <button disabled={page >= meta.last_page} onClick={() => setPage(page + 1)}><ChevronRight size={16} /></button>
                 </div>
             )}
+
+            <ConfirmDialog {...confirmDialog} onClose={() => setConfirmDialog(d => ({ ...d, isOpen: false }))} />
         </div>
     );
 }

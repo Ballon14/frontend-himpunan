@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Navigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import toast from 'react-hot-toast';
+import { notifySuccess, notifyError } from '../../utils/toast';
 import { Mail, Lock, LogIn } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -21,10 +21,10 @@ export default function LoginPage() {
         setLoading(true);
         try {
             await login(email, password);
-            toast.success('Login berhasil!');
+            notifySuccess('Login berhasil!');
             navigate('/admin/dashboard', { replace: true });
         } catch (err) {
-            toast.error(err.response?.data?.message || 'Login gagal.');
+            notifyError(err.response?.data?.message || 'Login gagal.');
         } finally {
             setLoading(false);
         }

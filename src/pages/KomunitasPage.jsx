@@ -22,10 +22,10 @@ const MERCH_KATEGORI = [
 ];
 
 const KATEGORI_COLORS = {
-    rapat: '#6366f1',
-    seminar: '#10b981',
-    sosial: '#f59e0b',
-    lainnya: '#8b5cf6',
+    rapat: '#c0392b',
+    seminar: '#27ae60',
+    sosial: '#f39c12',
+    lainnya: '#8e44ad',
 };
 
 export default function KomunitasPage() {
@@ -36,7 +36,7 @@ export default function KomunitasPage() {
     const [selectedEvent, setSelectedEvent] = useState(null);
     const [merchKategori, setMerchKategori] = useState('');
 
-    const { data: eventsData, isLoading: loadingEvents } = useQuery({
+    const { data: eventsData, isLoading: loadingEvents, isError: isErrorEvents, error: errorEvents, refetch: refetchEvents } = useQuery({
         queryKey: ['kegiatan', { month: currentMonth + 1, year: currentYear }],
         queryFn: async () => {
             const res = await getKegiatan({ bulan: currentMonth + 1, tahun: currentYear, per_page: 100 });
@@ -46,7 +46,7 @@ export default function KomunitasPage() {
     });
     const events = eventsData || [];
 
-    const { data: merchData, isLoading: loadingMerch } = useQuery({
+    const { data: merchData, isLoading: loadingMerch, isError: isErrorMerch, error: errorMerch, refetch: refetchMerch } = useQuery({
         queryKey: ['merchandise', { kategori: merchKategori }],
         queryFn: async () => {
             const params = { per_page: 50 };
@@ -122,6 +122,17 @@ export default function KomunitasPage() {
                         />
                     </div>
 
+                    {isErrorEvents ? (
+                        <div className="error-container" style={{ textAlign: 'center', padding: '4rem 2rem' }}>
+                            <h2>Terjadi Kesalahan</h2>
+                            <p style={{ color: 'var(--color-text-secondary)', marginBottom: '1.5rem' }}>
+                                Gagal memuat data kegiatan. Silakan coba lagi.
+                            </p>
+                            <button className="btn btn-primary" onClick={() => refetchEvents()}>
+                                Coba Lagi
+                            </button>
+                        </div>
+                    ) : (
                     <div className="komunitas-calendar-wrapper">
                         <div className="kcal-split">
                             {/* LEFT — Calendar */}
@@ -150,7 +161,7 @@ export default function KomunitasPage() {
                                                 {hasEvents && (
                                                     <div className="kcal-dots">
                                                         {eventsByDate[cell.day].slice(0, 3).map((ev, j) => (
-                                                            <span key={j} className="kcal-dot" style={{ background: KATEGORI_COLORS[ev.kategori] || '#6366f1' }} />
+                                                            <span key={j} className="kcal-dot" style={{ background: KATEGORI_COLORS[ev.kategori] || '#c0392b' }} />
                                                         ))}
                                                     </div>
                                                 )}
@@ -193,12 +204,15 @@ export default function KomunitasPage() {
                                                     <motion.div
                                                         key={ev.id}
                                                         className="kcal-event-card"
-                                                        style={{ borderLeft: `4px solid ${KATEGORI_COLORS[ev.kategori] || '#6366f1'}` }}
+                                                        tabIndex={0}
+                                                        role="button"
+                                                        style={{ borderLeft: `4px solid ${KATEGORI_COLORS[ev.kategori] || '#c0392b'}` }}
                                                         initial={{ opacity: 0, y: 10 }}
                                                         animate={{ opacity: 1, y: 0 }}
                                                         exit={{ opacity: 0, y: -10 }}
                                                         whileHover={{ x: 4 }}
                                                         onClick={() => setSelectedEvent(ev)}
+                                                        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedEvent(ev); } }}
                                                     >
                                                         <h5>{ev.judul}</h5>
                                                         <div className="kcal-event-meta">
@@ -215,6 +229,7 @@ export default function KomunitasPage() {
                             </div>
                         </div>
                     </div>
+                    )}
 
                     {/* ─── Section 2: Merchandise Showcase ──────────── */}
                     <div style={{ marginTop: 'var(--spacing-3xl)' }}>
@@ -237,7 +252,17 @@ export default function KomunitasPage() {
                         ))}
                     </div>
 
-                    {loadingMerch ? (
+                    {isErrorMerch ? (
+                        <div className="error-container" style={{ textAlign: 'center', padding: '4rem 2rem' }}>
+                            <h2>Terjadi Kesalahan</h2>
+                            <p style={{ color: 'var(--color-text-secondary)', marginBottom: '1.5rem' }}>
+                                Gagal memuat data merchandise. Silakan coba lagi.
+                            </p>
+                            <button className="btn btn-primary" onClick={() => refetchMerch()}>
+                                Coba Lagi
+                            </button>
+                        </div>
+                    ) : loadingMerch ? (
                         <LoadingSpinner />
                     ) : merch.length > 0 ? (
                         <div className="merch-grid">
@@ -301,11 +326,11 @@ export default function KomunitasPage() {
             {/* ─── Event Detail Modal ──────────────────────── */}
             <AnimatePresence>
                 {selectedEvent && (
-                    <motion.div className="member-modal-overlay" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setSelectedEvent(null)}>
+                    <motion.div className="member-modal-overlay" role="dialog" aria-modal="true" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setSelectedEvent(null)}>
                         <motion.div className="member-modal-content" initial={{ y: 50, opacity: 0, scale: 0.95 }} animate={{ y: 0, opacity: 1, scale: 1 }} exit={{ y: 20, opacity: 0, scale: 0.95 }} transition={{ type: 'spring', damping: 25, stiffness: 300 }} onClick={e => e.stopPropagation()}>
-                            <button className="member-modal-close" onClick={() => setSelectedEvent(null)}><X size={20} /></button>
-                            <div className="member-modal-header" style={{ background: `linear-gradient(135deg, ${KATEGORI_COLORS[selectedEvent.kategori] || '#6366f1'}22, transparent)` }}>
-                                <div style={{ width: 64, height: 64, borderRadius: '50%', background: KATEGORI_COLORS[selectedEvent.kategori] || '#6366f1', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 12 }}>
+                            <button className="member-modal-close" aria-label="Tutup" onClick={() => setSelectedEvent(null)}><X size={20} /></button>
+                            <div className="member-modal-header" style={{ background: `linear-gradient(135deg, ${KATEGORI_COLORS[selectedEvent.kategori] || '#c0392b'}22, transparent)` }}>
+                                <div style={{ width: 64, height: 64, borderRadius: '50%', background: KATEGORI_COLORS[selectedEvent.kategori] || '#c0392b', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 12 }}>
                                     <Calendar size={28} color="#fff" />
                                 </div>
                                 <h3>{selectedEvent.judul}</h3>

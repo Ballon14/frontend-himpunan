@@ -9,7 +9,7 @@ import {
     LineChart, Line,
 } from 'recharts';
 
-const CHART_COLORS = ['#2e86de', '#e17055', '#0abde3', '#10b981', '#f59e0b', '#636e72', '#ef4444', '#f97316'];
+const CHART_COLORS = ['#c0392b', '#e67e22', '#3498db', '#27ae60', '#f39c12', '#8e44ad', '#e74c3c', '#1abc9c'];
 
 const CustomTooltip = ({ active, payload, label }) => {
     if (!active || !payload?.length) return null;
@@ -51,12 +51,12 @@ export default function DashboardPage() {
         <div className="admin-dashboard">
             {/* Stats Cards */}
             <div className="admin-stats-grid">
-                <StatsCard icon={Users} label="Total Anggota" value={stats?.anggota || 0} color="#2e86de" />
-                <StatsCard icon={FileText} label="Total Berita" value={stats?.berita || 0} color="#10b981" />
-                <StatsCard icon={Briefcase} label="Program Kerja" value={stats?.program_kerja || 0} color="#e17055" />
-                <StatsCard icon={Image} label="Total Galeri" value={stats?.galeri || 0} color="#0abde3" />
-                <StatsCard icon={Mail} label="Pesan Belum Dibaca" value={stats?.pesan_unread || 0} color="#ef4444" />
-                <StatsCard icon={Inbox} label="Total Pesan" value={stats?.pesan_total || 0} color="#636e72" />
+                <StatsCard icon={Users} label="Total Anggota" value={stats?.anggota || 0} color="#c0392b" />
+                <StatsCard icon={FileText} label="Total Berita" value={stats?.berita || 0} color="#27ae60" />
+                <StatsCard icon={Briefcase} label="Program Kerja" value={stats?.program_kerja || 0} color="#e67e22" />
+                <StatsCard icon={Image} label="Total Galeri" value={stats?.galeri || 0} color="#3498db" />
+                <StatsCard icon={Mail} label="Pesan Belum Dibaca" value={stats?.pesan_unread || 0} color="#e74c3c" />
+                <StatsCard icon={Inbox} label="Total Pesan" value={stats?.pesan_total || 0} color="#8e44ad" />
             </div>
 
             {/* Charts Row 1: Area + Pie */}
@@ -71,21 +71,21 @@ export default function DashboardPage() {
                             <AreaChart data={charts?.content_trend || []}>
                                 <defs>
                                     <linearGradient id="gradBerita" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor="#2e86de" stopOpacity={0.3} />
-                                        <stop offset="95%" stopColor="#2e86de" stopOpacity={0} />
+                                        <stop offset="5%" stopColor="#c0392b" stopOpacity={0.3} />
+                                        <stop offset="95%" stopColor="#c0392b" stopOpacity={0} />
                                     </linearGradient>
                                     <linearGradient id="gradGaleri" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor="#0abde3" stopOpacity={0.3} />
-                                        <stop offset="95%" stopColor="#0abde3" stopOpacity={0} />
+                                        <stop offset="5%" stopColor="#e67e22" stopOpacity={0.3} />
+                                        <stop offset="95%" stopColor="#e67e22" stopOpacity={0} />
                                     </linearGradient>
                                 </defs>
-                                <CartesianGrid strokeDasharray="3 3" stroke="#2a2e3a" />
-                                <XAxis dataKey="bulan" stroke="#8b8fa3" fontSize={12} />
-                                <YAxis stroke="#8b8fa3" fontSize={12} allowDecimals={false} />
+                                <CartesianGrid strokeDasharray="3 3" stroke="#2a2e36" />
+                                <XAxis dataKey="bulan" stroke="#8b919a" fontSize={12} />
+                                <YAxis stroke="#8b919a" fontSize={12} allowDecimals={false} />
                                 <Tooltip content={<CustomTooltip />} />
-                                <Legend iconType="circle" wrapperStyle={{ fontSize: 12, color: '#8b8fa3' }} />
-                                <Area type="monotone" dataKey="berita" name="Berita" stroke="#2e86de" fill="url(#gradBerita)" strokeWidth={2.5} dot={{ r: 4, fill: '#2e86de' }} />
-                                <Area type="monotone" dataKey="galeri" name="Galeri" stroke="#0abde3" fill="url(#gradGaleri)" strokeWidth={2.5} dot={{ r: 4, fill: '#0abde3' }} />
+                                <Legend iconType="circle" wrapperStyle={{ fontSize: 12, color: '#8b919a' }} />
+                                <Area type="monotone" dataKey="berita" name="Berita" stroke="#c0392b" fill="url(#gradBerita)" strokeWidth={2.5} dot={{ r: 4, fill: '#c0392b' }} />
+                                <Area type="monotone" dataKey="galeri" name="Galeri" stroke="#e67e22" fill="url(#gradGaleri)" strokeWidth={2.5} dot={{ r: 4, fill: '#e67e22' }} />
                             </AreaChart>
                         </ResponsiveContainer>
                     </div>
@@ -114,10 +114,10 @@ export default function DashboardPage() {
                                         ))}
                                     </Pie>
                                     <Tooltip
-                                        contentStyle={{ background: '#1a1d27', border: '1px solid #2a2e3a', borderRadius: 8, fontSize: 13 }}
-                                        itemStyle={{ color: '#e4e6ed' }}
+                                        contentStyle={{ background: '#1a1d24', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 8, fontSize: 13 }}
+                                        itemStyle={{ color: '#eaedf0' }}
                                     />
-                                    <Legend iconType="circle" wrapperStyle={{ fontSize: 12, color: '#8b8fa3' }} />
+                                    <Legend iconType="circle" wrapperStyle={{ fontSize: 12, color: '#8b919a' }} />
                                 </PieChart>
                             </ResponsiveContainer>
                         ) : (
@@ -137,9 +137,9 @@ export default function DashboardPage() {
                         {hasAnggotaData ? (
                             <ResponsiveContainer width="100%" height={280}>
                                 <BarChart data={charts.anggota_angkatan} barSize={36}>
-                                    <CartesianGrid strokeDasharray="3 3" stroke="#2a2e3a" />
-                                    <XAxis dataKey="angkatan" stroke="#8b8fa3" fontSize={11} height={30} />
-                                    <YAxis stroke="#8b8fa3" fontSize={12} allowDecimals={false} />
+                                    <CartesianGrid strokeDasharray="3 3" stroke="#2a2e36" />
+                                    <XAxis dataKey="angkatan" stroke="#8b919a" fontSize={11} height={30} />
+                                    <YAxis stroke="#8b919a" fontSize={12} allowDecimals={false} />
                                     <Tooltip content={<CustomTooltip />} />
                                     <Bar dataKey="jumlah" name="Jumlah" radius={[6, 6, 0, 0]} animationDuration={800}>
                                         {(charts.anggota_angkatan || []).map((entry, i) => (
@@ -162,18 +162,18 @@ export default function DashboardPage() {
                     <div className="admin-chart-body">
                         <ResponsiveContainer width="100%" height={280}>
                             <LineChart data={charts?.pesan_trend || []}>
-                                <CartesianGrid strokeDasharray="3 3" stroke="#2a2e3a" />
-                                <XAxis dataKey="bulan" stroke="#8b8fa3" fontSize={12} />
-                                <YAxis stroke="#8b8fa3" fontSize={12} allowDecimals={false} />
+                                <CartesianGrid strokeDasharray="3 3" stroke="#2a2e36" />
+                                <XAxis dataKey="bulan" stroke="#8b919a" fontSize={12} />
+                                <YAxis stroke="#8b919a" fontSize={12} allowDecimals={false} />
                                 <Tooltip content={<CustomTooltip />} />
                                 <Line
                                     type="monotone"
                                     dataKey="pesan"
                                     name="Pesan"
-                                    stroke="#e17055"
+                                    stroke="#e67e22"
                                     strokeWidth={2.5}
-                                    dot={{ r: 4, fill: '#e17055', stroke: '#e17055' }}
-                                    activeDot={{ r: 6, stroke: '#e17055', strokeWidth: 2, fill: '#0a0d12' }}
+                                    dot={{ r: 4, fill: '#e67e22', stroke: '#e67e22' }}
+                                    activeDot={{ r: 6, stroke: '#e67e22', strokeWidth: 2, fill: '#111318' }}
                                     animationDuration={800}
                                 />
                             </LineChart>

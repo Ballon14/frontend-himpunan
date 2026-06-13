@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { toast } from 'react-hot-toast';
+import { notifySuccess, notifyError } from '../../utils/toast';
 import Modal from '../../components/admin/Modal';
+import ConfirmDialog from '../../components/admin/ConfirmDialog';
 import { getMerchandise, createMerchandise, updateMerchandise, deleteMerchandise } from '../../api/komunitas';
 import { Plus, Pencil, Trash2, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 
@@ -18,6 +19,7 @@ export default function MerchandiseManagePage() {
     const [modalOpen, setModalOpen] = useState(false);
     const [editing, setEditing] = useState(null);
     const [form, setForm] = useState(emptyForm);
+    const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: '', message: '', onConfirm: null });
 
     const queryClient = useQueryClient();
 
@@ -45,18 +47,18 @@ export default function MerchandiseManagePage() {
 
     const createMut = useMutation({
         mutationFn: createMerchandise,
-        onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['merch-admin'] }); toast.success('Merchandise berhasil ditambahkan.'); setModalOpen(false); },
-        onError: (err) => toast.error(err.response?.data?.message || 'Gagal menyimpan.'),
+        onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['merch-admin'] }); notifySuccess('Merchandise berhasil ditambahkan.'); setModalOpen(false); },
+        onError: (err) => notifyError(err.response?.data?.message || 'Gagal menyimpan.'),
     });
     const updateMut = useMutation({
         mutationFn: ({ id, payload }) => updateMerchandise(id, payload),
-        onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['merch-admin'] }); toast.success('Merchandise berhasil diperbarui.'); setModalOpen(false); },
-        onError: (err) => toast.error(err.response?.data?.message || 'Gagal menyimpan.'),
+        onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['merch-admin'] }); notifySuccess('Merchandise berhasil diperbarui.'); setModalOpen(false); },
+        onError: (err) => notifyError(err.response?.data?.message || 'Gagal menyimpan.'),
     });
     const deleteMut = useMutation({
         mutationFn: deleteMerchandise,
-        onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['merch-admin'] }); toast.success('Merchandise berhasil dihapus.'); },
-        onError: () => toast.error('Gagal menghapus.'),
+        onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['merch-admin'] }); notifySuccess('Merchandise berhasil dihapus.'); },
+        onError: () => notifyError('Gagal menghapus.'),
     });
 
     const submitting = createMut.isPending || updateMut.isPending;
@@ -69,7 +71,14 @@ export default function MerchandiseManagePage() {
         else createMut.mutate(payload);
     };
 
-    const handleDelete = (id) => { if (confirm('Yakin ingin menghapus merchandise ini?')) deleteMut.mutate(id); };
+    const handleDelete = (id) => {
+        setConfirmDialog({
+            isOpen: true,
+            title: 'Hapus Data',
+            message: 'Yakin ingin menghapus merchandise ini?',
+            onConfirm: () => deleteMut.mutateAsync(id),
+        });
+    };
 
     return (
         <div className="admin-page">
@@ -110,9 +119,9 @@ export default function MerchandiseManagePage() {
                                     </td>
                                     <td data-label="Nama" className="admin-td-primary">{item.nama}</td>
                                     <td data-label="Harga">{formatRp(item.harga)}</td>
-                                    <td data-label="Kategori"><span className="admin-badge badge-info" style={{ textTransform: 'capitalize' }}>{item.kategori}</span></td>
+                                    <td data-label="Kategori"><span className="admin-badge admin-badge-info" style={{ textTransform: 'capitalize' }}>{item.kategori}</span></td>
                                     <td data-label="Status">
-                                        <span className={`admin-badge ${item.is_available ? 'badge-success' : 'badge-danger'}`}>
+                                        <span className={`admin-badge ${item.is_available ? 'admin-badge-success' : 'admin-badge-danger'}`}>
                                             {item.is_available ? 'Tersedia' : 'Habis'}
                                         </span>
                                     </td>
@@ -190,6 +199,8 @@ export default function MerchandiseManagePage() {
                     </div>
                 </form>
             </Modal>
+
+            <ConfirmDialog {...confirmDialog} onClose={() => setConfirmDialog(d => ({ ...d, isOpen: false }))} />
         </div>
     );
 }

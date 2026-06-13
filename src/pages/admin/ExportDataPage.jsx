@@ -1,16 +1,16 @@
 import { useState } from 'react';
 import { exportTable, exportAll } from '../../api/admin';
 import { Download, Users, FileText, Briefcase, Image, Mail, Package, Check, Calendar, ShoppingBag } from 'lucide-react';
-import toast from 'react-hot-toast';
+import { notifySuccess, notifyError } from '../../utils/toast';
 
 const EXPORT_TABLES = [
-    { key: 'anggotas', label: 'Anggota', desc: 'Data seluruh anggota organisasi', icon: Users, color: '#2e86de' },
-    { key: 'beritas', label: 'Berita', desc: 'Artikel dan berita yang dipublikasikan', icon: FileText, color: '#10b981' },
-    { key: 'program_kerjas', label: 'Program Kerja', desc: 'Daftar program kerja organisasi', icon: Briefcase, color: '#e17055' },
-    { key: 'galeris', label: 'Galeri', desc: 'Data foto dan dokumentasi kegiatan', icon: Image, color: '#0abde3' },
-    { key: 'pesans', label: 'Pesan', desc: 'Pesan masuk dari pengunjung website', icon: Mail, color: '#636e72' },
-    { key: 'kegiatan', label: 'Kegiatan', desc: 'Data jadwal kegiatan dan acara organisasi', icon: Calendar, color: '#f59e0b' },
-    { key: 'merchandise', label: 'Merchandise', desc: 'Data produk merchandise organisasi', icon: ShoppingBag, color: '#f97316' },
+    { key: 'anggotas', label: 'Anggota', desc: 'Data seluruh anggota organisasi', icon: Users, color: '#c0392b' },
+    { key: 'beritas', label: 'Berita', desc: 'Artikel dan berita yang dipublikasikan', icon: FileText, color: '#27ae60' },
+    { key: 'program_kerjas', label: 'Program Kerja', desc: 'Daftar program kerja organisasi', icon: Briefcase, color: '#e67e22' },
+    { key: 'galeris', label: 'Galeri', desc: 'Data foto dan dokumentasi kegiatan', icon: Image, color: '#3498db' },
+    { key: 'pesans', label: 'Pesan', desc: 'Pesan masuk dari pengunjung website', icon: Mail, color: '#8e44ad' },
+    { key: 'kegiatan', label: 'Kegiatan', desc: 'Data jadwal kegiatan dan acara organisasi', icon: Calendar, color: '#f39c12' },
+    { key: 'merchandise', label: 'Merchandise', desc: 'Data produk merchandise organisasi', icon: ShoppingBag, color: '#1abc9c' },
 ];
 
 function triggerDownload(blob, filename) {
@@ -49,11 +49,11 @@ export default function ExportDataPage() {
             const fileBlob = res.data instanceof Blob ? res.data : new Blob([res.data]);
             triggerDownload(fileBlob, `${label}_${timestamp}.${ext}`);
             setDoneTable(tableKey);
-            toast.success(`${label} berhasil di-export!`);
+            notifySuccess(`${label} berhasil di-export!`);
             setTimeout(() => setDoneTable(null), 2000);
         } catch (err) {
             console.error(err);
-            toast.error(`Gagal export ${label}.`);
+            notifyError(`Gagal export ${label}.`);
         } finally {
             setLoadingTable(null);
         }
@@ -67,10 +67,10 @@ export default function ExportDataPage() {
             const timestamp = new Date().toISOString().slice(0, 10);
             const fileBlob = res.data instanceof Blob ? res.data : new Blob([res.data]);
             triggerDownload(fileBlob, `Backup_HMTKBG_${timestamp}.zip`);
-            toast.success('Semua data berhasil di-export!');
+            notifySuccess('Semua data berhasil di-export!');
         } catch (err) {
             console.error(err);
-            toast.error('Gagal export semua data.');
+            notifyError('Gagal export semua data.');
         } finally {
             setLoadingAll(false);
         }
@@ -97,7 +97,7 @@ export default function ExportDataPage() {
                             className={`export-format-btn ${format === 'json' ? 'active' : ''}`}
                             onClick={() => setFormat('json')}
                         >
-                            <span className="export-format-dot" style={{ background: '#f59e0b' }} />
+                            <span className="export-format-dot" style={{ background: '#f39c12' }} />
                             JSON
                         </button>
                     </div>

@@ -13,6 +13,7 @@ const queryClient = new QueryClient();
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import ScrollProgress from './components/ScrollProgress';
+import BackToTop from './components/BackToTop';
 import LoadingSpinner from './components/LoadingSpinner';
 
 // Public pages (Lazy Loaded — only loaded when visited)
@@ -46,9 +47,6 @@ const AdminExportPage = lazy(() => import('./pages/admin/ExportDataPage'));
 const AdminKegiatanPage = lazy(() => import('./pages/admin/KegiatanManagePage'));
 const AdminMerchandisePage = lazy(() => import('./pages/admin/MerchandiseManagePage'));
 const AdminLogsPage = lazy(() => import('./pages/admin/LogsPage'));
-
-// Styles
-import './styles/admin.css';
 
 // Google Analytics — set VITE_GA_MEASUREMENT_ID in .env to enable tracking
 const GA_MEASUREMENT_ID = import.meta.env.VITE_GA_MEASUREMENT_ID;
@@ -97,6 +95,7 @@ function PublicLayout() {
   return (
     <>
       <ScrollProgress />
+      <BackToTop />
       <Navbar />
       <main>
         <AnimatedRoutes />
@@ -153,16 +152,7 @@ export default function App() {
         <AuthProvider>
           <BrowserRouter>
             <ScrollToTopAndTrack />
-            <Toaster
-              position="top-right"
-              toastOptions={{
-                style: {
-                  background: '#1a1d27',
-                  color: '#e4e6ed',
-                  border: '1px solid #2a2e3a',
-                },
-              }}
-            />
+            <Toaster position="top-center" containerStyle={{ top: 24 }} />
             <Routes>
               <Route path="/admin/*" element={<AdminRoutes />} />
               <Route path="*" element={<PublicLayout />} />

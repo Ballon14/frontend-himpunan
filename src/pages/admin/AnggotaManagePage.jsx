@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { getAnggotaAdmin, createAnggota, updateAnggota, deleteAnggota } from '../../api/admin';
 import Modal from '../../components/admin/Modal';
-import toast from 'react-hot-toast';
+import ConfirmDialog from '../../components/admin/ConfirmDialog';
+import { notifySuccess, notifyError } from '../../utils/toast';
 import { Plus, Pencil, Trash2, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
@@ -13,6 +14,7 @@ export default function AnggotaManagePage() {
     const [modalOpen, setModalOpen] = useState(false);
     const [editing, setEditing] = useState(null);
     const [form, setForm] = useState(emptyForm);
+    const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: '', message: '', onConfirm: null });
 
     const queryClient = useQueryClient();
 
@@ -51,29 +53,29 @@ export default function AnggotaManagePage() {
         mutationFn: createAnggota,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['anggota'] });
-            toast.success('Anggota berhasil ditambahkan.');
+            notifySuccess('Anggota berhasil ditambahkan.');
             setModalOpen(false);
         },
-        onError: (err) => toast.error(err.response?.data?.message || 'Gagal menyimpan data.')
+        onError: (err) => notifyError(err.response?.data?.message || 'Gagal menyimpan data.')
     });
 
     const updateMutation = useMutation({
         mutationFn: ({ id, payload }) => updateAnggota(id, payload),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['anggota'] });
-            toast.success('Anggota berhasil diperbarui.');
+            notifySuccess('Anggota berhasil diperbarui.');
             setModalOpen(false);
         },
-        onError: (err) => toast.error(err.response?.data?.message || 'Gagal menyimpan data.')
+        onError: (err) => notifyError(err.response?.data?.message || 'Gagal menyimpan data.')
     });
 
     const deleteMutation = useMutation({
         mutationFn: deleteAnggota,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['anggota'] });
-            toast.success('Anggota berhasil dihapus.');
+            notifySuccess('Anggota berhasil dihapus.');
         },
-        onError: () => toast.error('Gagal menghapus anggota.')
+        onError: () => notifyError('Gagal menghapus anggota.')
     });
 
     const submitting = createMutation.isPending || updateMutation.isPending;
@@ -91,8 +93,12 @@ export default function AnggotaManagePage() {
     };
 
     const handleDelete = async (id) => {
-        if (!confirm('Yakin ingin menghapus anggota ini?')) return;
-        deleteMutation.mutate(id);
+        setConfirmDialog({
+            isOpen: true,
+            title: 'Hapus Data',
+            message: 'Yakin ingin menghapus anggota ini?',
+            onConfirm: () => deleteMutation.mutateAsync(id),
+        });
     };
 
     return (
@@ -145,7 +151,7 @@ export default function AnggotaManagePage() {
                                     <td data-label="Angkatan">{item.angkatan}</td>
                                     <td data-label="Jabatan">{item.jabatan || '-'}</td>
                                     <td data-label="Status">
-                                        <span className={`admin-badge ${item.status_aktif ? 'badge-success' : 'badge-danger'}`}>
+                                        <span className={`admin-badge ${item.status_aktif ? 'admin-badge-success' : 'admin-badge-danger'}`}>
                                             {item.status_aktif ? 'Aktif' : 'Nonaktif'}
                                         </span>
                                     </td>
@@ -230,6 +236,8 @@ export default function AnggotaManagePage() {
                     </div>
                 </form>
             </Modal>
+
+            <ConfirmDialog {...confirmDialog} onClose={() => setConfirmDialog(d => ({ ...d, isOpen: false }))} />
         </div>
     );
 }

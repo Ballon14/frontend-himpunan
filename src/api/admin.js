@@ -1,5 +1,13 @@
 import api from './index';
 
+function toFormData(data) {
+    const formData = new FormData();
+    Object.entries(data).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) formData.append(key, value);
+    });
+    return formData;
+}
+
 // ─── Auth ────────────────────────────────────────────────────────────────────
 export const adminLogin = (email, password) =>
     api.post('/login', { email, password });
@@ -22,56 +30,40 @@ export const uploadStrukturImage = (file) => {
     return api.post('/struktur', fd, { headers: { 'Content-Type': 'multipart/form-data' } });
 };
 export const createAnggota = (data) => {
-    const fd = new FormData();
-    Object.entries(data).forEach(([k, v]) => { if (v !== null && v !== undefined) fd.append(k, v); });
-    return api.post('/anggota', fd, { headers: { 'Content-Type': 'multipart/form-data' } });
+    return api.post('/anggota', toFormData(data), { headers: { 'Content-Type': 'multipart/form-data' } });
 };
 export const updateAnggota = (id, data) => {
-    const fd = new FormData();
-    Object.entries(data).forEach(([k, v]) => { if (v !== null && v !== undefined) fd.append(k, v); });
-    return api.put(`/anggota/${id}`, fd, { headers: { 'Content-Type': 'multipart/form-data' } });
+    return api.put(`/anggota/${id}`, toFormData(data), { headers: { 'Content-Type': 'multipart/form-data' } });
 };
 export const deleteAnggota = (id) => api.delete(`/anggota/${id}`);
 
 // ─── Berita ──────────────────────────────────────────────────────────────────
 export const getBeritaAdmin = (params = {}) => api.get('/berita/all', { params });
 export const createBerita = (data) => {
-    const fd = new FormData();
-    Object.entries(data).forEach(([k, v]) => { if (v !== null && v !== undefined) fd.append(k, v); });
-    return api.post('/berita', fd, { headers: { 'Content-Type': 'multipart/form-data' } });
+    return api.post('/berita', toFormData(data), { headers: { 'Content-Type': 'multipart/form-data' } });
 };
 export const updateBerita = (id, data) => {
-    const fd = new FormData();
-    Object.entries(data).forEach(([k, v]) => { if (v !== null && v !== undefined) fd.append(k, v); });
-    return api.put(`/berita/${id}`, fd, { headers: { 'Content-Type': 'multipart/form-data' } });
+    return api.put(`/berita/${id}`, toFormData(data), { headers: { 'Content-Type': 'multipart/form-data' } });
 };
 export const deleteBerita = (id) => api.delete(`/berita/${id}`);
 
 // ─── Program Kerja ───────────────────────────────────────────────────────────
 export const getProgramKerjaAdmin = (params = {}) => api.get('/program-kerja', { params });
 export const createProgramKerja = (data) => {
-    const fd = new FormData();
-    Object.entries(data).forEach(([k, v]) => { if (v !== null && v !== undefined) fd.append(k, v); });
-    return api.post('/program-kerja', fd, { headers: { 'Content-Type': 'multipart/form-data' } });
+    return api.post('/program-kerja', toFormData(data), { headers: { 'Content-Type': 'multipart/form-data' } });
 };
 export const updateProgramKerja = (id, data) => {
-    const fd = new FormData();
-    Object.entries(data).forEach(([k, v]) => { if (v !== null && v !== undefined) fd.append(k, v); });
-    return api.put(`/program-kerja/${id}`, fd, { headers: { 'Content-Type': 'multipart/form-data' } });
+    return api.put(`/program-kerja/${id}`, toFormData(data), { headers: { 'Content-Type': 'multipart/form-data' } });
 };
 export const deleteProgramKerja = (id) => api.delete(`/program-kerja/${id}`);
 
 // ─── Galeri ──────────────────────────────────────────────────────────────────
 export const getGaleriAdmin = (params = {}) => api.get('/galeri', { params });
 export const createGaleri = (data) => {
-    const fd = new FormData();
-    Object.entries(data).forEach(([k, v]) => { if (v !== null && v !== undefined) fd.append(k, v); });
-    return api.post('/galeri', fd, { headers: { 'Content-Type': 'multipart/form-data' } });
+    return api.post('/galeri', toFormData(data), { headers: { 'Content-Type': 'multipart/form-data' } });
 };
 export const updateGaleri = (id, data) => {
-    const fd = new FormData();
-    Object.entries(data).forEach(([k, v]) => { if (v !== null && v !== undefined) fd.append(k, v); });
-    return api.put(`/galeri/${id}`, fd, { headers: { 'Content-Type': 'multipart/form-data' } });
+    return api.put(`/galeri/${id}`, toFormData(data), { headers: { 'Content-Type': 'multipart/form-data' } });
 };
 export const deleteGaleri = (id) => api.delete(`/galeri/${id}`);
 
@@ -87,6 +79,7 @@ export const exportAll = (format = 'xlsx') =>
     api.get('/export', { params: { format }, responseType: 'blob' });
 
 // ─── Logs ───────────────────────────────────────────────────────────────────
-export const getLogs = (limit = 100) => api.get('/logs', { params: { limit } });
+export const getLogs = (limit = 200) => api.get('/logs', { params: { limit } });
+export const getSystemLogs = (limit = 100) => api.get('/logs/system', { params: { limit } });
 export const clearLogs = () => api.delete('/logs');
 export const downloadLogs = () => api.get('/logs/download', { responseType: 'blob' });

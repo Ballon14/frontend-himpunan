@@ -2,56 +2,58 @@
    HIMPUNAN FRONTEND — DESIGN SYSTEM
    ============================================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
 /* ─── CSS Custom Properties ──────────────────────────────── */
 :root {
-  /* Brand Colors — Civil Engineering Palette */
-  --color-primary: #2e86de;
-  --color-primary-light: #54a0ff;
-  --color-primary-dark: #1e6fbf;
-  --color-primary-rgb: 46, 134, 222;
+  /* Brand Colors — HMTKBG Red Palette */
+  --color-primary: #c0392b;
+  --color-primary-light: #e74c3c;
+  --color-primary-dark: #962d22;
+  --color-primary-rgb: 192, 57, 43;
 
-  --color-secondary: #e17055;
-  --color-secondary-rgb: 225, 112, 85;
-  --color-accent: #0abde3;
+  --color-secondary: #e67e22;
+  --color-secondary-rgb: 230, 126, 34;
+  --color-accent: #3498db;
 
-  /* Construction Accent Colors */
-  --color-safety: #e17055;
-  --color-safety-rgb: 225, 112, 85;
-  --color-blueprint: #74b9ff;
+  /* HMTKBG Accent Colors */
+  --color-safety: #e67e22;
+  --color-safety-rgb: 230, 126, 34;
+  --color-blueprint: #5dade2;
   --color-steel: #636e72;
   --color-concrete: #b2bec3;
 
   /* Neutral — Dark Theme (default) */
-  --color-bg: #0a0d12;
-  --color-bg-secondary: #0f1318;
-  --color-bg-tertiary: #161b22;
-  --color-bg-card: rgba(22, 27, 34, 0.75);
-  --color-surface: #1c2128;
+  --color-bg: #111318;
+  --color-bg-secondary: #181b21;
+  --color-bg-tertiary: #1e2229;
+  --color-bg-card: rgba(26, 29, 36, 0.9);
+  --color-surface: #1a1d24;
   --color-border: rgba(255, 255, 255, 0.08);
-  --color-border-hover: rgba(255, 255, 255, 0.18);
+  --color-border-hover: rgba(255, 255, 255, 0.14);
 
-  --color-text: #ecf0f1;
-  --color-text-secondary: #b2bec3;
-  --color-text-muted: #7f8c8d;
+  --color-text: #eaedf0;
+  --color-text-secondary: #a0a7b0;
+  --color-text-muted: #6b7280;
 
-  /* Glass */
-  --glass-bg: rgba(255, 255, 255, 0.03);
+  /* Glass (simplified) */
+  --glass-bg: rgba(26, 29, 36, 0.85);
   --glass-border: rgba(255, 255, 255, 0.08);
-  --glass-blur: 20px;
+  --glass-blur: 0px;
 
   /* Shadows */
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.5);
-  --shadow-glow: 0 0 30px rgba(var(--color-primary-rgb), 0.15);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.25);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.3);
+  --shadow-glow: 0 0 20px rgba(var(--color-primary-rgb), 0.12);
 
   /* Typography */
   --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-heading: 'Comfortaa', 'Inter', -apple-system, sans-serif;
   --font-size-xs: 0.75rem;
   --font-size-sm: 0.875rem;
   --font-size-base: 1rem;
+  --font-size-md: 1rem;
   --font-size-lg: 1.125rem;
   --font-size-xl: 1.25rem;
   --font-size-2xl: 1.5rem;
@@ -85,29 +87,6 @@
   /* Container */
   --container-max: 1200px;
   --navbar-height: 72px;
-}
-
-/* Light Theme */
-[data-theme="light"] {
-  --color-bg: #f8f9fc;
-  --color-bg-secondary: #ffffff;
-  --color-bg-tertiary: #f0f1f5;
-  --color-bg-card: rgba(255, 255, 255, 0.8);
-  --color-surface: #ffffff;
-  --color-border: rgba(0, 0, 0, 0.08);
-  --color-border-hover: rgba(0, 0, 0, 0.15);
-
-  --color-text: #1a1a2e;
-  --color-text-secondary: #555570;
-  --color-text-muted: #8888a0;
-
-  --glass-bg: rgba(255, 255, 255, 0.6);
-  --glass-border: rgba(0, 0, 0, 0.06);
-
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
-  --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.08);
-  --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.1);
-  --shadow-glow: 0 0 30px rgba(var(--color-primary-rgb), 0.1);
 }
 
 /* ─── Reset & Base ───────────────────────────────────────── */
@@ -233,19 +212,17 @@ textarea {
   color: #9ca3af;
 }
 
-/* ─── Glass Card ─────────────────────────────────────────── */
+/* ─── Glass Card (simplified flat card) ──────────────────── */
 .glass-card {
-  background: var(--glass-bg);
-  backdrop-filter: blur(var(--glass-blur));
-  -webkit-backdrop-filter: blur(var(--glass-blur));
-  border: 1px solid var(--glass-border);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   transition: transform var(--transition-base), box-shadow var(--transition-base), border-color var(--transition-base);
 }
 
 .glass-card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-lg);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
   border-color: var(--color-border-hover);
 }
 
@@ -255,7 +232,7 @@ textarea {
   align-items: center;
   justify-content: center;
   gap: var(--spacing-sm);
-  padding: 0.75rem 1.75rem;
+  padding: 0.7rem 1.5rem;
   border-radius: var(--radius-md);
   font-weight: 600;
   font-size: var(--font-size-sm);
@@ -265,15 +242,16 @@ textarea {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
-  color: #000;
-  box-shadow: 0 4px 15px rgba(var(--color-primary-rgb), 0.3);
+  background: var(--color-primary);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.25);
 }
 
 .btn-primary:hover {
+  background: var(--color-primary-light);
   transform: translateY(-2px);
-  box-shadow: 0 6px 25px rgba(var(--color-primary-rgb), 0.5);
-  color: #000;
+  box-shadow: 0 4px 16px rgba(var(--color-primary-rgb), 0.35);
+  color: #fff;
 }
 
 .btn-outline {
@@ -294,7 +272,7 @@ textarea {
   top: 0;
   left: 0;
   height: 3px;
-  background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
+  background: var(--color-primary);
   z-index: 9999;
   transition: none;
 }
@@ -313,11 +291,9 @@ textarea {
 }
 
 .navbar.scrolled {
-  background: var(--glass-bg);
-  backdrop-filter: blur(var(--glass-blur));
-  -webkit-backdrop-filter: blur(var(--glass-blur));
-  box-shadow: var(--shadow-md);
-  border-bottom: 1px solid var(--glass-border);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+  border-bottom: 1px solid var(--color-border);
 }
 
 .navbar .container {
@@ -370,25 +346,6 @@ textarea {
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
-}
-
-.theme-toggle {
-  width: 40px;
-  height: 40px;
-  border-radius: var(--radius-md);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--color-text-secondary);
-  font-size: var(--font-size-lg);
-  transition: all var(--transition-fast);
-  border: 1px solid var(--color-border);
-}
-
-.theme-toggle:hover {
-  color: var(--color-primary);
-  border-color: var(--color-primary);
-  background: rgba(var(--color-primary-rgb), 0.08);
 }
 
 .mobile-toggle {
@@ -446,10 +403,9 @@ textarea {
   left: -50%;
   width: 200%;
   height: 200%;
-  background: radial-gradient(circle at 30% 30%, rgba(var(--color-primary-rgb), 0.1) 0%, transparent 50%),
-    radial-gradient(circle at 70% 70%, rgba(var(--color-secondary-rgb), 0.06) 0%, transparent 50%),
-    radial-gradient(circle at 50% 50%, rgba(116, 185, 255, 0.04) 0%, transparent 60%);
-  animation: heroGlow 15s ease-in-out infinite alternate;
+  background: radial-gradient(circle at 30% 30%, rgba(var(--color-primary-rgb), 0.06) 0%, transparent 50%),
+    radial-gradient(circle at 70% 70%, rgba(var(--color-secondary-rgb), 0.04) 0%, transparent 50%);
+  pointer-events: none;
 }
 
 @keyframes heroGlow {
@@ -469,8 +425,8 @@ textarea {
   height: 100%;
   background-size: 60px 60px;
   background-image:
-    linear-gradient(to right, rgba(46, 134, 222, 0.06) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(46, 134, 222, 0.06) 1px, transparent 1px);
+    linear-gradient(to right, rgba(var(--color-primary-rgb), 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(var(--color-primary-rgb), 0.04) 1px, transparent 1px);
   mask-image: linear-gradient(to bottom, black 20%, transparent 100%);
   -webkit-mask-image: linear-gradient(to bottom, black 20%, transparent 100%);
   pointer-events: none;
@@ -484,7 +440,7 @@ textarea {
   inset: 0;
   background-size: 60px 60px;
   background-image:
-    radial-gradient(circle, rgba(46, 134, 222, 0.12) 1px, transparent 1px);
+    radial-gradient(circle, rgba(var(--color-primary-rgb), 0.08) 1px, transparent 1px);
   mask-image: linear-gradient(to bottom, black 10%, transparent 80%);
   -webkit-mask-image: linear-gradient(to bottom, black 10%, transparent 80%);
   pointer-events: none;
@@ -511,8 +467,9 @@ textarea {
 }
 
 .hero h1 {
+  font-family: var(--font-heading);
   font-size: clamp(var(--font-size-3xl), 5vw, var(--font-size-6xl));
-  font-weight: 900;
+  font-weight: 700;
   line-height: 1.1;
   margin-bottom: var(--spacing-lg);
   letter-spacing: -0.02em;
@@ -543,15 +500,12 @@ textarea {
 }
 
 .cta-box {
-  background: var(--glass-bg);
-  backdrop-filter: blur(var(--glass-blur));
-  -webkit-backdrop-filter: blur(var(--glass-blur));
-  border: 1px solid var(--glass-border);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-xl);
   padding: var(--spacing-4xl) var(--spacing-2xl);
   position: relative;
   overflow: hidden;
-  box-shadow: var(--shadow-xl);
 }
 
 .cta-box::before {
@@ -587,8 +541,9 @@ textarea {
 }
 
 .section-title h2 {
+  font-family: var(--font-heading);
   font-size: clamp(var(--font-size-2xl), 3vw, var(--font-size-4xl));
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1.2;
   margin-bottom: var(--spacing-md);
   letter-spacing: -0.02em;
@@ -638,8 +593,9 @@ textarea {
 }
 
 .stat-card .stat-number {
+  font-family: var(--font-heading);
   font-size: var(--font-size-4xl);
-  font-weight: 900;
+  font-weight: 700;
   color: var(--color-text);
   line-height: 1;
   margin-bottom: var(--spacing-sm);
@@ -700,6 +656,7 @@ textarea {
 }
 
 .content-card .card-title {
+  font-family: var(--font-heading);
   font-size: var(--font-size-lg);
   font-weight: 700;
   margin-bottom: var(--spacing-sm);
@@ -783,6 +740,7 @@ textarea {
 }
 
 .member-card .member-name {
+  font-family: var(--font-heading);
   font-size: var(--font-size-lg);
   font-weight: 700;
   margin-bottom: var(--spacing-xs);
@@ -824,9 +782,7 @@ textarea {
 .member-modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
+  background: rgba(0, 0, 0, 0.75);
   z-index: 2000;
   display: flex;
   align-items: center;
@@ -890,6 +846,7 @@ textarea {
 }
 
 .member-modal-header h3 {
+  font-family: var(--font-heading);
   font-size: var(--font-size-2xl);
   font-weight: 800;
   margin-bottom: var(--spacing-xs);
@@ -972,14 +929,11 @@ textarea {
 
 /* ─── Komunitas: Calendar ───────────────────────────────── */
 .komunitas-calendar-wrapper {
-  background: linear-gradient(145deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255,255,255,0.08);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-xl);
   padding: var(--spacing-lg);
   margin-bottom: var(--spacing-xl);
-  box-shadow: 0 8px 32px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.06);
   position: relative;
   overflow: hidden;
 }
@@ -1028,6 +982,7 @@ textarea {
 }
 
 .kcal-right-header h4 {
+  font-family: var(--font-heading);
   font-size: var(--font-size-md);
   font-weight: 700;
   color: var(--color-text);
@@ -1069,6 +1024,7 @@ textarea {
 }
 
 .kcal-title {
+  font-family: var(--font-heading);
   font-size: var(--font-size-xl);
   font-weight: 800;
   letter-spacing: -0.02em;
@@ -1248,6 +1204,7 @@ textarea {
 }
 
 .kcal-event-card h5 {
+  font-family: var(--font-heading);
   font-weight: 700;
   margin-bottom: 8px;
   font-size: var(--font-size-md);
@@ -1284,28 +1241,27 @@ textarea {
 .merch-filter-btn {
   padding: 10px 24px;
   border-radius: var(--radius-full);
-  border: 1px solid rgba(255,255,255,0.1);
-  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
   color: var(--color-text-secondary);
   font-size: var(--font-size-sm);
   font-weight: 500;
   cursor: pointer;
   transition: all 0.25s ease;
-  backdrop-filter: blur(8px);
 }
 
 .merch-filter-btn:hover {
   border-color: var(--color-primary);
   color: var(--color-primary);
-  background: rgba(var(--color-primary-rgb), 0.08);
+  background: rgba(var(--color-primary-rgb), 0.06);
 }
 
 .merch-filter-btn.active {
-  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  background: var(--color-primary);
   border-color: transparent;
   color: #fff;
   font-weight: 600;
-  box-shadow: 0 4px 16px rgba(var(--color-primary-rgb), 0.35);
+  box-shadow: 0 2px 10px rgba(var(--color-primary-rgb), 0.3);
 }
 
 .merch-grid {
@@ -1321,15 +1277,15 @@ textarea {
   display: flex;
   flex-direction: column;
   border-radius: var(--radius-xl);
-  transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  background: linear-gradient(145deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
-  border: 1px solid rgba(255,255,255,0.06);
+  transition: all 0.3s ease;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
 }
 
 .merch-card:hover {
-  transform: translateY(-6px);
-  border-color: rgba(var(--color-primary-rgb), 0.3);
-  box-shadow: 0 20px 40px rgba(0,0,0,0.25), 0 0 0 1px rgba(var(--color-primary-rgb), 0.1);
+  transform: translateY(-4px);
+  border-color: var(--color-border-hover);
+  box-shadow: var(--shadow-md);
 }
 
 .merch-card-img {
@@ -1388,14 +1344,12 @@ textarea {
   text-transform: uppercase;
   letter-spacing: 0.06em;
   z-index: 2;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
 }
 
 .merch-badge.available {
-  background: rgba(16, 185, 129, 0.2);
-  color: #10b981;
-  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2);
+  background: rgba(39, 174, 96, 0.2);
+  color: #27ae60;
+  box-shadow: 0 2px 8px rgba(39, 174, 96, 0.2);
 }
 
 .merch-badge.unavailable {
@@ -1412,6 +1366,7 @@ textarea {
 }
 
 .merch-card-body h4 {
+  font-family: var(--font-heading);
   font-weight: 700;
   font-size: var(--font-size-md);
   line-height: 1.3;
@@ -1488,6 +1443,7 @@ textarea {
 }
 
 .merch-wa-text h4 {
+  font-family: var(--font-heading);
   font-size: var(--font-size-md);
   font-weight: 700;
   margin-bottom: 4px;
@@ -1626,9 +1582,7 @@ textarea {
   align-items: center;
   gap: 6px;
   padding: 6px 14px;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background: rgba(0, 0, 0, 0.7);
   border-radius: var(--radius-full);
   color: rgba(255, 255, 255, 0.85);
   font-size: 11px;
@@ -1652,9 +1606,7 @@ textarea {
   width: 40px;
   height: 40px;
   border-radius: var(--radius-full);
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background: rgba(0, 0, 0, 0.6);
   border: 1px solid rgba(255, 255, 255, 0.1);
   color: #fff;
   display: flex;
@@ -1686,9 +1638,7 @@ textarea {
   width: 40px;
   height: 40px;
   border-radius: var(--radius-full);
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background: rgba(0, 0, 0, 0.6);
   border: 1px solid rgba(255, 255, 255, 0.1);
   color: #fff;
   display: flex;
@@ -1806,6 +1756,7 @@ textarea {
 }
 
 .merch-detail-title {
+  font-family: var(--font-heading);
   font-size: clamp(1.5rem, 3vw, 2.25rem);
   font-weight: 800;
   letter-spacing: -0.02em;
@@ -1840,9 +1791,9 @@ textarea {
 }
 
 .merch-detail-status.available {
-  background: rgba(16, 185, 129, 0.12);
-  color: #10b981;
-  border: 1px solid rgba(16, 185, 129, 0.2);
+  background: rgba(39, 174, 96, 0.12);
+  color: #27ae60;
+  border: 1px solid rgba(39, 174, 96, 0.2);
 }
 
 .merch-detail-status.unavailable {
@@ -1866,6 +1817,7 @@ textarea {
 }
 
 .merch-detail-desc h3 {
+  font-family: var(--font-heading);
   font-size: var(--font-size-md);
   font-weight: 700;
   margin-bottom: var(--spacing-sm);
@@ -1887,6 +1839,7 @@ textarea {
 }
 
 .merch-detail-specs h3 {
+  font-family: var(--font-heading);
   font-size: var(--font-size-md);
   font-weight: 700;
   margin-bottom: var(--spacing-md);
@@ -1987,6 +1940,7 @@ textarea {
 }
 
 .merch-cta-text h3 {
+  font-family: var(--font-heading);
   font-size: var(--font-size-md);
   font-weight: 800;
   color: var(--color-text);
@@ -2016,9 +1970,7 @@ textarea {
   position: fixed;
   inset: 0;
   z-index: 9999;
-  background: rgba(0, 0, 0, 0.92);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: rgba(0, 0, 0, 0.95);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2143,6 +2095,7 @@ textarea {
 }
 
 .merch-related-title {
+  font-family: var(--font-heading);
   font-size: var(--font-size-xl);
   font-weight: 800;
   margin-bottom: var(--spacing-lg);
@@ -2193,6 +2146,7 @@ textarea {
 }
 
 .merch-related-body h4 {
+  font-family: var(--font-heading);
   font-weight: 700;
   font-size: var(--font-size-sm);
   margin-bottom: 2px;
@@ -2234,6 +2188,7 @@ textarea {
 }
 
 .merch-rec-title {
+  font-family: var(--font-heading);
   font-size: var(--font-size-xl);
   font-weight: 800;
   letter-spacing: -0.02em;
@@ -2335,14 +2290,12 @@ textarea {
   text-transform: uppercase;
   letter-spacing: 0.06em;
   z-index: 2;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
 }
 
 .merch-rec-badge.available {
-  background: rgba(16, 185, 129, 0.2);
-  color: #10b981;
-  border: 1px solid rgba(16, 185, 129, 0.25);
+  background: rgba(39, 174, 96, 0.2);
+  color: #27ae60;
+  border: 1px solid rgba(39, 174, 96, 0.25);
 }
 
 .merch-rec-badge.unavailable {
@@ -2564,6 +2517,7 @@ textarea {
 }
 
 .gallery-overlay .gallery-title {
+  font-family: var(--font-heading);
   font-size: var(--font-size-base);
   font-weight: 700;
   color: #fff;
@@ -2629,6 +2583,7 @@ textarea {
 }
 
 .lightbox-info h3 {
+  font-family: var(--font-heading);
   font-size: var(--font-size-lg);
   margin-bottom: 4px;
 }
@@ -2676,7 +2631,6 @@ textarea {
   justify-content: center;
   font-size: 1.5rem;
   cursor: pointer;
-  backdrop-filter: blur(4px);
 }
 
 .lightbox-nav-btn.prev {
@@ -2714,6 +2668,7 @@ textarea {
 }
 
 .detail-header h1 {
+  font-family: var(--font-heading);
   font-size: clamp(var(--font-size-2xl), 4vw, var(--font-size-4xl));
   font-weight: 800;
   line-height: 1.2;
@@ -2762,6 +2717,7 @@ textarea {
 
 .detail-content .prose h2,
 .detail-content .prose h3 {
+  font-family: var(--font-heading);
   color: var(--color-text);
   margin-top: var(--spacing-2xl);
   margin-bottom: var(--spacing-md);
@@ -2872,6 +2828,7 @@ textarea {
 }
 
 .footer-brand h3 {
+  font-family: var(--font-heading);
   font-size: var(--font-size-xl);
   font-weight: 800;
   margin-bottom: var(--spacing-md);
@@ -2889,6 +2846,7 @@ textarea {
 }
 
 .footer-col h4 {
+  font-family: var(--font-heading);
   font-size: var(--font-size-sm);
   font-weight: 700;
   text-transform: uppercase;
@@ -3006,6 +2964,7 @@ textarea {
 }
 
 .not-found h1 {
+  font-family: var(--font-heading);
   font-size: 8rem;
   font-weight: 900;
   line-height: 1;
@@ -3046,6 +3005,7 @@ textarea {
 }
 
 .contact-info-card h3 {
+  font-family: var(--font-heading);
   font-size: var(--font-size-base);
   font-weight: 700;
   margin-bottom: var(--spacing-xs);
@@ -3064,6 +3024,7 @@ textarea {
 }
 
 .about-content h3 {
+  font-family: var(--font-heading);
   font-size: var(--font-size-xl);
   font-weight: 700;
   margin-bottom: var(--spacing-md);
@@ -3088,6 +3049,7 @@ textarea {
 }
 
 .vm-card h3 {
+  font-family: var(--font-heading);
   margin-top: 0;
   display: flex;
   align-items: center;
@@ -3325,8 +3287,9 @@ textarea {
 }
 
 .cta-title {
+  font-family: var(--font-heading);
   font-size: clamp(1.75rem, 4vw, 2.75rem);
-  font-weight: 900;
+  font-weight: 700;
   margin-bottom: 1rem;
   letter-spacing: -0.03em;
 }
@@ -3361,8 +3324,8 @@ textarea {
 /* ─── Blueprint Card (Technical Drawing Style) ──────────── */
 .blueprint-card {
   position: relative;
-  background: linear-gradient(145deg, rgba(46, 134, 222, 0.04) 0%, rgba(255, 255, 255, 0.02) 100%);
-  border: 1px solid rgba(46, 134, 222, 0.15);
+  background: linear-gradient(145deg, rgba(var(--color-primary-rgb), 0.04) 0%, rgba(255, 255, 255, 0.02) 100%);
+  border: 1px solid rgba(var(--color-primary-rgb), 0.15);
   border-radius: var(--radius-lg);
   padding: var(--spacing-2xl);
   transition: all 0.35s ease;
@@ -3375,7 +3338,7 @@ textarea {
   position: absolute;
   width: 20px;
   height: 20px;
-  border-color: rgba(46, 134, 222, 0.3);
+  border-color: rgba(var(--color-primary-rgb), 0.3);
   border-style: solid;
   transition: all 0.35s ease;
 }
@@ -3395,8 +3358,8 @@ textarea {
 }
 
 .blueprint-card:hover {
-  border-color: rgba(46, 134, 222, 0.35);
-  box-shadow: 0 8px 32px rgba(46, 134, 222, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  border-color: rgba(var(--color-primary-rgb), 0.35);
+  box-shadow: 0 8px 32px rgba(var(--color-primary-rgb), 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.06);
   transform: translateY(-4px);
 }
 
@@ -3404,7 +3367,7 @@ textarea {
 .blueprint-card:hover::after {
   width: 28px;
   height: 28px;
-  border-color: rgba(46, 134, 222, 0.5);
+  border-color: rgba(var(--color-primary-rgb), 0.5);
 }
 
 /* ─── Construction Divider ──────────────────────────────── */
@@ -3532,8 +3495,8 @@ textarea {
   align-items: center;
   text-align: center;
   padding: var(--spacing-lg) var(--spacing-xl);
-  background: linear-gradient(145deg, rgba(46, 134, 222, 0.06) 0%, rgba(255, 255, 255, 0.02) 100%);
-  border: 1px solid rgba(46, 134, 222, 0.15);
+  background: linear-gradient(145deg, rgba(var(--color-primary-rgb), 0.06) 0%, rgba(255, 255, 255, 0.02) 100%);
+  border: 1px solid rgba(var(--color-primary-rgb), 0.15);
   border-radius: var(--radius-lg);
   min-width: 180px;
   max-width: 220px;
@@ -3559,8 +3522,8 @@ textarea {
 }
 
 .org-card:hover {
-  border-color: rgba(46, 134, 222, 0.4);
-  box-shadow: 0 8px 24px rgba(46, 134, 222, 0.12);
+  border-color: rgba(var(--color-primary-rgb), 0.4);
+  box-shadow: 0 8px 24px rgba(var(--color-primary-rgb), 0.12);
   transform: translateY(-4px);
 }
 
@@ -3589,6 +3552,7 @@ textarea {
 }
 
 .org-card-name {
+  font-family: var(--font-heading);
   font-size: var(--font-size-sm);
   font-weight: 700;
   color: var(--color-text);
@@ -3609,9 +3573,9 @@ textarea {
   min-width: 220px;
   max-width: 260px;
   padding: var(--spacing-xl) var(--spacing-2xl);
-  background: linear-gradient(145deg, rgba(46, 134, 222, 0.1) 0%, rgba(225, 112, 85, 0.04) 100%);
-  border-color: rgba(46, 134, 222, 0.25);
-  box-shadow: 0 4px 24px rgba(46, 134, 222, 0.08);
+  background: linear-gradient(145deg, rgba(var(--color-primary-rgb), 0.1) 0%, rgba(var(--color-secondary-rgb), 0.04) 100%);
+  border-color: rgba(var(--color-primary-rgb), 0.25);
+  box-shadow: 0 4px 24px rgba(var(--color-primary-rgb), 0.08);
 }
 
 .org-card--ketua .org-card-avatar,
@@ -3622,6 +3586,7 @@ textarea {
 }
 
 .org-card--ketua .org-card-name {
+  font-family: var(--font-heading);
   font-size: var(--font-size-base);
 }
 
@@ -3632,7 +3597,7 @@ textarea {
 
 /* Sekretaris/Bendahara — medium emphasis */
 .org-card--wakil {
-  background: linear-gradient(145deg, rgba(46, 134, 222, 0.07) 0%, rgba(255, 255, 255, 0.02) 100%);
+  background: linear-gradient(145deg, rgba(var(--color-primary-rgb), 0.07) 0%, rgba(255, 255, 255, 0.02) 100%);
 }
 
 /* Responsive Org Chart */
@@ -3691,8 +3656,8 @@ textarea {
   position: relative;
   text-align: center;
   padding: var(--spacing-2xl) var(--spacing-lg);
-  background: linear-gradient(145deg, rgba(46, 134, 222, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
-  border: 1px solid rgba(46, 134, 222, 0.12);
+  background: linear-gradient(145deg, rgba(var(--color-primary-rgb), 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+  border: 1px solid rgba(var(--color-primary-rgb), 0.12);
   border-radius: var(--radius-lg);
   transition: all 0.3s ease;
 }
@@ -3725,6 +3690,7 @@ textarea {
 }
 
 .value-card-title {
+  font-family: var(--font-heading);
   font-size: var(--font-size-lg);
   font-weight: 700;
   margin-bottom: var(--spacing-xs);
@@ -3831,21 +3797,10 @@ textarea {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-[data-theme="light"] .org-image-container {
-  background: #ffffff;
-  border-color: #1a1a2e;
-  box-shadow: 6px 6px 0px rgba(26, 26, 46, 0.15);
-}
-
 .org-image-container:hover {
   transform: translate(-2px, -2px);
   box-shadow: 8px 8px 0px rgba(var(--color-primary-rgb), 0.25);
   border-color: var(--color-secondary);
-}
-
-[data-theme="light"] .org-image-container:hover {
-  border-color: #e17055; /* Safety Orange */
-  box-shadow: 8px 8px 0px rgba(26, 26, 46, 0.25);
 }
 
 .org-structure-image {
@@ -3853,14 +3808,9 @@ textarea {
   height: auto;
   object-fit: contain;
   display: block;
-  /* Slightly adjust contrast and brightness */
-  filter: brightness(0.98) contrast(1.02);
-  transition: filter 0.3s ease;
-}
-
-[data-theme="dark"] .org-structure-image {
   /* Elegant invert for black and white diagrams in dark mode */
   filter: invert(0.9) hue-rotate(180deg) brightness(0.95) contrast(1.05);
+  transition: filter 0.3s ease;
 }
 
 .org-image-actions {
@@ -3887,19 +3837,11 @@ textarea {
   transition: all 0.2s ease;
 }
 
-[data-theme="light"] .btn-download {
-  background-color: #1a1a2e;
-}
-
 .btn-download:hover {
   background-color: var(--color-secondary);
   color: #ffffff;
   transform: translate(-1px, -1px);
   box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.25);
-}
-
-[data-theme="light"] .btn-download:hover {
-  background-color: #e17055;
 }
 
 .btn-download:active {
@@ -3913,8 +3855,81 @@ textarea {
     padding: 1rem;
     box-shadow: 4px 4px 0px rgba(var(--color-primary-rgb), 0.15);
   }
-  
-  [data-theme="light"] .org-image-container {
-    box-shadow: 4px 4px 0px rgba(26, 26, 46, 0.15);
+}
+
+/* ─── Civil Engineering Animated Background ─────────────── */
+@keyframes civil-grid-pan {
+  0%   { background-position: 0 0; }
+  100% { background-position: 60px 60px; }
+}
+
+@keyframes civil-grid-pan-slow {
+  0%   { background-position: 0 0; }
+  100% { background-position: 120px 120px; }
+}
+
+@keyframes civil-dash {
+  0%   { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: 24; }
+}
+
+@keyframes civil-pulse {
+  0%, 100% { opacity: 0.04; }
+  50%      { opacity: 0.10; }
+}
+
+.civil-grid {
+  position: absolute;
+  inset: 0;
+  background-size: 60px 60px;
+  background-image:
+    linear-gradient(to right,  rgba(var(--color-primary-rgb), 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(var(--color-primary-rgb), 0.05) 1px, transparent 1px);
+  animation: civil-grid-pan 30s linear infinite;
+  mask-image: radial-gradient(ellipse at center, black 20%, transparent 70%);
+  -webkit-mask-image: radial-gradient(ellipse at center, black 20%, transparent 70%);
+  opacity: 0.7;
+}
+
+.civil-grid::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-size: 60px 60px;
+  background-image:
+    radial-gradient(circle, rgba(var(--color-primary-rgb), 0.12) 1.5px, transparent 1.5px);
+  animation: civil-grid-pan 30s linear infinite, civil-pulse 8s ease-in-out infinite;
+  mask-image: radial-gradient(ellipse at center, black 15%, transparent 60%);
+  -webkit-mask-image: radial-gradient(ellipse at center, black 15%, transparent 60%);
+}
+
+.civil-measure-marks {
+  position: absolute;
+  inset: 0;
+  background-size: 120px 120px;
+  background-image:
+    linear-gradient(45deg, transparent 48%, rgba(var(--color-primary-rgb), 0.04) 48%, rgba(var(--color-primary-rgb), 0.04) 52%, transparent 52%),
+    linear-gradient(-45deg, transparent 48%, rgba(var(--color-secondary-rgb), 0.03) 48%, rgba(var(--color-secondary-rgb), 0.03) 52%, transparent 52%);
+  animation: civil-grid-pan-slow 60s linear infinite;
+  mask-image: radial-gradient(ellipse at center, transparent 30%, black 50%, transparent 80%);
+  -webkit-mask-image: radial-gradient(ellipse at center, transparent 30%, black 50%, transparent 80%);
+  opacity: 0.6;
+}
+
+.civil-particle svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  .civil-grid,
+  .civil-grid::after,
+  .civil-measure-marks {
+    animation: none;
+  }
+  .civil-particle {
+    animation: none !important;
   }
 }

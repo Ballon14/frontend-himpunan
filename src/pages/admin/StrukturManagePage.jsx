@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getStrukturImage, uploadStrukturImage } from '../../api/admin';
 import { Upload, Image as ImageIcon, CheckCircle } from 'lucide-react';
-import toast from 'react-hot-toast';
+import { notifySuccess, notifyError } from '../../utils/toast';
 
 export default function StrukturManagePage() {
     const queryClient = useQueryClient();
@@ -27,13 +27,13 @@ export default function StrukturManagePage() {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['struktur-image-admin'] });
             queryClient.invalidateQueries({ queryKey: ['struktur-image'] });
-            toast.success('Bagan struktur organisasi berhasil diperbarui!');
+            notifySuccess('Bagan struktur organisasi berhasil diperbarui!');
             setSelectedFile(null);
             setPreviewUrl(null);
         },
         onError: (err) => {
             console.error(err);
-            toast.error(err.response?.data?.message || 'Gagal mengunggah bagan organisasi.');
+            notifyError(err.response?.data?.message || 'Gagal mengunggah bagan organisasi.');
         }
     });
 
@@ -41,11 +41,11 @@ export default function StrukturManagePage() {
         const file = e.target.files[0];
         if (file) {
             if (file.size > 5 * 1024 * 1024) {
-                toast.error('Ukuran berkas maksimal 5MB.');
+                notifyError('Ukuran berkas maksimal 5MB.');
                 return;
             }
             if (!file.type.startsWith('image/')) {
-                toast.error('Berkas harus berupa gambar.');
+                notifyError('Berkas harus berupa gambar.');
                 return;
             }
             setSelectedFile(file);
@@ -67,10 +67,10 @@ export default function StrukturManagePage() {
     return (
         <div className="admin-page">
             <div className="admin-page-header-simple" style={{ marginBottom: '2rem' }}>
-                <h2 className="admin-page-title" style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--color-primary)' }}>
+                <h2 className="admin-page-title" style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--admin-primary)' }}>
                     Manajemen Bagan Struktur Organisasi
                 </h2>
-                <p style={{ color: 'var(--color-text-muted)', fontSize: '0.875rem', marginTop: '0.25rem' }}>
+                <p style={{ color: 'var(--admin-text-muted)', fontSize: '0.875rem', marginTop: '0.25rem' }}>
                     Unggah diagram struktur organisasi (PNG/JPG/WEBP, maks. 5MB) untuk ditampilkan di halaman publik.
                 </p>
             </div>
@@ -86,7 +86,7 @@ export default function StrukturManagePage() {
                         <div 
                             className="upload-dropzone"
                             style={{
-                                border: '2px dashed var(--color-primary)',
+                                border: '2px dashed var(--admin-primary)',
                                 padding: '2rem',
                                 textAlign: 'center',
                                 background: 'rgba(255, 255, 255, 0.02)',
@@ -116,10 +116,10 @@ export default function StrukturManagePage() {
                                 />
                             ) : (
                                 <>
-                                    <ImageIcon size={48} style={{ opacity: 0.5, color: 'var(--color-primary)' }} />
+                                    <ImageIcon size={48} style={{ opacity: 0.5, color: 'var(--admin-primary)' }} />
                                     <div>
                                         <p style={{ fontWeight: 600 }}>Klik untuk memilih berkas gambar</p>
-                                        <p style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', marginTop: '0.25rem' }}>
+                                        <p style={{ fontSize: '0.75rem', color: 'var(--admin-text-muted)', marginTop: '0.25rem' }}>
                                             PNG, JPG, JPEG, atau WEBP hingga 5MB
                                         </p>
                                     </div>
@@ -131,7 +131,7 @@ export default function StrukturManagePage() {
                             <div style={{ marginTop: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                                 <div style={{ fontSize: '0.875rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                                     <span style={{ fontWeight: 600 }}>Terpilih: </span>
-                                    <span style={{ color: 'var(--color-text-muted)' }}>{selectedFile.name}</span>
+                                    <span style={{ color: 'var(--admin-text-muted)' }}>{selectedFile.name}</span>
                                 </div>
                                 <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
                                     <button 
@@ -172,7 +172,7 @@ export default function StrukturManagePage() {
                                 style={{
                                     border: '1px solid rgba(255, 255, 255, 0.1)',
                                     padding: '1rem',
-                                    background: 'var(--color-bg-secondary)',
+                                    background: 'var(--admin-bg)',
                                     display: 'flex',
                                     justifyContent: 'center',
                                     alignItems: 'center',
@@ -187,13 +187,13 @@ export default function StrukturManagePage() {
                                     style={{ maxWidth: '100%', maxHeight: '250px', objectFit: 'contain' }} 
                                 />
                             </div>
-                            <div style={{ fontSize: '0.8125rem', color: 'var(--color-text-muted)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                            <div style={{ fontSize: '0.8125rem', color: 'var(--admin-text-muted)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                                 <CheckCircle size={14} style={{ color: '#2ecc71' }} />
                                 <span>Terakhir diperbarui: {updatedAt ? new Date(updatedAt).toLocaleString('id-ID') : '-'}</span>
                             </div>
                         </div>
                     ) : (
-                        <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--color-text-muted)' }}>
+                        <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--admin-text-muted)' }}>
                             <ImageIcon size={48} style={{ opacity: 0.3, marginBottom: '1rem' }} />
                             <p>Belum ada bagan organisasi yang aktif.</p>
                         </div>

@@ -1,5 +1,18 @@
 import api from './index';
 
+function toFormData(data) {
+    const formData = new FormData();
+    Object.entries(data).forEach(([key, value]) => {
+        if (value === undefined || value === null || value === '') return;
+        if (Array.isArray(value) || value instanceof FileList) {
+            Array.from(value).forEach(file => formData.append(key, file));
+        } else {
+            formData.append(key, value);
+        }
+    });
+    return formData;
+}
+
 // ─── Kegiatan ────────────────────────────────────────────
 export const getKegiatan = (params) => api.get('/kegiatan', { params });
 export const getKegiatanById = (id) => api.get(`/kegiatan/${id}`);
@@ -11,21 +24,9 @@ export const deleteKegiatan = (id) => api.delete(`/kegiatan/${id}`);
 export const getMerchandise = (params) => api.get('/merchandise', { params });
 export const getMerchandiseById = (id) => api.get(`/merchandise/${id}`);
 export const createMerchandise = (data) => {
-    const formData = new FormData();
-    Object.entries(data).forEach(([key, val]) => {
-        if (key === 'foto' && (Array.isArray(val) || val instanceof FileList)) {
-            Array.from(val).forEach(file => formData.append('foto', file));
-        } else if (val !== null && val !== undefined && val !== '') formData.append(key, val);
-    });
-    return api.post('/merchandise', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+    return api.post('/merchandise', toFormData(data), { headers: { 'Content-Type': 'multipart/form-data' } });
 };
 export const updateMerchandise = (id, data) => {
-    const formData = new FormData();
-    Object.entries(data).forEach(([key, val]) => {
-        if (key === 'foto' && (Array.isArray(val) || val instanceof FileList)) {
-            Array.from(val).forEach(file => formData.append('foto', file));
-        } else if (val !== null && val !== undefined && val !== '') formData.append(key, val);
-    });
-    return api.put(`/merchandise/${id}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+    return api.put(`/merchandise/${id}`, toFormData(data), { headers: { 'Content-Type': 'multipart/form-data' } });
 };
 export const deleteMerchandise = (id) => api.delete(`/merchandise/${id}`);

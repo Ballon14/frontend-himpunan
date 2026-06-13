@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Mail, MapPin, Instagram, Send } from 'lucide-react';
+import { Mail, MapPin, Instagram, Send, CheckCircle, XCircle } from 'lucide-react';
 import SectionTitle from '../components/SectionTitle';
 import PageTransition from '../components/PageTransition';
 import SEO from '../components/SEO';
@@ -116,7 +116,7 @@ export default function ContactPage() {
                                     initial={{ opacity: 0, y: -10 }}
                                     animate={{ opacity: 1, y: 0 }}
                                 >
-                                    ✅ Pesan berhasil dikirim. Terima kasih!
+                                    <CheckCircle size={16} style={{ display: 'inline', verticalAlign: 'text-bottom', marginRight: '0.4rem' }} /> Pesan berhasil dikirim. Terima kasih!
                                 </motion.div>
                             )}
 
@@ -126,7 +126,7 @@ export default function ContactPage() {
                                     initial={{ opacity: 0, y: -10 }}
                                     animate={{ opacity: 1, y: 0 }}
                                 >
-                                    ❌ {status.error}
+                                    <XCircle size={16} style={{ display: 'inline', verticalAlign: 'text-bottom', marginRight: '0.4rem' }} /> {status.error}
                                 </motion.div>
                             )}
 

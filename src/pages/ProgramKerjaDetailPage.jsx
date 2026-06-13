@@ -1,24 +1,20 @@
 import { useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Calendar, Clipboard, Share2 } from 'lucide-react';
-import toast from 'react-hot-toast';
+import { ArrowLeft, Calendar, Clipboard, Share2, AlertCircle } from 'lucide-react';
+import DOMPurify from 'dompurify';
 import { useQuery } from '@tanstack/react-query';
 import LoadingSpinner from '../components/LoadingSpinner';
 import PageTransition from '../components/PageTransition';
 import SEO from '../components/SEO';
 import { getProgramKerjaById } from '../api/programKerja';
 import { formatDate } from '../utils/format';
-
-const STATUS_MAP = {
-    perencanaan: { class: 'badge-gray', label: 'Perencanaan' },
-    berjalan: { class: 'badge-info', label: 'Berjalan' },
-    selesai: { class: 'badge-success', label: 'Selesai' },
-    dibatalkan: { class: 'badge-danger', label: 'Dibatalkan' },
-};
+import { STATUS_MAP } from '../utils/constants';
+import useShare from '../hooks/useShare';
 
 export default function ProgramKerjaDetailPage() {
     const { id } = useParams();
+    const share = useShare();
 
     const { data: proker, isLoading: loading, isError } = useQuery({
         queryKey: ['programKerjaDetail', id],
@@ -35,21 +31,6 @@ export default function ProgramKerjaDetailPage() {
         window.scrollTo(0, 0);
     }, [id]);
 
-    const handleShare = async () => {
-        const url = window.location.href;
-        const title = proker?.nama_program || 'Program Kerja Himpunan';
-        if (navigator.share) {
-            try {
-                await navigator.share({ title, url });
-            } catch (error) {
-                console.error('Share error:', error);
-            }
-        } else {
-            await navigator.clipboard.writeText(url);
-            toast.success('Link program kerja disalin ke clipboard!');
-        }
-    };
-
     if (loading) return (
         <div className="page"><div className="container"><LoadingSpinner /></div></div>
     );
@@ -58,7 +39,7 @@ export default function ProgramKerjaDetailPage() {
         <div className="page">
             <div className="container">
                 <div className="error-container">
-                    <h2>😕 {error || 'Program kerja tidak ditemukan'}</h2>
+                    <h2><AlertCircle size={24} style={{ display: 'inline', verticalAlign: 'text-bottom', marginRight: '0.4rem' }} />{error || 'Program kerja tidak ditemukan'}</h2>
                     <Link to="/program-kerja" className="btn btn-outline">← Kembali ke Program Kerja</Link>
                 </div>
             </div>
@@ -72,14 +53,32 @@ export default function ProgramKerjaDetailPage() {
             {proker && <SEO title={proker.nama_program} description={proker.deskripsi?.substring(0, 150) + '...'} image={proker.foto} type="article" />}
             <div className="detail-page">
                 <div className="container" style={{ maxWidth: 800 }}>
+                    <nav className="breadcrumb" aria-label="Breadcrumb" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: 'var(--spacing-md)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>
+                        <Link to="/" style={{ color: 'var(--color-text-secondary)' }}>Beranda</Link>
+                        <span>/</span>
+                        <Link to="/program-kerja" style={{ color: 'var(--color-text-secondary)' }}>Program Kerja</Link>
+                        <span>/</span>
+                        <span style={{ color: 'var(--color-text)' }}>{proker.nama_program}</span>
+                    </nav>
                     <div className="detail-header" style={{ textAlign: 'center', marginBottom: 'var(--spacing-3xl)' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 'var(--spacing-lg)', alignItems: 'center' }}>
                             <Link to="/program-kerja" className="back-link btn-outline" style={{ display: 'inline-flex', padding: '0.5rem 1rem', fontSize: 'var(--font-size-sm)', gap: '0.5rem', alignItems: 'center', textDecoration: 'none', marginBottom: 0 }}>
                                 <ArrowLeft size={18} /> Kembali
                             </Link>
-                            <button className="btn btn-outline" onClick={handleShare} style={{ display: 'inline-flex', padding: '0.5rem 1rem', fontSize: 'var(--font-size-sm)', gap: '0.5rem', alignItems: 'center' }}>
-                                <Share2 size={16} /> Bagikan
-                            </button>
+                            <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
+                                <button className="btn btn-outline" onClick={() => share({ title: proker?.nama_program || 'Program Kerja Himpunan' })} style={{ display: 'inline-flex', padding: '0.5rem 1rem', fontSize: 'var(--font-size-sm)', gap: '0.5rem', alignItems: 'center' }}>
+                                    <Share2 size={16} /> Bagikan
+                                </button>
+                                <a href={`https://wa.me/?text=${encodeURIComponent(proker.nama_program + ' ' + window.location.href)}`} target="_blank" rel="noopener noreferrer" className="btn btn-outline" style={{ display: 'inline-flex', padding: '0.5rem 0.75rem', fontSize: 'var(--font-size-sm)', gap: '0.5rem', alignItems: 'center', textDecoration: 'none' }}>
+                                    WhatsApp
+                                </a>
+                                <a href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(proker.nama_program)}&url=${encodeURIComponent(window.location.href)}`} target="_blank" rel="noopener noreferrer" className="btn btn-outline" style={{ display: 'inline-flex', padding: '0.5rem 0.75rem', fontSize: 'var(--font-size-sm)', gap: '0.5rem', alignItems: 'center', textDecoration: 'none' }}>
+                                    Twitter
+                                </a>
+                                <a href={`https://t.me/share/url?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(proker.nama_program)}`} target="_blank" rel="noopener noreferrer" className="btn btn-outline" style={{ display: 'inline-flex', padding: '0.5rem 0.75rem', fontSize: 'var(--font-size-sm)', gap: '0.5rem', alignItems: 'center', textDecoration: 'none' }}>
+                                    Telegram
+                                </a>
+                            </div>
                         </div>
 
                         <span className={`badge ${s.class}`} style={{ display: 'inline-block', marginBottom: 'var(--spacing-md)' }}>{s.label}</span>
@@ -108,7 +107,7 @@ export default function ProgramKerjaDetailPage() {
                         style={{ padding: 'var(--spacing-2xl)', lineHeight: 1.8, fontSize: 'var(--font-size-md)' }}
                     >
                         <h3 style={{ marginBottom: 'var(--spacing-md)' }}>Deskripsi Program</h3>
-                        <div className="prose" dangerouslySetInnerHTML={{ __html: proker.deskripsi }} />
+                        <div className="prose" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(proker.deskripsi || '') }} />
                     </div>
                 </div>
             </div>

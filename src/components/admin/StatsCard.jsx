@@ -1,4 +1,4 @@
-export default function StatsCard({ icon: Icon, label, value, color = '#6366f1' }) {
+export default function StatsCard({ icon: Icon, label, value, color = '#c0392b' }) {
     return (
         <div className="admin-stats-card" style={{ '--card-accent': color }}>
             <div className="admin-stats-icon" style={{ background: `${color}20`, color }}>

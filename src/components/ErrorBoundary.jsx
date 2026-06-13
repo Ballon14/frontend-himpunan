@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import { AlertTriangle } from 'lucide-react';
 
 /**
  * ErrorBoundary — catches unhandled React rendering errors.
@@ -29,24 +30,26 @@ export default class ErrorBoundary extends Component {
                     minHeight: '60vh',
                     padding: '2rem',
                     textAlign: 'center',
-                    color: 'var(--text-primary, #e4e6ed)',
-                    fontFamily: "'Inter', sans-serif",
+                    color: 'var(--color-text, #e4e6ed)',
+                    fontFamily: 'var(--font-family)',
                 }}>
                     <div style={{
-                        fontSize: '4rem',
                         marginBottom: '1rem',
-                    }}>⚠️</div>
+                    }}>
+                        <AlertTriangle size={64} color="var(--color-primary, #c0392b)" />
+                    </div>
                     <h2 style={{
+                        fontFamily: 'var(--font-heading)',
                         fontSize: '1.5rem',
                         fontWeight: 700,
                         marginBottom: '0.5rem',
-                        color: 'var(--text-primary, #e4e6ed)',
+                        color: 'var(--color-text, #e4e6ed)',
                     }}>
                         Terjadi Kesalahan
                     </h2>
                     <p style={{
                         fontSize: '1rem',
-                        color: 'var(--text-secondary, #9ca3af)',
+                        color: 'var(--color-text-secondary, #9ca3af)',
                         marginBottom: '1.5rem',
                         maxWidth: '400px',
                     }}>
@@ -58,7 +61,7 @@ export default class ErrorBoundary extends Component {
                             padding: '0.75rem 2rem',
                             borderRadius: '8px',
                             border: 'none',
-                            background: 'var(--accent, #6366f1)',
+                            background: 'var(--color-primary, #c0392b)',
                             color: '#fff',
                             fontWeight: 600,
                             cursor: 'pointer',
