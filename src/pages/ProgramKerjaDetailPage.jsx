@@ -6,7 +6,7 @@ import DOMPurify from 'dompurify';
 import { useQuery } from '@tanstack/react-query';
 import LoadingSpinner from '../components/LoadingSpinner';
 import PageTransition from '../components/PageTransition';
-import SEO from '../components/SEO';
+import SEO, { eventSchema } from '../components/SEO';
 import { getProgramKerjaById } from '../api/programKerja';
 import { formatDate } from '../utils/format';
 import { STATUS_MAP } from '../utils/constants';
@@ -50,7 +50,22 @@ export default function ProgramKerjaDetailPage() {
 
     return (
         <PageTransition>
-            {proker && <SEO title={proker.nama_program} description={proker.deskripsi?.substring(0, 150) + '...'} image={proker.foto} type="article" />}
+            {proker && (
+                <SEO
+                    title={proker.nama_program}
+                    description={proker.deskripsi?.substring(0, 150) + '...'}
+                    image={proker.foto}
+                    type="article"
+                    jsonLd={eventSchema({
+                        name: proker.nama_program,
+                        description: proker.deskripsi?.substring(0, 150) + '...',
+                        image: proker.foto,
+                        startDate: proker.tanggal_mulai,
+                        endDate: proker.tanggal_selesai,
+                        url: `/program-kerja/${proker.id}`,
+                    })}
+                />
+            )}
             <div className="detail-page">
                 <div className="container" style={{ maxWidth: 800 }}>
                     <nav className="breadcrumb" aria-label="Breadcrumb" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: 'var(--spacing-md)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>

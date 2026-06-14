@@ -8,7 +8,7 @@ import SectionTitle from '../components/SectionTitle';
 import LoadingSpinner from '../components/LoadingSpinner';
 import Skeleton, { SkeletonCard } from '../components/Skeleton';
 import PageTransition from '../components/PageTransition';
-import SEO from '../components/SEO';
+import SEO, { organizationSchema } from '../components/SEO';
 import CivilBackground from '../components/CivilBackground';
 import { getBerita } from '../api/berita';
 import { getProgramKerja } from '../api/programKerja';
@@ -72,7 +72,11 @@ export default function HomePage() {
 
     return (
         <PageTransition>
-            <SEO />
+            <SEO
+                title="Himpunan Mahasiswa Teknologi Konstruksi Bangunan Gedung"
+                description="Situs resmi HMTKBG Semarang. Wadah aspirasi dan pengembangan diri mahasiswa TKBG. Temukan berita, program kerja, galeri, dan informasi kegiatan terkini."
+                jsonLd={organizationSchema()}
+            />
             <div>
                 {/* Hero Section — Framer Motion */}
                 <section className="hero">

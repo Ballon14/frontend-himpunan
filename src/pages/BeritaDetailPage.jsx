@@ -6,7 +6,7 @@ import DOMPurify from 'dompurify';
 import { useQuery } from '@tanstack/react-query';
 import LoadingSpinner from '../components/LoadingSpinner';
 import PageTransition from '../components/PageTransition';
-import SEO from '../components/SEO';
+import SEO, { articleSchema, breadcrumbSchema } from '../components/SEO';
 import { getBeritaBySlug, getBerita } from '../api/berita';
 import { formatDate, formatTime } from '../utils/format';
 import useShare from '../hooks/useShare';
@@ -57,7 +57,21 @@ export default function BeritaDetailPage() {
 
     return (
         <PageTransition>
-            {berita && <SEO title={berita.judul} description={berita.isi?.substring(0, 150).replace(/<[^>]+>/g, '') + '...'} image={berita.thumbnail} type="article" />}
+            {berita && (
+                <SEO
+                    title={berita.judul}
+                    description={berita.isi?.substring(0, 150).replace(/<[^>]+>/g, '') + '...'}
+                    image={berita.thumbnail}
+                    type="article"
+                    jsonLd={articleSchema({
+                        title: berita.judul,
+                        description: berita.isi?.substring(0, 150).replace(/<[^>]+>/g, '') + '...',
+                        image: berita.thumbnail,
+                        datePublished: berita.published_at || berita.created_at,
+                        url: `/berita/${berita.slug}`,
+                    })}
+                />
+            )}
             <div className="detail-page">
                 <div className="container">
                     <nav className="breadcrumb" aria-label="Breadcrumb" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: 'var(--spacing-md)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>

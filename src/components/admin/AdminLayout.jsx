@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { Helmet } from 'react-helmet-async';
 import '../../styles/admin.css';
 import {
     LayoutGrid, Users, FileText, Briefcase,
@@ -40,6 +41,10 @@ export default function AdminLayout({ children }) {
 
     return (
         <div className="admin-layout">
+            <Helmet>
+                <meta name="robots" content="noindex, nofollow" />
+            </Helmet>
+
             {/* Sidebar Overlay */}
             {sidebarOpen && <div className="admin-sidebar-overlay" onClick={() => setSidebarOpen(false)} />}
 

@@ -11,7 +11,7 @@ export default function NotFoundPage() {
 
     return (
         <PageTransition>
-            <SEO title="404 - Halaman Tidak Ditemukan" />
+            <SEO title="404 - Halaman Tidak Ditemukan" noindex />
             <div className="not-found">
                 <motion.div
                     initial={{ scale: 0.8, opacity: 0 }}
