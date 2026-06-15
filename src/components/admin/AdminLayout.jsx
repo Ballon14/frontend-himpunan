@@ -6,7 +6,7 @@ import '../../styles/admin.css';
 import {
     LayoutGrid, Users, FileText, Briefcase,
     Image, Mail, Download, LogOut, Menu, X, ChevronLeft,
-    Calendar, ShoppingBag, Network, Terminal
+    Calendar, ShoppingBag, Network, Terminal, Trophy
 } from 'lucide-react';
 
 const navItems = [
@@ -16,6 +16,7 @@ const navItems = [
     { to: '/admin/berita', icon: FileText, label: 'Berita' },
     { to: '/admin/program-kerja', icon: Briefcase, label: 'Program Kerja' },
     { to: '/admin/galeri', icon: Image, label: 'Galeri' },
+    { to: '/admin/prestasi', icon: Trophy, label: 'Prestasi' },
     { to: '/admin/kegiatan', icon: Calendar, label: 'Kegiatan' },
     { to: '/admin/merchandise', icon: ShoppingBag, label: 'Merchandise' },
     { to: '/admin/pesan', icon: Mail, label: 'Pesan' },

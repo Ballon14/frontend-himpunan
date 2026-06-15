@@ -10,6 +10,7 @@ const links = [
     { to: '/berita', label: 'Berita' },
     { to: '/program-kerja', label: 'Program Kerja' },
     { to: '/galeri', label: 'Galeri' },
+    { to: '/prestasi', label: 'Prestasi' },
     { to: '/komunitas', label: 'Komunitas' },
     { to: '/kontak', label: 'Kontak' },
 ];

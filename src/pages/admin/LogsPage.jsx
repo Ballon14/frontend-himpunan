@@ -5,7 +5,7 @@ import ConfirmDialog from '../../components/admin/ConfirmDialog';
 import {
     Shield, RefreshCw, Trash2, Download, Search, Terminal,
     User, Globe, Clock, ChevronDown, ChevronUp, Filter, Activity, Eye,
-    Users, Newspaper, Image, CalendarDays, ShoppingBag, ClipboardList, Lock, Package
+    Users, Newspaper, Image, CalendarDays, ShoppingBag, ClipboardList, Lock, Package, Trophy
 } from 'lucide-react';
 import { notifySuccess, notifyError, notifyLoading } from '../../utils/toast';
 
@@ -21,12 +21,12 @@ const ACTION_BADGE = {
 };
 
 const RESOURCE_ICON = {
-    anggota: Users, berita: Newspaper, galeri: Image,
+    anggota: Users, berita: Newspaper, galeri: Image, prestasi: Trophy,
     kegiatan: CalendarDays, merchandise: ShoppingBag, 'program kerja': ClipboardList, auth: Lock,
 };
 
 const RESOURCE_LABEL = {
-    anggota: 'Anggota', berita: 'Berita', galeri: 'Galeri',
+    anggota: 'Anggota', berita: 'Berita', galeri: 'Galeri', prestasi: 'Prestasi',
     kegiatan: 'Kegiatan', merchandise: 'Merchandise', 'program kerja': 'Program Kerja', auth: 'Auth',
 };
 

@@ -25,6 +25,8 @@ const BeritaDetailPage = lazy(() => import('./pages/BeritaDetailPage'));
 const ProgramKerjaPage = lazy(() => import('./pages/ProgramKerjaPage'));
 const ProgramKerjaDetailPage = lazy(() => import('./pages/ProgramKerjaDetailPage'));
 const GaleriPage = lazy(() => import('./pages/GaleriPage'));
+const PrestasiPage = lazy(() => import('./pages/PrestasiPage'));
+const PrestasiDetailPage = lazy(() => import('./pages/PrestasiDetailPage'));
 const ContactPage = lazy(() => import('./pages/ContactPage'));
 const KomunitasPage = lazy(() => import('./pages/KomunitasPage'));
 const MerchandiseDetailPage = lazy(() => import('./pages/MerchandiseDetailPage'));
@@ -42,6 +44,7 @@ const AdminStrukturPage = lazy(() => import('./pages/admin/StrukturManagePage'))
 const AdminBeritaPage = lazy(() => import('./pages/admin/BeritaManagePage'));
 const AdminProgramKerjaPage = lazy(() => import('./pages/admin/ProgramKerjaManagePage'));
 const AdminGaleriPage = lazy(() => import('./pages/admin/GaleriManagePage'));
+const AdminPrestasiPage = lazy(() => import('./pages/admin/PrestasiManagePage'));
 const AdminPesanPage = lazy(() => import('./pages/admin/PesanManagePage'));
 const AdminExportPage = lazy(() => import('./pages/admin/ExportDataPage'));
 const AdminKegiatanPage = lazy(() => import('./pages/admin/KegiatanManagePage'));
@@ -81,6 +84,8 @@ function AnimatedRoutes() {
           <Route path="/program-kerja" element={<ProgramKerjaPage />} />
           <Route path="/program-kerja/:id" element={<ProgramKerjaDetailPage />} />
           <Route path="/galeri" element={<GaleriPage />} />
+          <Route path="/prestasi" element={<PrestasiPage />} />
+          <Route path="/prestasi/:id" element={<PrestasiDetailPage />} />
           <Route path="/kontak" element={<ContactPage />} />
           <Route path="/komunitas" element={<KomunitasPage />} />
           <Route path="/komunitas/merchandise/:id" element={<MerchandiseDetailPage />} />
@@ -122,6 +127,7 @@ function AdminRoutes() {
                   <Route path="berita" element={<AdminBeritaPage />} />
                   <Route path="program-kerja" element={<AdminProgramKerjaPage />} />
                   <Route path="galeri" element={<AdminGaleriPage />} />
+                  <Route path="prestasi" element={<AdminPrestasiPage />} />
                   <Route path="pesan" element={<AdminPesanPage />} />
                   <Route path="export" element={<AdminExportPage />} />
                   <Route path="kegiatan" element={<AdminKegiatanPage />} />
