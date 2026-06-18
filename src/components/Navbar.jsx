@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
-import { Menu, X, Search } from 'lucide-react';
+import { Menu, X, Search, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const links = [
@@ -15,19 +15,38 @@ const links = [
     { to: '/kontak', label: 'Kontak' },
 ];
 
-const mobileNavVariants = {
-    hidden: { opacity: 0, y: -20 },
-    visible: {
-        opacity: 1,
-        y: 0,
-        transition: { duration: 0.25, ease: 'easeOut', staggerChildren: 0.04, delayChildren: 0.05 },
-    },
-    exit: { opacity: 0, y: -20, transition: { duration: 0.2, ease: 'easeIn' } },
+const overlayVariants = {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1 },
+    exit: { opacity: 0 },
 };
 
-const mobileLinkVariants = {
-    hidden: { opacity: 0, x: -16 },
-    visible: { opacity: 1, x: 0 },
+const panelVariants = {
+    hidden: { x: '100%' },
+    visible: {
+        x: 0,
+        transition: { duration: 0.3, ease: [0.22, 1, 0.36, 1] },
+    },
+    exit: {
+        x: '100%',
+        transition: { duration: 0.25, ease: [0.22, 1, 0.36, 1] },
+    },
+};
+
+const linkListVariants = {
+    hidden: {},
+    visible: {
+        transition: { staggerChildren: 0.04, delayChildren: 0.12 },
+    },
+    exit: {
+        transition: { staggerChildren: 0.02, staggerDirection: -1 },
+    },
+};
+
+const linkItemVariants = {
+    hidden: { opacity: 0, x: 24 },
+    visible: { opacity: 1, x: 0, transition: { duration: 0.25, ease: 'easeOut' } },
+    exit: { opacity: 0, x: 24, transition: { duration: 0.15 } },
 };
 
 export default function Navbar() {
@@ -56,20 +75,30 @@ export default function Navbar() {
 
     useEffect(() => {
         const onKeyDown = (e) => {
-            if (e.key === 'Escape' && showSearch) {
-                setShowSearch(false);
-                setSearchQuery('');
+            if (e.key === 'Escape') {
+                if (showSearch) { setShowSearch(false); setSearchQuery(''); }
+                if (mobileOpen) setMobileOpen(false);
             }
         };
         window.addEventListener('keydown', onKeyDown);
         return () => window.removeEventListener('keydown', onKeyDown);
-    }, [showSearch]);
+    }, [showSearch, mobileOpen]);
 
     useEffect(() => {
         const onScroll = () => setScrolled(window.scrollY > 20);
         window.addEventListener('scroll', onScroll);
         return () => window.removeEventListener('scroll', onScroll);
     }, []);
+
+    // Lock body scroll when mobile nav or search is open
+    useEffect(() => {
+        if (mobileOpen || showSearch) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
+        return () => { document.body.style.overflow = ''; };
+    }, [mobileOpen, showSearch]);
 
     // Close mobile nav on route change
     useEffect(() => {
@@ -106,47 +135,87 @@ export default function Navbar() {
 
                     <div className="nav-actions">
                         <button
-                            className="mobile-toggle"
+                            className="nav-action-btn"
                             onClick={() => setShowSearch(true)}
-                            aria-label="Search"
-                            style={{ marginRight: '0.5rem', background: 'none', border: 'none', cursor: 'pointer', color: 'inherit', display: 'flex', alignItems: 'center' }}
+                            aria-label="Cari"
                         >
-                            <Search size={22} />
+                            <Search size={20} />
                         </button>
                         <button
-                            className="mobile-toggle"
+                            className={`nav-action-btn mobile-toggle ${mobileOpen ? 'active' : ''}`}
                             onClick={() => setMobileOpen(!mobileOpen)}
-                            aria-label="Toggle menu"
+                            aria-label={mobileOpen ? 'Tutup menu' : 'Buka menu'}
                         >
-                            {mobileOpen ? <X size={24} /> : <Menu size={24} />}
+                            <motion.div
+                                animate={mobileOpen ? { rotate: 90 } : { rotate: 0 }}
+                                transition={{ duration: 0.2 }}
+                                style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                            >
+                                {mobileOpen ? <X size={22} /> : <Menu size={22} />}
+                            </motion.div>
                         </button>
                     </div>
                 </div>
             </nav>
 
-            {/* Mobile Navigation — Animated */}
+            {/* Mobile Navigation — Slide-in Panel */}
             <AnimatePresence>
                 {mobileOpen && (
-                    <motion.div
-                        className="mobile-nav open"
-                        variants={mobileNavVariants}
-                        initial="hidden"
-                        animate="visible"
-                        exit="exit"
-                    >
-                        {links.map((link) => (
-                            <motion.div key={link.to} variants={mobileLinkVariants}>
-                                <NavLink
-                                    to={link.to}
-                                    className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
-                                    onClick={() => setMobileOpen(false)}
-                                    end={link.to === '/'}
+                    <>
+                        {/* Backdrop */}
+                        <motion.div
+                            className="mobile-nav-backdrop"
+                            variants={overlayVariants}
+                            initial="hidden"
+                            animate="visible"
+                            exit="exit"
+                            transition={{ duration: 0.25 }}
+                            onClick={() => setMobileOpen(false)}
+                        />
+
+                        {/* Panel */}
+                        <motion.aside
+                            className="mobile-nav-panel"
+                            variants={panelVariants}
+                            initial="hidden"
+                            animate="visible"
+                            exit="exit"
+                        >
+                            {/* Nav Links */}
+                            <motion.nav
+                                className="mobile-nav-links"
+                                variants={linkListVariants}
+                                initial="hidden"
+                                animate="visible"
+                                exit="exit"
+                            >
+                                {links.map((link) => (
+                                    <motion.div key={link.to} variants={linkItemVariants}>
+                                        <NavLink
+                                            to={link.to}
+                                            className={({ isActive }) => `mobile-nav-link ${isActive ? 'active' : ''}`}
+                                            onClick={() => setMobileOpen(false)}
+                                            end={link.to === '/'}
+                                        >
+                                            <span>{link.label}</span>
+                                            <ChevronRight size={16} />
+                                        </NavLink>
+                                    </motion.div>
+                                ))}
+                            </motion.nav>
+
+                            {/* Panel Footer */}
+                            <div className="mobile-nav-footer">
+                                <button
+                                    className="mobile-nav-search-btn"
+                                    onClick={() => { setMobileOpen(false); setShowSearch(true); }}
                                 >
-                                    {link.label}
-                                </NavLink>
-                            </motion.div>
-                        ))}
-                    </motion.div>
+                                    <Search size={18} />
+                                    <span>Cari di website...</span>
+                                </button>
+                            </div>
+                        </motion.aside>
+                    </>
                 )}
             </AnimatePresence>
 
@@ -154,87 +223,48 @@ export default function Navbar() {
             <AnimatePresence>
                 {showSearch && (
                     <motion.div
+                        className="search-overlay"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.2 }}
                         onClick={() => { setShowSearch(false); setSearchQuery(''); }}
-                        style={{
-                            position: 'fixed',
-                            inset: 0,
-                            zIndex: 9999,
-                            backgroundColor: 'rgba(0, 0, 0, 0.75)',
-                            display: 'flex',
-                            alignItems: 'flex-start',
-                            justifyContent: 'center',
-                            paddingTop: '20vh',
-                        }}
                     >
                         <motion.div
-                            initial={{ opacity: 0, y: -20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -20 }}
+                            className="search-overlay-inner"
+                            initial={{ opacity: 0, y: -20, scale: 0.96 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, y: -20, scale: 0.96 }}
                             transition={{ duration: 0.2 }}
                             onClick={(e) => e.stopPropagation()}
-                            style={{
-                                width: '90%',
-                                maxWidth: '600px',
-                                display: 'flex',
-                                gap: '0.5rem',
-                                alignItems: 'center',
-                            }}
                         >
-                            <input
-                                ref={searchInputRef}
-                                type="text"
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                onKeyDown={(e) => { if (e.key === 'Enter') handleSearchSubmit(); }}
-                                placeholder="Cari berita..."
-                                style={{
-                                    flex: 1,
-                                    padding: '0.875rem 1.25rem',
-                                    fontSize: '1.125rem',
-                                    borderRadius: 'var(--radius-md, 8px)',
-                                    border: '2px solid rgba(255,255,255,0.2)',
-                                    backgroundColor: 'rgba(255,255,255,0.1)',
-                                    color: '#fff',
-                                    outline: 'none',
-                                    backdropFilter: 'blur(10px)',
-                                }}
-                            />
-                            <button
-                                onClick={handleSearchSubmit}
-                                style={{
-                                    padding: '0.875rem 1.25rem',
-                                    borderRadius: 'var(--radius-md, 8px)',
-                                    border: 'none',
-                                    backgroundColor: 'var(--color-primary, #2563eb)',
-                                    color: '#fff',
-                                    cursor: 'pointer',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    fontSize: '1rem',
-                                    fontWeight: 600,
-                                }}
-                            >
-                                <Search size={20} />
-                            </button>
-                            <button
-                                onClick={() => { setShowSearch(false); setSearchQuery(''); }}
-                                style={{
-                                    padding: '0.875rem',
-                                    borderRadius: 'var(--radius-md, 8px)',
-                                    border: '2px solid rgba(255,255,255,0.2)',
-                                    backgroundColor: 'transparent',
-                                    color: '#fff',
-                                    cursor: 'pointer',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                }}
-                            >
-                                <X size={20} />
-                            </button>
+                            <div className="search-overlay-input-wrap">
+                                <Search size={20} className="search-overlay-icon" />
+                                <input
+                                    ref={searchInputRef}
+                                    type="text"
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    onKeyDown={(e) => { if (e.key === 'Enter') handleSearchSubmit(); }}
+                                    placeholder="Cari berita, artikel..."
+                                    className="search-overlay-input"
+                                />
+                                <button
+                                    onClick={handleSearchSubmit}
+                                    className="search-overlay-submit"
+                                    aria-label="Cari"
+                                >
+                                    Cari
+                                </button>
+                                <button
+                                    onClick={() => { setShowSearch(false); setSearchQuery(''); }}
+                                    className="search-overlay-close"
+                                    aria-label="Tutup"
+                                >
+                                    <X size={18} />
+                                </button>
+                            </div>
+                            <p className="search-overlay-hint">Tekan Enter untuk mencari, Esc untuk menutup</p>
                         </motion.div>
                     </motion.div>
                 )}

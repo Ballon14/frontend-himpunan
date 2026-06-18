@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getLogs, getSystemLogs, clearLogs, downloadLogs } from '../../api/admin';
 import ConfirmDialog from '../../components/admin/ConfirmDialog';
@@ -60,7 +60,7 @@ function relativeTime(iso) {
 
 export default function LogsPage() {
     const queryClient = useQueryClient();
-    const [tab, setTab] = useState('audit'); // 'audit' | 'system'
+    const [tab, setTab] = useState('audit');
     const [search, setSearch] = useState('');
     const [filterAction, setFilterAction] = useState('');
     const [filterResource, setFilterResource] = useState('');
@@ -69,7 +69,6 @@ export default function LogsPage() {
     const [limit, setLimit] = useState(200);
     const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: '', message: '', onConfirm: null });
 
-    // ── Audit trail query ─────────────────────────────────────────────────
     const { data: auditLogs = [], isLoading: auditLoading, refetch: refetchAudit, isFetching: auditFetching } = useQuery({
         queryKey: ['audit-logs', limit],
         queryFn: async () => {
@@ -79,7 +78,6 @@ export default function LogsPage() {
         refetchInterval: 15000,
     });
 
-    // ── System log query ──────────────────────────────────────────────────
     const { data: systemLogs = [], isLoading: sysLoading, refetch: refetchSys, isFetching: sysFetching } = useQuery({
         queryKey: ['system-logs', limit],
         queryFn: async () => {
@@ -90,7 +88,6 @@ export default function LogsPage() {
         enabled: tab === 'system',
     });
 
-    // ── Clear mutation ────────────────────────────────────────────────────
     const clearMutation = useMutation({
         mutationFn: clearLogs,
         onSuccess: () => {
@@ -127,7 +124,6 @@ export default function LogsPage() {
         }
     };
 
-    // ── Filtering ─────────────────────────────────────────────────────────
     const filtered = auditLogs.filter(log => {
         if (filterAction && log.action !== filterAction) return false;
         if (filterResource && log.resource !== filterResource) return false;
@@ -149,7 +145,6 @@ export default function LogsPage() {
         return true;
     });
 
-    // Unique values for filter dropdowns
     const uniqueActions = [...new Set(auditLogs.map(l => l.action).filter(Boolean))];
     const uniqueResources = [...new Set(auditLogs.map(l => l.resource).filter(Boolean))];
 
@@ -157,23 +152,6 @@ export default function LogsPage() {
     const isFetching = tab === 'audit' ? auditFetching : sysFetching;
     const totalCount = auditLogs.length;
     const shownCount = filtered.length;
-
-    // ── Styles ────────────────────────────────────────────────────────────
-    const tabBtn = (active) => ({
-        display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
-        padding: '0.6rem 1.2rem', border: 'none', cursor: 'pointer',
-        fontSize: '0.875rem', fontWeight: active ? 600 : 400,
-        color: active ? 'var(--admin-primary)' : 'var(--admin-text-muted)',
-        background: active ? 'rgba(var(--admin-primary-rgb), 0.1)' : 'transparent',
-        borderRadius: 'var(--admin-radius-sm)',
-        transition: 'all 0.2s',
-    });
-
-    const filterSelect = {
-        padding: '0.5rem 0.75rem', background: 'var(--admin-surface)',
-        border: '1px solid var(--admin-border)', borderRadius: 'var(--admin-radius-sm)',
-        color: 'var(--admin-text)', fontSize: '0.8125rem', cursor: 'pointer',
-    };
 
     return (
         <div className="admin-page">
@@ -188,112 +166,98 @@ export default function LogsPage() {
             </div>
 
             {/* Tabs + Actions */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', marginBottom: '1.5rem' }}>
-                <div style={{ display: 'flex', gap: '0.25rem', background: 'var(--admin-surface-alt, rgba(255,255,255,0.03))', padding: '0.25rem', borderRadius: 'var(--admin-radius-sm)' }}>
-                    <button style={tabBtn(tab === 'audit')} onClick={() => setTab('audit')}>
+            <div className="logs-toolbar">
+                <div className="logs-tabs">
+                    <button className={`logs-tab ${tab === 'audit' ? 'active' : ''}`} onClick={() => setTab('audit')}>
                         <Activity size={16} /> Audit Trail
                     </button>
-                    <button style={tabBtn(tab === 'system')} onClick={() => setTab('system')}>
+                    <button className={`logs-tab ${tab === 'system' ? 'active' : ''}`} onClick={() => setTab('system')}>
                         <Terminal size={16} /> Log Sistem
                     </button>
                 </div>
 
-                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                    <select value={limit} onChange={(e) => setLimit(Number(e.target.value))} style={filterSelect}>
+                <div className="logs-actions">
+                    <select value={limit} onChange={(e) => setLimit(Number(e.target.value))} className="logs-select">
                         <option value={50}>50</option>
                         <option value={100}>100</option>
                         <option value={200}>200</option>
                         <option value={500}>500</option>
                     </select>
                     <button onClick={() => { refetchAudit(); refetchSys(); }} className="admin-btn admin-btn-secondary" disabled={isLoading || isFetching} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                        <RefreshCw size={14} className={isFetching ? 'animate-spin' : ''} /> Segarkan
+                        <RefreshCw size={14} className={isFetching ? 'animate-spin' : ''} /> <span className="logs-btn-label">Segarkan</span>
                     </button>
                     <button onClick={handleDownload} className="admin-btn admin-btn-secondary" disabled={isLoading || totalCount === 0} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                        <Download size={14} /> Unduh
+                        <Download size={14} /> <span className="logs-btn-label">Unduh</span>
                     </button>
                     <button onClick={handleClear} className="admin-btn admin-btn-danger" disabled={isLoading || totalCount === 0 || clearMutation.isPending} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                        <Trash2 size={14} /> Kosongkan
+                        <Trash2 size={14} /> <span className="logs-btn-label">Kosongkan</span>
                     </button>
                 </div>
             </div>
 
-            {/* ════════════════════ AUDIT TRAIL TAB ════════════════════ */}
+            {/* AUDIT TRAIL TAB */}
             {tab === 'audit' && (
                 <>
                     {/* Filters */}
-                    <div style={{
-                        display: 'flex', gap: '0.75rem', marginBottom: '1rem', flexWrap: 'wrap', alignItems: 'center',
-                        padding: '0.75rem 1rem', background: 'var(--admin-surface)', border: '1px solid var(--admin-border)',
-                        borderRadius: 'var(--admin-radius-sm)',
-                    }}>
-                        <Filter size={14} style={{ color: 'var(--admin-text-muted)' }} />
+                    <div className="logs-filter-bar">
+                        <Filter size={14} style={{ color: 'var(--admin-text-muted)', flexShrink: 0 }} />
 
-                        <div className="admin-search-bar" style={{ flex: 1, minWidth: 180, maxWidth: 320 }}>
+                        <div className="admin-search-bar" style={{ flex: 1, minWidth: 160, maxWidth: 320 }}>
                             <Search size={14} className="admin-search-icon" />
                             <input type="text" placeholder="Cari actor, IP, resource..." value={search} onChange={(e) => setSearch(e.target.value)} />
                         </div>
 
-                        <select value={filterAction} onChange={(e) => setFilterAction(e.target.value)} style={filterSelect}>
+                        <select value={filterAction} onChange={(e) => setFilterAction(e.target.value)} className="logs-select">
                             <option value="">Semua Aksi</option>
                             {uniqueActions.map(a => (
                                 <option key={a} value={a}>{ACTION_BADGE[a]?.label || a}</option>
                             ))}
                         </select>
 
-                        <select value={filterResource} onChange={(e) => setFilterResource(e.target.value)} style={filterSelect}>
+                        <select value={filterResource} onChange={(e) => setFilterResource(e.target.value)} className="logs-select">
                             <option value="">Semua Resource</option>
                             {uniqueResources.map(r => (
                                 <option key={r} value={r}>{RESOURCE_LABEL[r] || r}</option>
                             ))}
                         </select>
 
-                        <input type="date" value={filterDate} onChange={(e) => setFilterDate(e.target.value)} style={{ ...filterSelect, colorScheme: 'dark' }} />
+                        <input type="date" value={filterDate} onChange={(e) => setFilterDate(e.target.value)} className="logs-select logs-date-input" />
 
                         {(search || filterAction || filterResource || filterDate) && (
                             <button onClick={() => { setSearch(''); setFilterAction(''); setFilterResource(''); setFilterDate(''); }}
-                                style={{ ...filterSelect, color: 'var(--admin-primary)', cursor: 'pointer' }}>
+                                className="logs-select" style={{ color: 'var(--admin-primary)', cursor: 'pointer' }}>
                                 Reset
                             </button>
                         )}
 
-                        <span style={{ marginLeft: 'auto', fontSize: '0.75rem', color: 'var(--admin-text-muted)' }}>
+                        <span className="logs-filter-count">
                             {shownCount} dari {totalCount} entri
                         </span>
                     </div>
 
                     {/* Table */}
-                    <div style={{
-                        border: '1px solid var(--admin-border)', borderRadius: 'var(--admin-radius)',
-                        overflow: 'hidden', background: 'var(--admin-surface)',
-                    }}>
-                        <div style={{ overflowX: 'auto' }}>
-                            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8125rem' }}>
+                    <div className="admin-table-wrapper">
+                        {auditLoading ? (
+                            <div className="admin-loading"><div className="admin-spinner" /></div>
+                        ) : (
+                            <table className="admin-table">
                                 <thead>
-                                    <tr style={{ background: 'rgba(255,255,255,0.03)', borderBottom: '1px solid var(--admin-border)' }}>
-                                        <th style={{ padding: '0.75rem 1rem', textAlign: 'left', color: 'var(--admin-text-muted)', fontWeight: 600, whiteSpace: 'nowrap' }}>Waktu</th>
-                                        <th style={{ padding: '0.75rem 1rem', textAlign: 'left', color: 'var(--admin-text-muted)', fontWeight: 600, whiteSpace: 'nowrap' }}>Aktor</th>
-                                        <th style={{ padding: '0.75rem 1rem', textAlign: 'left', color: 'var(--admin-text-muted)', fontWeight: 600, whiteSpace: 'nowrap' }}>Aksi</th>
-                                        <th style={{ padding: '0.75rem 1rem', textAlign: 'left', color: 'var(--admin-text-muted)', fontWeight: 600, whiteSpace: 'nowrap' }}>Resource</th>
-                                        <th style={{ padding: '0.75rem 1rem', textAlign: 'left', color: 'var(--admin-text-muted)', fontWeight: 600, whiteSpace: 'nowrap' }}>IP Address</th>
-                                        <th style={{ padding: '0.75rem 1rem', textAlign: 'center', color: 'var(--admin-text-muted)', fontWeight: 600, width: 50 }}>Detail</th>
+                                    <tr>
+                                        <th>Waktu</th>
+                                        <th>Aktor</th>
+                                        <th>Aksi</th>
+                                        <th>Resource</th>
+                                        <th>IP Address</th>
+                                        <th style={{ textAlign: 'center', width: 50 }}>Detail</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {auditLoading ? (
-                                        <tr>
-                                            <td colSpan={6} style={{ padding: '3rem', textAlign: 'center', color: 'var(--admin-text-muted)' }}>
-                                                <div className="admin-spinner" style={{ margin: '0 auto 1rem' }} />
-                                                Memuat audit trail...
-                                            </td>
-                                        </tr>
-                                    ) : filtered.length === 0 ? (
-                                        <tr>
-                                            <td colSpan={6} style={{ padding: '3rem', textAlign: 'center', color: 'var(--admin-text-muted)' }}>
-                                                {search || filterAction || filterResource || filterDate
-                                                    ? 'Tidak ada entri yang cocok dengan filter.'
-                                                    : 'Belum ada aktivitas yang tercatat.'}
-                                            </td>
-                                        </tr>
+                                    {filtered.length === 0 ? (
+                                        <tr><td colSpan={6} className="admin-empty">
+                                            {search || filterAction || filterResource || filterDate
+                                                ? 'Tidak ada entri yang cocok dengan filter.'
+                                                : 'Belum ada aktivitas yang tercatat.'}
+                                        </td></tr>
                                     ) : (
                                         filtered.map((log, idx) => {
                                             const badge = ACTION_BADGE[log.action] || { bg: '#636e72', label: log.action };
@@ -301,143 +265,114 @@ export default function LogsPage() {
                                             const hasChanges = log.changes && Object.keys(log.changes).length > 0;
 
                                             return (
-                                                <>
-                                                    <tr
-                                                        key={idx}
-                                                        style={{
-                                                            borderBottom: '1px solid var(--admin-border)',
-                                                            cursor: hasChanges ? 'pointer' : 'default',
-                                                            transition: 'background 0.15s',
-                                                        }}
-                                                        onClick={() => hasChanges && setExpandedRow(isExpanded ? null : idx)}
-                                                        onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.02)'}
-                                                        onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
-                                                    >
-                                                        <td style={{ padding: '0.65rem 1rem', whiteSpace: 'nowrap' }}>
-                                                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                                                                <Clock size={12} style={{ color: 'var(--admin-text-muted)', flexShrink: 0 }} />
-                                                                <div>
-                                                                    <div>{formatTimestamp(log.timestamp)}</div>
-                                                                    <div style={{ fontSize: '0.7rem', color: 'var(--admin-text-muted)' }}>{relativeTime(log.timestamp)}</div>
-                                                                </div>
+                                                <React.Fragment key={idx}>
+                                                <tr>
+                                                    <td data-label="Waktu">
+                                                        <div className="logs-cell-time">
+                                                            <Clock size={12} style={{ color: 'var(--admin-text-muted)', flexShrink: 0 }} />
+                                                            <div>
+                                                                <div>{formatTimestamp(log.timestamp)}</div>
+                                                                <div style={{ fontSize: '0.7rem', color: 'var(--admin-text-muted)' }}>{relativeTime(log.timestamp)}</div>
                                                             </div>
-                                                        </td>
-                                                        <td style={{ padding: '0.65rem 1rem' }}>
-                                                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                                                                <User size={12} style={{ color: 'var(--admin-text-muted)', flexShrink: 0 }} />
-                                                                <span style={{ fontWeight: 500 }}>{log.actor || 'Unknown'}</span>
-                                                            </div>
-                                                        </td>
-                                                        <td style={{ padding: '0.65rem 1rem' }}>
-                                                            <span style={{
-                                                                display: 'inline-block', padding: '0.2rem 0.6rem',
-                                                                borderRadius: '999px', fontSize: '0.75rem', fontWeight: 600,
-                                                                color: '#fff', background: badge.bg, whiteSpace: 'nowrap',
-                                                            }}>
-                                                                {badge.label}
+                                                        </div>
+                                                    </td>
+                                                    <td data-label="Aktor" className="admin-td-primary">
+                                                        <div className="logs-cell-actor">
+                                                            <User size={12} style={{ color: 'var(--admin-text-muted)', flexShrink: 0 }} />
+                                                            <span style={{ fontWeight: 500 }}>{log.actor || 'Unknown'}</span>
+                                                        </div>
+                                                    </td>
+                                                    <td data-label="Aksi">
+                                                        <span className="logs-badge" style={{ background: badge.bg }}>
+                                                            {badge.label}
+                                                        </span>
+                                                    </td>
+                                                    <td data-label="Resource">
+                                                        <span className="logs-cell-resource">
+                                                            <ResourceIcon resource={log.resource} />
+                                                            {RESOURCE_LABEL[log.resource] || log.resource}
+                                                        </span>
+                                                        {log.resourceId && (
+                                                            <span style={{ fontSize: '0.7rem', color: 'var(--admin-text-muted)', marginLeft: '0.4rem' }}>
+                                                                #{log.resourceId.substring(0, 8)}
                                                             </span>
-                                                        </td>
-                                                        <td style={{ padding: '0.65rem 1rem', whiteSpace: 'nowrap' }}>
-                                                            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
-                                                                <ResourceIcon resource={log.resource} />
-                                                                {log.resource}
-                                                            </span>
-                                                            {log.resourceId && (
-                                                                <span style={{ fontSize: '0.7rem', color: 'var(--admin-text-muted)', marginLeft: '0.4rem' }}>
-                                                                    #{log.resourceId.substring(0, 8)}
-                                                                </span>
-                                                            )}
-                                                        </td>
-                                                        <td style={{ padding: '0.65rem 1rem' }}>
-                                                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                                                                <Globe size={12} style={{ color: 'var(--admin-text-muted)', flexShrink: 0 }} />
-                                                                <code style={{ fontSize: '0.75rem', color: 'var(--admin-text-muted)' }}>{log.ip || '—'}</code>
-                                                            </div>
-                                                        </td>
-                                                        <td style={{ padding: '0.65rem 1rem', textAlign: 'center' }}>
-                                                            {hasChanges ? (
-                                                                isExpanded
+                                                        )}
+                                                    </td>
+                                                    <td data-label="IP Address">
+                                                        <div className="logs-cell-ip">
+                                                            <Globe size={12} style={{ color: 'var(--admin-text-muted)', flexShrink: 0 }} />
+                                                            <code style={{ fontSize: '0.75rem', color: 'var(--admin-text-muted)' }}>{log.ip || '—'}</code>
+                                                        </div>
+                                                    </td>
+                                                    <td data-label="Detail" style={{ textAlign: 'center' }}>
+                                                        {hasChanges ? (
+                                                            <button
+                                                                className="logs-detail-btn"
+                                                                onClick={() => setExpandedRow(isExpanded ? null : idx)}
+                                                            >
+                                                                {isExpanded
                                                                     ? <ChevronUp size={16} style={{ color: 'var(--admin-primary)' }} />
                                                                     : <Eye size={16} style={{ color: 'var(--admin-text-muted)' }} />
-                                                            ) : (
-                                                                <span style={{ color: 'var(--admin-text-muted)', fontSize: '0.7rem' }}>—</span>
-                                                            )}
+                                                                }
+                                                            </button>
+                                                        ) : (
+                                                            <span style={{ color: 'var(--admin-text-muted)', fontSize: '0.7rem' }}>—</span>
+                                                        )}
+                                                    </td>
+                                                </tr>
+
+                                                {/* Expanded detail row */}
+                                                {isExpanded && hasChanges && (
+                                                    <tr>
+                                                        <td colSpan={6} className="logs-detail-row">
+                                                            <div className="logs-detail-label">Data yang diubah:</div>
+                                                            <div className="logs-detail-code">
+                                                                {Object.entries(log.changes).map(([key, val]) => (
+                                                                    <div key={key} style={{ marginBottom: '0.25rem' }}>
+                                                                        <span style={{ color: '#7ee787' }}>{key}</span>
+                                                                        <span style={{ color: 'var(--admin-text-muted)' }}>: </span>
+                                                                        <span style={{ color: '#a5d6ff' }}>
+                                                                            {typeof val === 'object' ? JSON.stringify(val) : String(val)}
+                                                                        </span>
+                                                                    </div>
+                                                                ))}
+                                                            </div>
+                                                            <div style={{ marginTop: '0.5rem', fontSize: '0.7rem', color: 'var(--admin-text-muted)' }}>
+                                                                {log.method} {log.path}
+                                                            </div>
                                                         </td>
                                                     </tr>
-
-                                                    {/* Expanded detail row */}
-                                                    {isExpanded && hasChanges && (
-                                                        <tr key={`${idx}-detail`} style={{ borderBottom: '1px solid var(--admin-border)' }}>
-                                                            <td colSpan={6} style={{ padding: '0.75rem 1rem 1rem 2.5rem', background: 'rgba(255,255,255,0.02)' }}>
-                                                                <div style={{ fontSize: '0.75rem', color: 'var(--admin-text-muted)', marginBottom: '0.5rem', fontWeight: 600 }}>
-                                                                    Data yang diubah:
-                                                                </div>
-                                                                <div style={{
-                                                                    fontFamily: 'Courier New, monospace', fontSize: '0.8rem',
-                                                                    background: '#0d1117', padding: '0.75rem 1rem',
-                                                                    borderRadius: 'var(--admin-radius-sm)', border: '1px solid var(--admin-border)',
-                                                                    maxHeight: 200, overflowY: 'auto',
-                                                                }}>
-                                                                    {Object.entries(log.changes).map(([key, val]) => (
-                                                                        <div key={key} style={{ marginBottom: '0.25rem' }}>
-                                                                            <span style={{ color: '#7ee787' }}>{key}</span>
-                                                                            <span style={{ color: 'var(--admin-text-muted)' }}>: </span>
-                                                                            <span style={{ color: '#a5d6ff' }}>
-                                                                                {typeof val === 'object' ? JSON.stringify(val) : String(val)}
-                                                                            </span>
-                                                                        </div>
-                                                                    ))}
-                                                                </div>
-                                                                <div style={{ marginTop: '0.5rem', fontSize: '0.7rem', color: 'var(--admin-text-muted)' }}>
-                                                                    {log.method} {log.path}
-                                                                </div>
-                                                            </td>
-                                                        </tr>
-                                                    )}
-                                                </>
+                                                )}
+                                                </React.Fragment>
                                             );
                                         })
                                     )}
                                 </tbody>
                             </table>
-                        </div>
+                        )}
                     </div>
                 </>
             )}
 
-            {/* ════════════════════ SYSTEM LOG TAB ════════════════════ */}
+            {/* SYSTEM LOG TAB */}
             {tab === 'system' && (
-                <div style={{
-                    background: '#090d16', border: '1px solid rgba(255,255,255,0.08)',
-                    borderRadius: '8px', boxShadow: '0 10px 40px rgba(0,0,0,0.5)',
-                    padding: '1.5rem',
-                }}>
-                    {/* Terminal header */}
-                    <div style={{
-                        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                        borderBottom: '1px solid rgba(255,255,255,0.08)', paddingBottom: '0.75rem',
-                        marginBottom: '1rem', color: 'rgba(255,255,255,0.4)', fontSize: '0.8125rem',
-                        fontFamily: 'monospace',
-                    }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <div className="logs-terminal">
+                    <div className="logs-terminal-header">
+                        <div className="logs-terminal-title">
                             <Terminal size={14} style={{ color: 'var(--admin-primary)' }} />
                             <span>hmtkbg-server-console</span>
                         </div>
                         <span>{sysFetching ? 'Memperbarui...' : 'Auto-refresh 15s'}</span>
                     </div>
 
-                    {/* Log lines */}
-                    <div style={{
-                        fontFamily: 'Courier New, monospace', fontSize: '0.8125rem', lineHeight: 1.6,
-                        overflowY: 'auto', maxHeight: 500, minHeight: 300, paddingRight: '0.5rem',
-                    }} className="custom-scrollbar">
+                    <div className="logs-terminal-body">
                         {sysLoading ? (
-                            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 300, color: 'rgba(255,255,255,0.4)' }}>
+                            <div className="logs-terminal-loading">
                                 <div className="admin-spinner" style={{ marginRight: '1rem' }} />
                                 Menghubungkan ke log stream...
                             </div>
                         ) : systemLogs.length === 0 ? (
-                            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 300, color: 'rgba(255,255,255,0.3)', fontStyle: 'italic' }}>
+                            <div className="logs-terminal-empty">
                                 Belum ada log sistem.
                             </div>
                         ) : (
@@ -448,11 +383,7 @@ export default function LogsPage() {
                                 else if (line.includes('[WARN]')) { color = '#ffeaa7'; weight = '500'; }
                                 else if (line.includes('[INFO]')) { color = '#81ecec'; }
                                 return (
-                                    <div key={i} style={{
-                                        whiteSpace: 'pre-wrap', wordBreak: 'break-all',
-                                        padding: '0.2rem 0', borderBottom: '1px solid rgba(255,255,255,0.02)',
-                                        color, fontWeight: weight,
-                                    }}>
+                                    <div key={i} className="logs-terminal-line" style={{ color, fontWeight: weight }}>
                                         {line}
                                     </div>
                                 );

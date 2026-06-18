@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Calendar, Clipboard, Share2, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Calendar, Clipboard, AlertCircle } from 'lucide-react';
 import DOMPurify from 'dompurify';
 import { useQuery } from '@tanstack/react-query';
 import LoadingSpinner from '../components/LoadingSpinner';
@@ -10,11 +10,10 @@ import SEO, { eventSchema } from '../components/SEO';
 import { getProgramKerjaById } from '../api/programKerja';
 import { formatDate } from '../utils/format';
 import { STATUS_MAP } from '../utils/constants';
-import useShare from '../hooks/useShare';
+import ShareButton from '../components/ShareButton';
 
 export default function ProgramKerjaDetailPage() {
     const { id } = useParams();
-    const share = useShare();
 
     const { data: proker, isLoading: loading, isError } = useQuery({
         queryKey: ['programKerjaDetail', id],
@@ -80,20 +79,7 @@ export default function ProgramKerjaDetailPage() {
                             <Link to="/program-kerja" className="back-link btn-outline" style={{ display: 'inline-flex', padding: '0.5rem 1rem', fontSize: 'var(--font-size-sm)', gap: '0.5rem', alignItems: 'center', textDecoration: 'none', marginBottom: 0 }}>
                                 <ArrowLeft size={18} /> Kembali
                             </Link>
-                            <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
-                                <button className="btn btn-outline" onClick={() => share({ title: proker?.nama_program || 'Program Kerja Himpunan' })} style={{ display: 'inline-flex', padding: '0.5rem 1rem', fontSize: 'var(--font-size-sm)', gap: '0.5rem', alignItems: 'center' }}>
-                                    <Share2 size={16} /> Bagikan
-                                </button>
-                                <a href={`https://wa.me/?text=${encodeURIComponent(proker.nama_program + ' ' + window.location.href)}`} target="_blank" rel="noopener noreferrer" className="btn btn-outline" style={{ display: 'inline-flex', padding: '0.5rem 0.75rem', fontSize: 'var(--font-size-sm)', gap: '0.5rem', alignItems: 'center', textDecoration: 'none' }}>
-                                    WhatsApp
-                                </a>
-                                <a href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(proker.nama_program)}&url=${encodeURIComponent(window.location.href)}`} target="_blank" rel="noopener noreferrer" className="btn btn-outline" style={{ display: 'inline-flex', padding: '0.5rem 0.75rem', fontSize: 'var(--font-size-sm)', gap: '0.5rem', alignItems: 'center', textDecoration: 'none' }}>
-                                    Twitter
-                                </a>
-                                <a href={`https://t.me/share/url?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(proker.nama_program)}`} target="_blank" rel="noopener noreferrer" className="btn btn-outline" style={{ display: 'inline-flex', padding: '0.5rem 0.75rem', fontSize: 'var(--font-size-sm)', gap: '0.5rem', alignItems: 'center', textDecoration: 'none' }}>
-                                    Telegram
-                                </a>
-                            </div>
+                            <ShareButton title={proker?.nama_program || 'Program Kerja Himpunan'} />
                         </div>
 
                         <span className={`badge ${s.class}`} style={{ display: 'inline-block', marginBottom: 'var(--spacing-md)' }}>{s.label}</span>

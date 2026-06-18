@@ -1,18 +1,17 @@
 import { useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Calendar, Trophy, User, Share2, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Calendar, Trophy, User, AlertCircle } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import LoadingSpinner from '../components/LoadingSpinner';
 import PageTransition from '../components/PageTransition';
 import SEO from '../components/SEO';
 import { getPrestasiById, getPrestasi } from '../api/prestasi';
 import { formatDate } from '../utils/format';
-import useShare from '../hooks/useShare';
+import ShareButton from '../components/ShareButton';
 
 export default function PrestasiDetailPage() {
     const { id } = useParams();
-    const share = useShare();
 
     const { data: prestasi, isLoading: loading, isError } = useQuery({
         queryKey: ['prestasiDetail', id],
@@ -91,20 +90,7 @@ export default function PrestasiDetailPage() {
                             <Link to="/prestasi" className="back-link btn-outline" style={{ display: 'inline-flex', padding: '0.5rem 1rem', fontSize: 'var(--font-size-sm)', gap: '0.5rem', alignItems: 'center', textDecoration: 'none', marginBottom: 0 }}>
                                 <ArrowLeft size={18} /> Kembali
                             </Link>
-                            <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
-                                <button className="btn btn-outline" onClick={() => share({ title: prestasi?.judul || 'Prestasi HMTKBG' })} style={{ display: 'inline-flex', padding: '0.5rem 1rem', fontSize: 'var(--font-size-sm)', gap: '0.5rem', alignItems: 'center' }}>
-                                    <Share2 size={16} /> Bagikan
-                                </button>
-                                <a href={`https://wa.me/?text=${encodeURIComponent(prestasi.judul + ' ' + window.location.href)}`} target="_blank" rel="noopener noreferrer" className="btn btn-outline" style={{ display: 'inline-flex', padding: '0.5rem 0.75rem', fontSize: 'var(--font-size-sm)', gap: '0.5rem', alignItems: 'center', textDecoration: 'none' }}>
-                                    WhatsApp
-                                </a>
-                                <a href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(prestasi.judul)}&url=${encodeURIComponent(window.location.href)}`} target="_blank" rel="noopener noreferrer" className="btn btn-outline" style={{ display: 'inline-flex', padding: '0.5rem 0.75rem', fontSize: 'var(--font-size-sm)', gap: '0.5rem', alignItems: 'center', textDecoration: 'none' }}>
-                                    Twitter
-                                </a>
-                                <a href={`https://t.me/share/url?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(prestasi.judul)}`} target="_blank" rel="noopener noreferrer" className="btn btn-outline" style={{ display: 'inline-flex', padding: '0.5rem 0.75rem', fontSize: 'var(--font-size-sm)', gap: '0.5rem', alignItems: 'center', textDecoration: 'none' }}>
-                                    Telegram
-                                </a>
-                            </div>
+                            <ShareButton title={prestasi?.judul || 'Prestasi HMTKBG'} />
                         </div>
 
                         <span className="badge badge-success" style={{ display: 'inline-block', marginBottom: 'var(--spacing-md)', textTransform: 'capitalize' }}>{prestasi.kategori}</span>
