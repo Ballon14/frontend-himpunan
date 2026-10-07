@@ -68,9 +68,7 @@ export default function AboutPage() {
                                 <Target className="vm-icon" size={28} style={{ color: 'var(--color-primary)' }} /> Visi
                             </h3>
                             <p style={{ color: 'var(--color-text-secondary)', lineHeight: 1.8 }}>
-                                Menjadi organisasi kemahasiswaan terdepan yang menghasilkan
-                                kader-kader unggul, berprestasi, berkarakter, dan berdaya saing global
-                                di bidang Teknologi Konstruksi Bangunan Gedung.
+                                Mewujudkan HMTKBG sebagai organisasi yang menjunjung tinggi asas Kekeluargaan, Profesionalitas, Aspiratif, dan Berjiwa Lestari dalam upaya membangun lingkungan TKBG yang Berdaya Saing, Andal, Berprestasi, dan Berkelanjutan.
                             </p>
                         </motion.div>
 
@@ -85,11 +83,12 @@ export default function AboutPage() {
                                 <Star className="vm-icon" size={28} style={{ color: 'var(--color-primary)' }} /> Misi
                             </h3>
                             <ul>
-                                <li>Meningkatkan kualitas akademik dan non-akademik mahasiswa</li>
-                                <li>Menyelenggarakan kegiatan yang bermanfaat dan relevan</li>
-                                <li>Membangun jaringan kerja sama dengan berbagai pihak</li>
-                                <li>Menciptakan lingkungan kampus yang kondusif dan inklusif</li>
-                                <li>Mengembangkan potensi kepemimpinan mahasiswa</li>
+                                <li>Solidaritas & Profesionalitas: Membangun anggota yang kekeluargaan, kompeten, dan adaptif terhadap perkembangan iptek serta organisasi.</li>
+                                <li>Menjadi sarana penampung ide dan solusi konstruktif mahasiswa TKBG demi kemajuan bersama.</li>
+                                <li>Mengintegrasikan nilai kelestarian dan pembangunan berkelanjutan dalam setiap program kerja.</li>
+                                <li>Meningkatkan prestasi dan daya saing mahasiswa di bidang akademik, organisasi, hingga kewirausahaan.</li>
+                                <li>Menjalin kolaborasi harmonis dengan civitas akademika, alumni, dan mitra eksternal yang andal.</li>
+                                <li>Mendukung pencapaian visi prodi TKBG melalui sikap integritas, tanggung jawab, dan kolaborasi.</li>
                             </ul>
                         </motion.div>
                     </motion.div>
