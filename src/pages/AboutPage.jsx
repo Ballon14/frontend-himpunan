@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Target, Award, Star, Users, Shield, Lightbulb, Handshake, Download } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
@@ -8,6 +9,7 @@ import { getStrukturImage } from '../api/admin';
 import { fadeInUp, staggerContainer, scaleIn } from '../utils/animations';
 
 export default function AboutPage() {
+    const [ytLoaded, setYtLoaded] = useState(false);
     const { data: strukturData } = useQuery({
         queryKey: ['struktur-image'],
         queryFn: async () => {
@@ -129,6 +131,77 @@ export default function AboutPage() {
                                     <div className="value-card-desc">{value.desc}</div>
                                 </motion.div>
                             ))}
+                        </motion.div>
+                    </div>
+
+                    {/* Steel Beam Divider */}
+                    <div className="section-divider--beam" />
+
+                    {/* Mars HMTKBG */}
+                    <div className="mars-section" style={{ marginTop: 'var(--spacing-2xl)', marginBottom: 'var(--spacing-2xl)' }}>
+                        <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-50px' }} variants={fadeInUp}>
+                            <SectionTitle
+                                label="Mars HMTKBG"
+                                title="Lagu Kebanggaan Kami"
+                                description="Mars Himpunan Mahasiswa Teknologi Konstruksi Bangunan Gedung Politeknik PU."
+                            />
+                        </motion.div>
+
+                        <motion.div
+                            initial="hidden"
+                            whileInView="visible"
+                            viewport={{ once: true, margin: '-50px' }}
+                            variants={fadeInUp}
+                            style={{ maxWidth: '900px', margin: '0 auto', borderRadius: 'var(--radius-xl)', overflow: 'hidden', boxShadow: '0 25px 50px rgba(0,0,0,0.25)', border: '1px solid var(--color-border)' }}
+                        >
+                            <div className="video-container" style={{ position: 'relative', borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
+                                {ytLoaded ? (
+                                    <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, backgroundColor: 'var(--color-bg-secondary)' }}>
+                                        <iframe
+                                            style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 0 }}
+                                            src="https://www.youtube.com/embed/ad-L1rlPWMw?autoplay=1&rel=0"
+                                            title="Mars HMTKBG"
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                            allowFullScreen
+                                        ></iframe>
+                                    </div>
+                                ) : (
+                                    <button
+                                        onClick={() => setYtLoaded(true)}
+                                        style={{
+                                            width: '100%',
+                                            aspectRatio: '16/9',
+                                            background: '#000',
+                                            border: 'none',
+                                            cursor: 'pointer',
+                                            position: 'relative',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center'
+                                        }}
+                                        aria-label="Putar Mars HMTKBG"
+                                    >
+                                        <img
+                                            src="https://img.youtube.com/vi/ad-L1rlPWMw/maxresdefault.jpg"
+                                            alt="Mars HMTKBG Thumbnail"
+                                            style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', inset: 0 }}
+                                        />
+                                        <div style={{
+                                            position: 'relative',
+                                            zIndex: 1,
+                                            width: 68,
+                                            height: 48,
+                                            background: 'var(--color-primary)',
+                                            borderRadius: 'var(--radius-md)',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center'
+                                        }}>
+                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="#fff"><polygon points="5,3 19,12 5,21" /></svg>
+                                        </div>
+                                    </button>
+                                )}
+                            </div>
                         </motion.div>
                     </div>
 

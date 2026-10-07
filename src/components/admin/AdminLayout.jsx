@@ -20,7 +20,7 @@ const navItems = [
     { to: '/admin/kegiatan', icon: Calendar, label: 'Kegiatan' },
     { to: '/admin/merchandise', icon: ShoppingBag, label: 'Merchandise' },
     { to: '/admin/pesan', icon: Mail, label: 'Pesan' },
-    { to: '/admin/export', icon: Download, label: 'Export Data' },
+    { to: '/admin/export', icon: Download, label: 'Export & Import Data' },
     { to: '/admin/logs', icon: Terminal, label: 'Log Sistem' },
 ];
 

@@ -55,6 +55,16 @@ export default function Footer() {
                             <Instagram size={18} style={{ marginRight: 6, verticalAlign: 'middle' }} />
                             @hmtkbg
                         </a>
+                        <a href="https://www.tiktok.com/@hmtkbg?_r=1&_t=ZS-9AM3oNXfHBm" target="_blank" rel="noopener noreferrer">
+                            <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: 6, verticalAlign: 'middle' }}>
+                                <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5v3a8 8 0 0 1-5-3v5.5a4 4 0 0 1-4-4 4 4 0 0 1 4-4Z"></path>
+                            </svg>
+                            @hmtkbg
+                        </a>
+                        <a href="https://www.youtube.com/@hmtkbgpoliteknikpu6903" target="_blank" rel="noopener noreferrer">
+                            <Youtube size={18} style={{ marginRight: 6, verticalAlign: 'middle' }} />
+                            HMTKBG Politeknik PU
+                        </a>
                         <a href="#">
                             <MapPin size={18} style={{ marginRight: 6, verticalAlign: 'middle' }} />
                             Semarang, Jawa Tengah
@@ -71,7 +81,12 @@ export default function Footer() {
                         <a href="mailto:hima.kbg@gmail.com" aria-label="Email">
                             <Mail size={20} />
                         </a>
-                        <a href="http://www.youtube.com/@hmtkbgpoliteknikpu6903" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+                        <a href="https://www.tiktok.com/@hmtkbg?_r=1&_t=ZS-9AM3oNXfHBm" target="_blank" rel="noopener noreferrer" aria-label="TikTok">
+                            <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5v3a8 8 0 0 1-5-3v5.5a4 4 0 0 1-4-4 4 4 0 0 1 4-4Z"></path>
+                            </svg>
+                        </a>
+                        <a href="https://www.youtube.com/@hmtkbgpoliteknikpu6903" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
                             <Youtube size={20} />
                         </a>
                     </div>

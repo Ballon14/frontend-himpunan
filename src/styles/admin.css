@@ -2409,3 +2409,266 @@
     max-height: 350px;
   }
 }
+/* --- Export/Import Tab Styles --- */
+.export-tab-container {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid var(--admin-border);
+  padding-bottom: 0.5rem;
+}
+
+.export-tab-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: transparent;
+  border: none;
+  border-radius: var(--admin-radius-sm) var(--admin-radius-sm) 0 0;
+  color: var(--admin-text-muted);
+  font-family: var(--admin-font-body);
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.export-tab-btn:hover {
+  color: var(--admin-text);
+  background: var(--admin-surface);
+}
+
+.export-tab-btn.active {
+  color: var(--admin-primary);
+  background: var(--admin-surface);
+}
+
+.export-tab-btn.active::after {
+  content: '';
+  position: absolute;
+  bottom: -0.5rem;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--admin-primary);
+}
+
+.import-step {
+  background: var(--admin-surface);
+  border: 1px solid var(--admin-border);
+  border-radius: var(--admin-radius);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.import-step-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.import-step-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  background: var(--admin-primary-soft);
+  color: var(--admin-primary);
+  border-radius: 50%;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.import-step-header h3 {
+  margin: 0 0 0.25rem 0;
+  font-family: var(--admin-font-heading);
+}
+
+.import-step-header p {
+  margin: 0;
+  color: var(--admin-text-muted);
+  font-size: 0.875rem;
+}
+
+.import-table-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+.import-table-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: var(--admin-bg);
+  border: 1px solid var(--admin-border);
+  border-radius: var(--admin-radius-sm);
+  color: var(--admin-text);
+  font-family: var(--admin-font-body);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.import-table-btn:hover {
+  background: var(--admin-surface-hover);
+  border-color: var(--admin-border-hover);
+}
+
+.import-table-btn.active {
+  border-color: var(--table-color, var(--admin-primary));
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.import-table-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--admin-radius-sm);
+}
+
+.import-table-check {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  color: var(--table-color, var(--admin-primary));
+}
+
+.import-upload-area {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.import-upload-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 2rem;
+  border: 2px dashed var(--admin-border);
+  border-radius: var(--admin-radius);
+  background: var(--admin-bg);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.import-upload-box:hover {
+  border-color: var(--admin-primary);
+  background: rgba(192, 57, 43, 0.05);
+}
+
+.import-upload-box svg {
+  color: var(--admin-text-muted);
+  margin-bottom: 1rem;
+}
+
+.import-upload-box p {
+  margin: 0 0 0.5rem 0;
+  font-weight: 500;
+}
+
+.import-file-hint {
+  color: var(--admin-text-muted);
+  font-size: 0.875rem;
+}
+
+.import-file-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.import-file-name {
+  font-weight: 600;
+  color: var(--admin-primary);
+}
+
+.import-file-size {
+  font-size: 0.875rem;
+  color: var(--admin-text-muted);
+}
+
+.import-upload-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.import-result {
+  padding: 1.5rem;
+  border-radius: var(--admin-radius);
+  margin-bottom: 2rem;
+}
+
+.import-result.success {
+  background: rgba(39, 174, 96, 0.1);
+  border: 1px solid var(--admin-success);
+}
+
+.import-result.error {
+  background: rgba(231, 76, 60, 0.1);
+  border: 1px solid var(--admin-danger);
+}
+
+.import-result-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+}
+
+.import-result.success .import-result-header {
+  color: var(--admin-success);
+}
+
+.import-result.error .import-result-header {
+  color: var(--admin-danger);
+}
+
+.import-result-stats {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 1rem;
+}
+
+.import-stat {
+  display: flex;
+  flex-direction: column;
+}
+
+.import-stat-number {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--admin-text);
+}
+
+.import-stat-label {
+  font-size: 0.875rem;
+  color: var(--admin-text-muted);
+}
+
+.import-errors-list {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--admin-border);
+}
+
+.import-errors-list ul {
+  margin: 0.5rem 0 0;
+  padding-left: 1.5rem;
+  color: var(--admin-danger);
+  font-size: 0.875rem;
+}
+

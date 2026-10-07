@@ -78,6 +78,15 @@ export const exportTable = (table, format = 'xlsx') =>
 export const exportAll = (format = 'xlsx') =>
     api.get('/export', { params: { format }, responseType: 'blob' });
 
+// ─── Import Data ─────────────────────────────────────────────────────────
+export const importTable = (table, file) => {
+    const fd = new FormData();
+    fd.append('file', file);
+    return api.post(`/import/${table}`, fd, { headers: { 'Content-Type': 'multipart/form-data' } });
+};
+export const downloadImportTemplate = (table) =>
+    api.get(`/import/${table}/template`, { responseType: 'blob' });
+
 // ─── Logs ───────────────────────────────────────────────────────────────────
 export const getLogs = (limit = 200) => api.get('/logs', { params: { limit } });
 export const getSystemLogs = (limit = 100) => api.get('/logs/system', { params: { limit } });

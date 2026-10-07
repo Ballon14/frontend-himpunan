@@ -316,8 +316,8 @@ export default function HomePage() {
                         <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-50px' }} variants={fadeInUp}>
                             <SectionTitle
                                 label="Video Profil"
-                                title="Campus Tour"
-                                description="Kenali lebih dekat fasilitas dan suasana lingkungan kampus Politeknik Pekerjaan Umum."
+                                title="Video Profil HMTKBG"
+                                description="Kenali lebih dekat Himpunan Mahasiswa Teknologi Konstruksi Bangunan Gedung Politeknik Pekerjaan Umum."
                             />
                         </motion.div>
 
@@ -333,7 +333,7 @@ export default function HomePage() {
                                     <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, backgroundColor: 'var(--color-bg-secondary)' }}>
                                         <iframe
                                             style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 0 }}
-                                            src="https://www.youtube.com/embed/lnCI-aSoXqw?autoplay=1&rel=0"
+                                            src="https://www.youtube.com/embed/DgdWDMJQi30?autoplay=1&rel=0"
                                             title="Campus Tour Politeknik PU"
                                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                                             allowFullScreen
@@ -356,7 +356,7 @@ export default function HomePage() {
                                         aria-label="Putar video campus tour"
                                     >
                                         <img
-                                            src="https://img.youtube.com/vi/lnCI-aSoXqw/maxresdefault.jpg"
+                                            src="https://img.youtube.com/vi/DgdWDMJQi30/maxresdefault.jpg"
                                             alt="Campus Tour HMTKBG"
                                             style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', inset: 0 }}
                                         />

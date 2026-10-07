@@ -4,6 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import { notifySuccess, notifyError } from '../../utils/toast';
 import { Mail, Lock, LogIn } from 'lucide-react';
 import { motion } from 'framer-motion';
+import '../../styles/admin.css';
 
 export default function LoginPage() {
     const [email, setEmail] = useState('');
