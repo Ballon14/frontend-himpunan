@@ -307,7 +307,7 @@ export default function MerchandiseDetailPage() {
                     </div>
 
                     {/* Related Items (Same Category) */}
-                    {related.length > 0 && (
+                    {/* {related.length > 0 && (
                         <div className="merch-related">
                             <h2 className="merch-related-title">Merchandise Lainnya</h2>
                             <div className="merch-related-grid">
@@ -328,7 +328,7 @@ export default function MerchandiseDetailPage() {
                                 ))}
                             </div>
                         </div>
-                    )}
+                    )} */}
 
                     {/* Recommendations Section */}
                     {recommendations.length > 0 && (
