@@ -5,20 +5,102 @@ import ConfirmDialog from '../../components/admin/ConfirmDialog';
 import {
     Shield, RefreshCw, Trash2, Download, Search, Terminal,
     User, Globe, Clock, ChevronDown, ChevronUp, Filter, Activity, Eye,
-    Users, Newspaper, Image, CalendarDays, ShoppingBag, ClipboardList, Lock, Package, Trophy
+    Users, Newspaper, Image, CalendarDays, ShoppingBag, ClipboardList, Lock, Package, Trophy,
+    LogIn, LogOut, Plus, Pencil, UserCheck, Key, AlertTriangle
 } from 'lucide-react';
 import { notifySuccess, notifyError, notifyLoading } from '../../utils/toast';
 
 // ── helpers ──────────────────────────────────────────────────────────────────
 
-const ACTION_BADGE = {
-    'membuat':          { bg: '#27ae60', label: 'Membuat' },
-    'memperbarui':      { bg: '#2980b9', label: 'Memperbarui' },
-    'menghapus':        { bg: '#c0392b', label: 'Menghapus' },
-    'login berhasil':   { bg: '#27ae60', label: 'Login' },
-    'login gagal':      { bg: '#e67e22', label: 'Login Gagal' },
-    'logout':           { bg: '#7f8c8d', label: 'Logout' },
+const ACTION_CONFIG = {
+    'membuat': {
+        label: 'Membuat',
+        variant: 'create',
+        icon: Plus,
+    },
+    'memperbarui': {
+        label: 'Memperbarui',
+        variant: 'update',
+        icon: Pencil,
+    },
+    'menghapus': {
+        label: 'Menghapus',
+        variant: 'delete',
+        icon: Trash2,
+    },
+    'login berhasil': {
+        label: 'Login',
+        variant: 'login',
+        icon: LogIn,
+    },
+    'login': {
+        label: 'Login',
+        variant: 'login',
+        icon: LogIn,
+    },
+    'login gagal': {
+        label: 'Login Gagal',
+        variant: 'login-failed',
+        icon: AlertTriangle,
+    },
+    'logout': {
+        label: 'Logout',
+        variant: 'logout',
+        icon: LogOut,
+    },
+    'memperbarui profil': {
+        label: 'Perbarui Profil',
+        variant: 'profile',
+        icon: UserCheck,
+    },
+    'mengubah password': {
+        label: 'Ubah Password',
+        variant: 'password',
+        icon: Key,
+    },
 };
+
+function formatActionLabel(str) {
+    if (!str) return 'Aktivitas';
+    return str
+        .split(' ')
+        .map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+        .join(' ');
+}
+
+function getActionMeta(actionRaw) {
+    const key = (actionRaw || '').toLowerCase().trim();
+    if (ACTION_CONFIG[key]) {
+        return ACTION_CONFIG[key];
+    }
+    if (key.includes('login') && key.includes('gagal')) {
+        return ACTION_CONFIG['login gagal'];
+    }
+    if (key.includes('login')) {
+        return ACTION_CONFIG['login berhasil'];
+    }
+    if (key.includes('profil')) {
+        return ACTION_CONFIG['memperbarui profil'];
+    }
+    if (key.includes('password') || key.includes('sandi')) {
+        return ACTION_CONFIG['mengubah password'];
+    }
+    if (key.includes('hapus') || key.includes('delete')) {
+        return ACTION_CONFIG['menghapus'];
+    }
+    if (key.includes('buat') || key.includes('create') || key.includes('tambah')) {
+        return ACTION_CONFIG['membuat'];
+    }
+    if (key.includes('ubah') || key.includes('edit') || key.includes('update') || key.includes('perbarui')) {
+        return ACTION_CONFIG['memperbarui'];
+    }
+
+    return {
+        label: formatActionLabel(actionRaw),
+        variant: 'default',
+        icon: Activity,
+    };
+}
 
 const RESOURCE_ICON = {
     anggota: Users, berita: Newspaper, galeri: Image, prestasi: Trophy,
@@ -210,7 +292,7 @@ export default function LogsPage() {
                         <select value={filterAction} onChange={(e) => setFilterAction(e.target.value)} className="logs-select">
                             <option value="">Semua Aksi</option>
                             {uniqueActions.map(a => (
-                                <option key={a} value={a}>{ACTION_BADGE[a]?.label || a}</option>
+                                <option key={a} value={a}>{getActionMeta(a).label}</option>
                             ))}
                         </select>
 
@@ -260,9 +342,10 @@ export default function LogsPage() {
                                         </td></tr>
                                     ) : (
                                         filtered.map((log, idx) => {
-                                            const badge = ACTION_BADGE[log.action] || { bg: '#636e72', label: log.action };
                                             const isExpanded = expandedRow === idx;
                                             const hasChanges = log.changes && Object.keys(log.changes).length > 0;
+                                            const actionMeta = getActionMeta(log.action);
+                                            const ActionIcon = actionMeta.icon || Activity;
 
                                             return (
                                                 <React.Fragment key={idx}>
@@ -283,8 +366,11 @@ export default function LogsPage() {
                                                         </div>
                                                     </td>
                                                     <td data-label="Aksi">
-                                                        <span className="logs-badge" style={{ background: badge.bg }}>
-                                                            {badge.label}
+                                                        <span className={`logs-badge logs-badge--${actionMeta.variant}`}>
+                                                            <span className="logs-badge-icon">
+                                                                <ActionIcon size={11} strokeWidth={2.4} />
+                                                            </span>
+                                                            <span>{actionMeta.label}</span>
                                                         </span>
                                                     </td>
                                                     <td data-label="Resource">
