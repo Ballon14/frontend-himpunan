@@ -15,6 +15,8 @@ export const adminLogin = (email, password) =>
 export const adminLogout = () => api.post('/logout');
 
 export const getMe = () => api.get('/me');
+export const updateProfile = (data) => api.put('/profile', data);
+export const changePassword = (data) => api.put('/change-password', data);
 
 // ─── Dashboard ───────────────────────────────────────────────────────────────
 export const getDashboardStats = () => api.get('/dashboard/stats');
@@ -84,8 +86,8 @@ export const importTable = (table, file) => {
     fd.append('file', file);
     return api.post(`/import/${table}`, fd, { headers: { 'Content-Type': 'multipart/form-data' } });
 };
-export const downloadImportTemplate = (table) =>
-    api.get(`/import/${table}/template`, { responseType: 'blob' });
+export const downloadImportTemplate = (table, format = 'csv') =>
+    api.get(`/import/${table}/template`, { params: { format }, responseType: 'blob' });
 
 // ─── Logs ───────────────────────────────────────────────────────────────────
 export const getLogs = (limit = 200) => api.get('/logs', { params: { limit } });

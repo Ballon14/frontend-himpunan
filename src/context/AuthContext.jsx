@@ -41,10 +41,18 @@ export function AuthProvider({ children }) {
         setUser(null);
     };
 
+    const updateUser = (newUserData, newToken = null) => {
+        if (newUserData) setUser(newUserData);
+        if (newToken) {
+            localStorage.setItem('admin_token', newToken);
+            setToken(newToken);
+        }
+    };
+
     const isAuthenticated = !!user && !!token;
 
     return (
-        <AuthContext.Provider value={{ user, token, loading, isAuthenticated, login, logout }}>
+        <AuthContext.Provider value={{ user, token, loading, isAuthenticated, login, logout, updateUser }}>
             {children}
         </AuthContext.Provider>
     );

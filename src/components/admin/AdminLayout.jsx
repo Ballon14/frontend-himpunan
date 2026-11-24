@@ -6,7 +6,7 @@ import '../../styles/admin.css';
 import {
     LayoutGrid, Users, FileText, Briefcase,
     Image, Mail, Download, LogOut, Menu, X, ChevronLeft,
-    Calendar, ShoppingBag, Network, Terminal, Trophy
+    Calendar, ShoppingBag, Network, Terminal, Trophy, UserCog
 } from 'lucide-react';
 
 const navItems = [
@@ -22,6 +22,7 @@ const navItems = [
     { to: '/admin/pesan', icon: Mail, label: 'Pesan' },
     { to: '/admin/export', icon: Download, label: 'Export & Import Data' },
     { to: '/admin/logs', icon: Terminal, label: 'Log Sistem' },
+    { to: '/admin/profile', icon: UserCog, label: 'Pengaturan Akun' },
 ];
 
 export default function AdminLayout({ children }) {
@@ -76,7 +77,12 @@ export default function AdminLayout({ children }) {
                 </nav>
 
                 <div className="admin-sidebar-footer">
-                    <div className="admin-user-info">
+                    <div
+                        className="admin-user-info"
+                        onClick={() => { navigate('/admin/profile'); setSidebarOpen(false); }}
+                        style={{ cursor: 'pointer' }}
+                        title="Buka Pengaturan Akun"
+                    >
                         <div className="admin-user-avatar">{user?.name?.charAt(0) || 'A'}</div>
                         <div className="admin-user-details">
                             <span className="admin-user-name">{user?.name || 'Admin'}</span>

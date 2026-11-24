@@ -50,6 +50,7 @@ const AdminExportPage = lazy(() => import('./pages/admin/ExportDataPage'));
 const AdminKegiatanPage = lazy(() => import('./pages/admin/KegiatanManagePage'));
 const AdminMerchandisePage = lazy(() => import('./pages/admin/MerchandiseManagePage'));
 const AdminLogsPage = lazy(() => import('./pages/admin/LogsPage'));
+const AdminProfilePage = lazy(() => import('./pages/admin/ProfileManagePage'));
 
 // Google Analytics — set VITE_GA_MEASUREMENT_ID in .env to enable tracking
 const GA_MEASUREMENT_ID = import.meta.env.VITE_GA_MEASUREMENT_ID;
@@ -133,6 +134,7 @@ function AdminRoutes() {
                   <Route path="kegiatan" element={<AdminKegiatanPage />} />
                   <Route path="merchandise" element={<AdminMerchandisePage />} />
                   <Route path="logs" element={<AdminLogsPage />} />
+                  <Route path="profile" element={<AdminProfilePage />} />
                   <Route path="" element={<AdminDashboardPage />} />
                 </Routes>
               </AdminLayout>
