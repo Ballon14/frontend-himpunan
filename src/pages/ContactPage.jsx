@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Mail, MapPin, Instagram, Send, CheckCircle, XCircle } from 'lucide-react';
+import { Mail, MapPin, Instagram, Send, CheckCircle, XCircle, PhoneCall, Clock } from 'lucide-react';
 import SectionTitle from '../components/SectionTitle';
 import PageTransition from '../components/PageTransition';
 import SEO from '../components/SEO';
 import { postPesan } from '../api/pesan';
+import { useSettings } from '../context/SettingsContext';
 
 export default function ContactPage() {
+    const { settings, getWaUrl, getWaDisplay } = useSettings();
     const [formData, setFormData] = useState({ nama: '', email: '', isi_pesan: '' });
     const [status, setStatus] = useState({ loading: false, success: false, error: null });
 
@@ -46,64 +48,94 @@ export default function ContactPage() {
                             <div>
                                 <h3 className="contact-info-title">Informasi Kontak</h3>
                                 <p className="contact-info-desc">
-                                    Layanan ini dikelola penuh oleh anggota HMTKBG. Waktu operasional layanan adalah hari kerja pukul 08:00 WIB hingga 16:00 WIB.
+                                    Layanan ini dikelola penuh oleh anggota HMTKBG. {settings.jam_operasional ? `Waktu operasional layanan adalah ${settings.jam_operasional}.` : 'Waktu operasional layanan adalah hari kerja pukul 08:00 WIB hingga 16:00 WIB.'}
                                 </p>
                             </div>
 
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', marginTop: '1rem' }}>
-                                <motion.div
-                                    className="contact-item"
-                                    whileHover={{ x: 5 }}
-                                    transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                                >
-                                    <div className="contact-icon">
-                                        <MapPin size={28} />
-                                    </div>
-                                    <div>
-                                        <h4 className="contact-item-title">Sekretariat HMTKBG</h4>
-                                        <p className="contact-item-desc">
-                                            Gedung Pusat Kegiatan Mahasiswa Lt. 2<br />
-                                            Teknologi Konstruksi Bangunan Gedung<br />
-                                            Semarang, Jawa Tengah
-                                        </p>
-                                    </div>
-                                </motion.div>
+                                {settings.whatsapp_number && (
+                                    <motion.div
+                                        className="contact-item center"
+                                        whileHover={{ x: 5 }}
+                                        transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                                    >
+                                        <div className="contact-icon" style={{ color: '#2ecc71', background: 'rgba(46, 204, 113, 0.15)' }}>
+                                            <PhoneCall size={28} />
+                                        </div>
+                                        <div>
+                                            <h4 className="contact-item-title">WhatsApp Resmi</h4>
+                                            <p className="contact-item-desc">
+                                                <a
+                                                    href={getWaUrl('Halo Admin HMTKBG, saya ingin bertanya.')}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="contact-item-link"
+                                                    style={{ color: '#2ecc71', fontWeight: 600 }}
+                                                >
+                                                    {getWaDisplay()} &rarr; Chat Sekarang
+                                                </a>
+                                            </p>
+                                        </div>
+                                    </motion.div>
+                                )}
 
-                                <motion.div
-                                    className="contact-item center"
-                                    whileHover={{ x: 5 }}
-                                    transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                                >
-                                    <div className="contact-icon">
-                                        <Mail size={28} />
-                                    </div>
-                                    <div>
-                                        <h4 className="contact-item-title">Email</h4>
-                                        <p className="contact-item-desc">
-                                            <a href="mailto:hima.kbg@gmail.com" className="contact-item-link">
-                                                hima.kbg@gmail.com
-                                            </a>
-                                        </p>
-                                    </div>
-                                </motion.div>
+                                {settings.alamat && (
+                                    <motion.div
+                                        className="contact-item"
+                                        whileHover={{ x: 5 }}
+                                        transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                                    >
+                                        <div className="contact-icon">
+                                            <MapPin size={28} />
+                                        </div>
+                                        <div>
+                                            <h4 className="contact-item-title">Sekretariat HMTKBG</h4>
+                                            <p className="contact-item-desc" style={{ whiteSpace: 'pre-line' }}>
+                                                {settings.alamat}
+                                            </p>
+                                        </div>
+                                    </motion.div>
+                                )}
 
-                                <motion.div
-                                    className="contact-item center"
-                                    whileHover={{ x: 5 }}
-                                    transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                                >
-                                    <div className="contact-icon">
-                                        <Instagram size={28} />
-                                    </div>
-                                    <div>
-                                        <h4 className="contact-item-title">Instagram</h4>
-                                        <p className="contact-item-desc">
-                                            <a href="https://www.instagram.com/hmtkbg?igsh=M2owdXpkMXprcjA4" target="_blank" rel="noopener noreferrer" className="contact-item-link">
-                                                @hmtkbg
-                                            </a>
-                                        </p>
-                                    </div>
-                                </motion.div>
+                                {settings.email && (
+                                    <motion.div
+                                        className="contact-item center"
+                                        whileHover={{ x: 5 }}
+                                        transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                                    >
+                                        <div className="contact-icon">
+                                            <Mail size={28} />
+                                        </div>
+                                        <div>
+                                            <h4 className="contact-item-title">Email</h4>
+                                            <p className="contact-item-desc">
+                                                <a href={`mailto:${settings.email}`} className="contact-item-link">
+                                                    {settings.email}
+                                                </a>
+                                            </p>
+                                        </div>
+                                    </motion.div>
+                                )}
+
+                                {settings.instagram_url && (
+                                    <motion.div
+                                        className="contact-item center"
+                                        whileHover={{ x: 5 }}
+                                        transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                                    >
+                                        <div className="contact-icon">
+                                            <Instagram size={28} />
+                                        </div>
+                                        <div>
+                                            <h4 className="contact-item-title">Instagram</h4>
+                                            <p className="contact-item-desc">
+                                                <a href={settings.instagram_url} target="_blank" rel="noopener noreferrer" className="contact-item-link">
+                                                    {settings.instagram_username || '@hmtkbg'}
+                                                </a>
+                                            </p>
+                                        </div>
+                                    </motion.div>
+                                )}
                             </div>
                         </div>
 

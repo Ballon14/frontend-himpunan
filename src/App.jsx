@@ -4,6 +4,7 @@ import { AnimatePresence } from 'framer-motion';
 import ReactGA from 'react-ga4';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './context/AuthContext';
+import { SettingsProvider } from './context/SettingsContext';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import ErrorBoundary from './components/ErrorBoundary';
 
@@ -50,6 +51,7 @@ const AdminExportPage = lazy(() => import('./pages/admin/ExportDataPage'));
 const AdminKegiatanPage = lazy(() => import('./pages/admin/KegiatanManagePage'));
 const AdminMerchandisePage = lazy(() => import('./pages/admin/MerchandiseManagePage'));
 const AdminLogsPage = lazy(() => import('./pages/admin/LogsPage'));
+const AdminSettingsPage = lazy(() => import('./pages/admin/SettingsManagePage'));
 const AdminProfilePage = lazy(() => import('./pages/admin/ProfileManagePage'));
 
 // Google Analytics — set VITE_GA_MEASUREMENT_ID in .env to enable tracking
@@ -134,6 +136,7 @@ function AdminRoutes() {
                   <Route path="kegiatan" element={<AdminKegiatanPage />} />
                   <Route path="merchandise" element={<AdminMerchandisePage />} />
                   <Route path="logs" element={<AdminLogsPage />} />
+                  <Route path="settings" element={<AdminSettingsPage />} />
                   <Route path="profile" element={<AdminProfilePage />} />
                   <Route path="" element={<AdminDashboardPage />} />
                 </Routes>
@@ -158,14 +161,16 @@ export default function App() {
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
-          <BrowserRouter>
-            <ScrollToTopAndTrack />
-            <Toaster position="top-center" containerStyle={{ top: 24 }} />
-            <Routes>
-              <Route path="/admin/*" element={<AdminRoutes />} />
-              <Route path="*" element={<PublicLayout />} />
-            </Routes>
-          </BrowserRouter>
+          <SettingsProvider>
+            <BrowserRouter>
+              <ScrollToTopAndTrack />
+              <Toaster position="top-center" containerStyle={{ top: 24 }} />
+              <Routes>
+                <Route path="/admin/*" element={<AdminRoutes />} />
+                <Route path="*" element={<PublicLayout />} />
+              </Routes>
+            </BrowserRouter>
+          </SettingsProvider>
         </AuthProvider>
       </QueryClientProvider>
     </ErrorBoundary>

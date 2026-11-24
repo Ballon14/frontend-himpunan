@@ -1,9 +1,11 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Instagram, Mail, MapPin, Youtube, Building2 } from 'lucide-react';
+import { Instagram, Mail, MapPin, Youtube, Building2, PhoneCall } from 'lucide-react';
+import { useSettings } from '../context/SettingsContext';
 
 export default function Footer() {
     const year = new Date().getFullYear();
+    const { settings, getWaUrl, getWaDisplay } = useSettings();
 
     return (
         <footer className="footer">
@@ -21,11 +23,10 @@ export default function Footer() {
                             <h3 style={{ margin: 0 }}>HM<span>TKBG</span></h3>
                         </div>
                         <p style={{ marginBottom: '0.75rem' }}>
-                            Himpunan Mahasiswa Teknologi Konstruksi Bangunan Gedung Semarang.
-                            Membangun generasi unggul, berprestasi, dan berkarakter.
+                            {settings.site_description || 'Himpunan Mahasiswa Teknologi Konstruksi Bangunan Gedung Semarang. Membangun generasi unggul, berprestasi, dan berkarakter.'}
                         </p>
                         <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-primary)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '6px' }}>
-                            <Building2 size={14} /> Membangun dari Pondasi Ilmu
+                            <Building2 size={14} /> {settings.site_tagline || 'Membangun dari Pondasi Ilmu'}
                         </p>
                     </div>
 
@@ -47,48 +48,77 @@ export default function Footer() {
 
                     <div className="footer-col">
                         <h4>Kontak</h4>
-                        <a href="mailto:hima.kbg@gmail.com">
-                            <Mail size={18} style={{ marginRight: 6, verticalAlign: 'middle' }} />
-                            hima.kbg@gmail.com
-                        </a>
-                        <a href="https://www.instagram.com/hmtkbg?igsh=M2owdXpkMXprcjA4" target="_blank" rel="noopener noreferrer">
-                            <Instagram size={18} style={{ marginRight: 6, verticalAlign: 'middle' }} />
-                            @hmtkbg
-                        </a>
-                        <a href="https://www.tiktok.com/@hmtkbg?_r=1&_t=ZS-9AM3oNXfHBm" target="_blank" rel="noopener noreferrer">
-                            <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: 6, verticalAlign: 'middle' }}>
-                                <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5v3a8 8 0 0 1-5-3v5.5a4 4 0 0 1-4-4 4 4 0 0 1 4-4Z"></path>
-                            </svg>
-                            @hmtkbg
-                        </a>
-                        <a href="https://www.youtube.com/@hmtkbgpoliteknikpu6903" target="_blank" rel="noopener noreferrer">
-                            <Youtube size={18} style={{ marginRight: 6, verticalAlign: 'middle' }} />
-                            HMTKBG Politeknik PU
-                        </a>
-                        <a href="#">
-                            <MapPin size={18} style={{ marginRight: 6, verticalAlign: 'middle' }} />
-                            Semarang, Jawa Tengah
-                        </a>
+                        {settings.whatsapp_number && (
+                            <a href={getWaUrl('Halo Admin HMTKBG, saya ingin bertanya.')} target="_blank" rel="noopener noreferrer">
+                                <PhoneCall size={18} style={{ marginRight: 6, verticalAlign: 'middle', color: '#2ecc71' }} />
+                                {getWaDisplay()}
+                            </a>
+                        )}
+                        {settings.email && (
+                            <a href={`mailto:${settings.email}`}>
+                                <Mail size={18} style={{ marginRight: 6, verticalAlign: 'middle' }} />
+                                {settings.email}
+                            </a>
+                        )}
+                        {settings.instagram_url && (
+                            <a href={settings.instagram_url} target="_blank" rel="noopener noreferrer">
+                                <Instagram size={18} style={{ marginRight: 6, verticalAlign: 'middle' }} />
+                                {settings.instagram_username || '@hmtkbg'}
+                            </a>
+                        )}
+                        {settings.tiktok_url && (
+                            <a href={settings.tiktok_url} target="_blank" rel="noopener noreferrer">
+                                <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: 6, verticalAlign: 'middle' }}>
+                                    <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5v3a8 8 0 0 1-5-3v5.5a4 4 0 0 1-4-4 4 4 0 0 1 4-4Z"></path>
+                                </svg>
+                                {settings.tiktok_username || '@hmtkbg'}
+                            </a>
+                        )}
+                        {settings.youtube_url && (
+                            <a href={settings.youtube_url} target="_blank" rel="noopener noreferrer">
+                                <Youtube size={18} style={{ marginRight: 6, verticalAlign: 'middle' }} />
+                                {settings.youtube_channel || 'HMTKBG Politeknik PU'}
+                            </a>
+                        )}
+                        {settings.alamat && (
+                            <span style={{ display: 'flex', alignItems: 'flex-start', color: 'var(--color-text-muted)', fontSize: '0.85rem', marginTop: '4px' }}>
+                                <MapPin size={18} style={{ marginRight: 6, flexShrink: 0, marginTop: 2 }} />
+                                {settings.alamat}
+                            </span>
+                        )}
                     </div>
                 </div>
 
                 <div className="footer-bottom">
-                    <p>&copy; {year} HMTKBG. All rights reserved.</p>
+                    <p>&copy; {year} {settings.site_name || 'HMTKBG'}. All rights reserved.</p>
                     <div className="footer-socials">
-                        <a href="https://www.instagram.com/hmtkbg?igsh=M2owdXpkMXprcjA4" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
-                            <Instagram size={20} />
-                        </a>
-                        <a href="mailto:hima.kbg@gmail.com" aria-label="Email">
-                            <Mail size={20} />
-                        </a>
-                        <a href="https://www.tiktok.com/@hmtkbg?_r=1&_t=ZS-9AM3oNXfHBm" target="_blank" rel="noopener noreferrer" aria-label="TikTok">
-                            <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
-                                <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5v3a8 8 0 0 1-5-3v5.5a4 4 0 0 1-4-4 4 4 0 0 1 4-4Z"></path>
-                            </svg>
-                        </a>
-                        <a href="https://www.youtube.com/@hmtkbgpoliteknikpu6903" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
-                            <Youtube size={20} />
-                        </a>
+                        {settings.whatsapp_number && (
+                            <a href={getWaUrl('Halo Admin HMTKBG')} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
+                                <PhoneCall size={20} />
+                            </a>
+                        )}
+                        {settings.instagram_url && (
+                            <a href={settings.instagram_url} target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                                <Instagram size={20} />
+                            </a>
+                        )}
+                        {settings.email && (
+                            <a href={`mailto:${settings.email}`} aria-label="Email">
+                                <Mail size={20} />
+                            </a>
+                        )}
+                        {settings.tiktok_url && (
+                            <a href={settings.tiktok_url} target="_blank" rel="noopener noreferrer" aria-label="TikTok">
+                                <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5v3a8 8 0 0 1-5-3v5.5a4 4 0 0 1-4-4 4 4 0 0 1 4-4Z"></path>
+                                </svg>
+                            </a>
+                        )}
+                        {settings.youtube_url && (
+                            <a href={settings.youtube_url} target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+                                <Youtube size={20} />
+                            </a>
+                        )}
                     </div>
                 </div>
             </div>

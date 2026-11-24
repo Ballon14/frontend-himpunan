@@ -9,10 +9,12 @@ import SEO from '../components/SEO';
 import { getMerchandiseById, getMerchandise } from '../api/komunitas';
 import { formatRupiah } from '../utils/format';
 import useShare from '../hooks/useShare';
+import { useSettings } from '../context/SettingsContext';
 
 export default function MerchandiseDetailPage() {
     const { id } = useParams();
     const share = useShare();
+    const { getWaUrl } = useSettings();
 
     const { data: item, isLoading: itemLoading, isError } = useQuery({
         queryKey: ['merchandiseDetail', id],
@@ -294,7 +296,7 @@ export default function MerchandiseDetailPage() {
                                     </div>
                                 </div>
                                 <a
-                                    href={`https://wa.me/6281515630448?text=${encodeURIComponent(`Halo Admin HMTKBG, saya tertarik dengan merchandise "${item.nama}" (${formatRupiah(item.harga)}). Apakah masih tersedia?`)}`}
+                                    href={getWaUrl(`Halo Admin HMTKBG, saya tertarik dengan merchandise "${item.nama}" (${formatRupiah(item.harga)}). Apakah masih tersedia?`)}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="btn btn-primary merch-contact-btn merch-wa-detail-btn"

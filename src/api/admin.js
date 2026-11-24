@@ -94,3 +94,8 @@ export const getLogs = (limit = 200) => api.get('/logs', { params: { limit } });
 export const getSystemLogs = (limit = 100) => api.get('/logs/system', { params: { limit } });
 export const clearLogs = () => api.delete('/logs');
 export const downloadLogs = () => api.get('/logs/download', { responseType: 'blob' });
+
+// ─── Settings ───────────────────────────────────────────────────────────────
+export const getSettings = () => api.get('/settings');
+export const updateSettings = (data) => api.put('/settings', data);
+

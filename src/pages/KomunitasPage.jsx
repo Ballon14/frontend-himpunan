@@ -9,6 +9,7 @@ import PageTransition from '../components/PageTransition';
 import SEO from '../components/SEO';
 import { getKegiatan, getMerchandise } from '../api/komunitas';
 import { formatRupiah } from '../utils/format';
+import { useSettings } from '../context/SettingsContext';
 
 const HARI = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
 const BULAN = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
@@ -29,6 +30,7 @@ const KATEGORI_COLORS = {
 };
 
 export default function KomunitasPage() {
+    const { getWaUrl } = useSettings();
     const now = new Date();
     const [currentMonth, setCurrentMonth] = useState(now.getMonth());
     const [currentYear, setCurrentYear] = useState(now.getFullYear());
@@ -310,7 +312,7 @@ export default function KomunitasPage() {
                                 <p>Hubungi kami langsung via WhatsApp untuk pemesanan dan informasi lebih lanjut.</p>
                             </div>
                             <a
-                                href="https://wa.me/6281515630448?text=Halo%20Admin%20HMTKBG%2C%20saya%20tertarik%20dengan%20merchandise%20himpunan."
+                                href={getWaUrl('Halo Admin HMTKBG, saya tertarik dengan merchandise himpunan.')}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="merch-wa-btn"
