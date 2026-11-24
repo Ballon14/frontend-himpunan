@@ -1,12 +1,18 @@
 import { useState, useRef } from 'react';
-import { exportTable, exportAll, importTable, downloadImportTemplate } from '../../api/admin';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+    exportTable, exportAll, importTable, downloadImportTemplate,
+    getBackupList, createBackup, deleteBackup, downloadBackup
+} from '../../api/admin';
+import ConfirmDialog from '../../components/admin/ConfirmDialog';
 import {
     Download, Upload, Users, FileText, Briefcase, Image, Mail,
     Package, Check, Calendar, ShoppingBag, FileUp, AlertCircle,
     CheckCircle2, Info, Trophy, Search, FileSpreadsheet, FileCode,
-    FileCheck, XCircle, ArrowRight
+    FileCheck, XCircle, ArrowRight, ShieldCheck, Database, Clock, HardDrive,
+    Trash2, RefreshCw
 } from 'lucide-react';
-import { notifySuccess, notifyError } from '../../utils/toast';
+import { notifySuccess, notifyError, notifyLoading } from '../../utils/toast';
 import '../../styles/admin.css';
 
 const DATA_TABLES = [
@@ -51,6 +57,81 @@ export default function ExportDataPage() {
     const [importResult, setImportResult] = useState(null);
     const [templateLoading, setTemplateLoading] = useState(null);
     const fileInputRef = useRef(null);
+
+    // ─── Backup State & Hooks ───────────────────────────────────────────────
+    const queryClient = useQueryClient();
+    const [deleteConfirm, setDeleteConfirm] = useState(null);
+    const [creatingBackup, setCreatingBackup] = useState(false);
+
+    const {
+        data: backupRes,
+        isLoading: loadingBackups,
+        isFetching: fetchingBackups,
+        refetch: refetchBackups,
+    } = useQuery({
+        queryKey: ['backup-list'],
+        queryFn: async () => {
+            const res = await getBackupList();
+            return res.data?.data || { backups: [], config: {} };
+        },
+        enabled: activeTab === 'backup',
+    });
+
+    const backupData = backupRes || { backups: [], config: {} };
+
+    const handleCreateManualBackup = async () => {
+        setCreatingBackup(true);
+        try {
+            notifyLoading('Sedang membuat arsip backup...', { id: 'backup-toast' });
+            const res = await createBackup('manual');
+            notifySuccess(`Backup manual berhasil dibuat: ${res.data?.data?.filename || ''}`, 'backup-toast');
+            queryClient.invalidateQueries({ queryKey: ['backup-list'] });
+        } catch (err) {
+            console.error('Create backup error:', err);
+            notifyError(err.response?.data?.message || 'Gagal membuat backup data.', 'backup-toast');
+        } finally {
+            setCreatingBackup(false);
+        }
+    };
+
+    const handleDownloadBackupFile = async (filename) => {
+        try {
+            notifyLoading(`Mengunduh ${filename}...`, { id: 'dl-backup' });
+            const res = await downloadBackup(filename);
+            const fileBlob = res.data instanceof Blob ? res.data : new Blob([res.data]);
+            triggerDownload(fileBlob, filename);
+            notifySuccess('Backup berhasil diunduh.', 'dl-backup');
+        } catch (err) {
+            console.error('Download backup error:', err);
+            notifyError('Gagal mengunduh file backup.', 'dl-backup');
+        }
+    };
+
+    const handleDeleteBackupFile = async () => {
+        if (!deleteConfirm) return;
+        try {
+            await deleteBackup(deleteConfirm);
+            notifySuccess(`File ${deleteConfirm} berhasil dihapus.`);
+            queryClient.invalidateQueries({ queryKey: ['backup-list'] });
+            setDeleteConfirm(null);
+        } catch (err) {
+            console.error('Delete backup error:', err);
+            notifyError(err.response?.data?.message || 'Gagal menghapus file backup.');
+        }
+    };
+
+    const formatDateDisplay = (isoStr) => {
+        if (!isoStr) return 'Belum ada data';
+        try {
+            const d = new Date(isoStr);
+            return d.toLocaleString('id-ID', {
+                day: '2-digit', month: 'short', year: 'numeric',
+                hour: '2-digit', minute: '2-digit'
+            }) + ' WIB';
+        } catch {
+            return String(isoStr);
+        }
+    };
 
     const filteredTables = DATA_TABLES.filter(t =>
         t.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -206,6 +287,13 @@ export default function ExportDataPage() {
                 >
                     <Upload size={18} />
                     <span>Import Data</span>
+                </button>
+                <button
+                    className={`export-tab-btn ${activeTab === 'backup' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('backup')}
+                >
+                    <ShieldCheck size={18} />
+                    <span>Backup Otomatis</span>
                 </button>
             </div>
 
@@ -681,6 +769,253 @@ export default function ExportDataPage() {
                     </div>
                 </>
             )}
+
+            {/* ══════════════════════ BACKUP TAB ══════════════════════ */}
+            {activeTab === 'backup' && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                    {/* Status & Automated Schedule Card */}
+                    <div style={{
+                        background: 'linear-gradient(135deg, rgba(39, 174, 96, 0.15) 0%, rgba(26, 29, 36, 0.95) 100%)',
+                        border: '1px solid rgba(39, 174, 96, 0.3)',
+                        borderRadius: 'var(--admin-radius)',
+                        padding: '24px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        gap: '20px',
+                        flexWrap: 'wrap'
+                    }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                            <div style={{
+                                width: '56px', height: '56px', borderRadius: '14px',
+                                background: 'rgba(39, 174, 96, 0.2)', color: '#2ecc71',
+                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                border: '1px solid rgba(39, 174, 96, 0.4)',
+                                flexShrink: 0
+                            }}>
+                                <ShieldCheck size={30} />
+                            </div>
+                            <div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                                    <h3 style={{ margin: 0, fontSize: '1.15rem', fontWeight: 700, color: '#fff' }}>
+                                        Pencadangan Otomatis Mingguan
+                                    </h3>
+                                    <span style={{
+                                        background: 'rgba(39, 174, 96, 0.2)', color: '#2ecc71',
+                                        fontSize: '0.72rem', fontWeight: 600, padding: '2px 8px', borderRadius: '999px',
+                                        border: '1px solid rgba(39, 174, 96, 0.3)'
+                                    }}>
+                                        Aktif (Setiap 7 Hari)
+                                    </span>
+                                </div>
+                                <p style={{ margin: 0, fontSize: '0.82rem', color: 'var(--admin-text-muted)' }}>
+                                    Sistem backend Express secara otomatis mencadangkan seluruh data tabel database ke dalam arsip ZIP setiap 1 minggu sekali.
+                                </p>
+                            </div>
+                        </div>
+
+                        <button
+                            onClick={() => handleCreateManualBackup()}
+                            disabled={creatingBackup}
+                            className="admin-btn admin-btn-primary"
+                            style={{
+                                display: 'flex', alignItems: 'center', gap: '8px',
+                                padding: '10px 18px', fontWeight: 600, fontSize: '0.85rem'
+                            }}
+                        >
+                            {creatingBackup ? (
+                                <>
+                                    <span className="export-spinner" />
+                                    <span>Membuat Backup...</span>
+                                </>
+                            ) : (
+                                <>
+                                    <Database size={16} />
+                                    <span>Buat Backup Sekarang</span>
+                                </>
+                            )}
+                        </button>
+                    </div>
+
+                    {/* Schedule Info Grid */}
+                    <div style={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+                        gap: '14px'
+                    }}>
+                        <div style={{
+                            background: 'var(--admin-surface)',
+                            border: '1px solid var(--admin-border)',
+                            borderRadius: 'var(--admin-radius-sm)',
+                            padding: '16px 20px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '12px'
+                        }}>
+                            <Clock size={24} style={{ color: '#3498db', flexShrink: 0 }} />
+                            <div>
+                                <span style={{ fontSize: '0.75rem', color: 'var(--admin-text-muted)', display: 'block' }}>Backup Otomatis Terakhir</span>
+                                <strong style={{ fontSize: '0.92rem', color: '#fff' }}>
+                                    {formatDateDisplay(backupData?.config?.lastAutoBackup)}
+                                </strong>
+                            </div>
+                        </div>
+
+                        <div style={{
+                            background: 'var(--admin-surface)',
+                            border: '1px solid var(--admin-border)',
+                            borderRadius: 'var(--admin-radius-sm)',
+                            padding: '16px 20px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '12px'
+                        }}>
+                            <Calendar size={24} style={{ color: '#f39c12', flexShrink: 0 }} />
+                            <div>
+                                <span style={{ fontSize: '0.75rem', color: 'var(--admin-text-muted)', display: 'block' }}>Jadwal Otomatis Berikutnya</span>
+                                <strong style={{ fontSize: '0.92rem', color: '#fff' }}>
+                                    {formatDateDisplay(backupData?.config?.nextScheduledBackup)}
+                                </strong>
+                            </div>
+                        </div>
+
+                        <div style={{
+                            background: 'var(--admin-surface)',
+                            border: '1px solid var(--admin-border)',
+                            borderRadius: 'var(--admin-radius-sm)',
+                            padding: '16px 20px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '12px'
+                        }}>
+                            <HardDrive size={24} style={{ color: '#9b59b6', flexShrink: 0 }} />
+                            <div>
+                                <span style={{ fontSize: '0.75rem', color: 'var(--admin-text-muted)', display: 'block' }}>Total File Backup Tersimpan</span>
+                                <strong style={{ fontSize: '0.92rem', color: '#fff' }}>
+                                    {backupData?.backups?.length || 0} Arsip ZIP
+                                </strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Backups Table */}
+                    <div style={{
+                        background: 'var(--admin-surface)',
+                        border: '1px solid var(--admin-border)',
+                        borderRadius: 'var(--admin-radius)',
+                        padding: '20px 24px'
+                    }}>
+                        <div style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            marginBottom: '16px',
+                            flexWrap: 'wrap',
+                            gap: '10px'
+                        }}>
+                            <div>
+                                <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 600, color: '#fff' }}>
+                                    Daftar Berkas Backup Database
+                                </h3>
+                                <p style={{ margin: '2px 0 0 0', fontSize: '0.78rem', color: 'var(--admin-text-muted)' }}>
+                                    Arsip ZIP berisi seluruh data tabel dalam format Microsoft Excel (.xlsx) dan JSON mentah.
+                                </p>
+                            </div>
+                            <button
+                                onClick={() => refetchBackups()}
+                                className="admin-btn admin-btn-secondary"
+                                style={{ fontSize: '0.8rem', padding: '6px 12px', display: 'flex', alignItems: 'center', gap: '6px' }}
+                            >
+                                <RefreshCw size={13} className={fetchingBackups ? 'admin-spin' : ''} /> Refresh
+                            </button>
+                        </div>
+
+                        <div className="admin-table-wrapper">
+                            {loadingBackups ? (
+                                <div className="admin-loading"><div className="admin-spinner" /></div>
+                            ) : (
+                                <table className="admin-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Nama Berkas</th>
+                                            <th>Tipe Backup</th>
+                                            <th>Waktu Pembuatan</th>
+                                            <th>Ukuran</th>
+                                            <th style={{ textAlign: 'center' }}>Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {(!backupData?.backups || backupData.backups.length === 0) ? (
+                                            <tr>
+                                                <td colSpan={5} className="admin-empty">
+                                                    Belum ada berkas backup yang tersimpan. Klik "Buat Backup Sekarang" di atas untuk membuat cadangan pertama.
+                                                </td>
+                                            </tr>
+                                        ) : (
+                                            backupData.backups.map((b) => (
+                                                <tr key={b.filename}>
+                                                    <td data-label="Nama Berkas">
+                                                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                                            <Package size={16} style={{ color: '#3498db', flexShrink: 0 }} />
+                                                            <span style={{ fontFamily: 'monospace', fontSize: '0.85rem', fontWeight: 500 }}>
+                                                                {b.filename}
+                                                            </span>
+                                                        </div>
+                                                    </td>
+                                                    <td data-label="Tipe">
+                                                        <span className={`logs-badge ${b.type === 'automated' ? 'logs-badge--create' : 'logs-badge--update'}`}>
+                                                            {b.typeLabel}
+                                                        </span>
+                                                    </td>
+                                                    <td data-label="Waktu Pembuatan">
+                                                        <span style={{ fontSize: '0.82rem' }}>
+                                                            {formatDateDisplay(b.createdAt)}
+                                                        </span>
+                                                    </td>
+                                                    <td data-label="Ukuran">
+                                                        <span style={{ fontSize: '0.82rem', color: 'var(--admin-text-muted)' }}>
+                                                            {b.sizeFormatted}
+                                                        </span>
+                                                    </td>
+                                                    <td data-label="Aksi" style={{ textAlign: 'center' }}>
+                                                        <div style={{ display: 'inline-flex', gap: '8px', alignItems: 'center' }}>
+                                                            <button
+                                                                onClick={() => handleDownloadBackupFile(b.filename)}
+                                                                className="admin-btn admin-btn-secondary"
+                                                                title="Unduh Berkas Backup"
+                                                                style={{ padding: '6px 12px', fontSize: '0.78rem', display: 'flex', alignItems: 'center', gap: '4px' }}
+                                                            >
+                                                                <Download size={13} /> Unduh
+                                                            </button>
+                                                            <button
+                                                                onClick={() => setDeleteConfirm(b.filename)}
+                                                                className="admin-btn admin-btn-danger"
+                                                                title="Hapus Berkas Backup"
+                                                                style={{ padding: '6px 10px', fontSize: '0.78rem' }}
+                                                            >
+                                                                <Trash2 size={13} />
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            ))
+                                        )}
+                                    </tbody>
+                                </table>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Confirm Dialog Delete */}
+            <ConfirmDialog
+                isOpen={!!deleteConfirm}
+                title="Hapus Berkas Backup"
+                message={`Apakah Anda yakin ingin menghapus berkas backup "${deleteConfirm}"? Tindakan ini tidak dapat dibatalkan.`}
+                onClose={() => setDeleteConfirm(null)}
+                onConfirm={handleDeleteBackupFile}
+            />
         </div>
     );
 }

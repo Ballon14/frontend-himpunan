@@ -99,3 +99,10 @@ export const downloadLogs = () => api.get('/logs/download', { responseType: 'blo
 export const getSettings = () => api.get('/settings');
 export const updateSettings = (data) => api.put('/settings', data);
 
+// ─── Backup Data ────────────────────────────────────────────────────────────
+export const getBackupList = () => api.get('/backup');
+export const createBackup = (type = 'manual') => api.post('/backup', { type });
+export const deleteBackup = (filename) => api.delete(`/backup/${filename}`);
+export const downloadBackup = (filename) =>
+    api.get(`/backup/download/${filename}`, { responseType: 'blob' });
+
